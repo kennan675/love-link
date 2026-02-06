@@ -117,13 +117,13 @@ const Index = () => {
       {/* ── CONNECTION SECTION (Bumble-inspired) ── */}
       <section className="bg-primary-foreground px-6 py-24 lg:py-32 overflow-hidden">
         <div className="mx-auto max-w-7xl">
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            {/* Left – text */}
+          <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr]">
+            {/* Left – large bold text */}
             <div>
-              <h2 className="text-5xl font-black leading-[1.1] tracking-tight text-background sm:text-6xl lg:text-7xl">
-                Made a great connection.
+              <h2 className="text-5xl font-black leading-[1.05] tracking-tight text-background sm:text-6xl lg:text-[4.5rem]">
+                Made a great<br />connection.
               </h2>
-              <p className="mt-6 max-w-md text-lg text-background/60 leading-relaxed">
+              <p className="mt-6 max-w-md text-lg text-background/50 leading-relaxed">
                 Your moment belongs here. Share meaningful and authentic stories that ignite confidence and joy.
               </p>
               <button className="mt-10 rounded-full bg-background px-10 py-4 text-base font-bold text-primary-foreground transition-transform hover:scale-105">
@@ -131,30 +131,41 @@ const Index = () => {
               </button>
             </div>
 
-            {/* Right – overlapping cards with interest tags */}
-            <div className="relative flex justify-center lg:justify-end">
-              {/* Card 1 – main */}
-              <div className="relative z-10 w-72 sm:w-80 rounded-2xl overflow-hidden shadow-xl rotate-[-3deg]">
-                <img src={story1} alt="Story" className="h-[420px] w-full object-cover" />
-                {/* Tag */}
-                <span className="absolute top-6 right-[-16px] gradient-brand text-primary-foreground text-sm font-bold px-4 py-2 rounded-full rotate-[18deg] shadow-lg">
-                  Adventurer
+            {/* Right – fanned cards with vertical rotated tags between them */}
+            <div className="relative h-[520px] flex items-center justify-center">
+              {/* Card 1 – front/main, slightly left */}
+              <div className="absolute left-[10%] sm:left-[15%] z-20 w-64 sm:w-72 rounded-3xl overflow-hidden shadow-2xl border-[6px] border-primary-foreground">
+                <img src={story1} alt="Profile" className="h-[400px] sm:h-[440px] w-full object-cover" />
+              </div>
+
+              {/* Vertical tag 1 – between card 1 and 2 */}
+              <div className="absolute left-[55%] sm:left-[52%] top-[8%] z-30">
+                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-sm sm:text-base font-extrabold px-4 py-2.5 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
+                  Outdoors
                 </span>
               </div>
 
-              {/* Card 2 – behind right */}
-              <div className="absolute right-0 top-8 z-20 w-56 sm:w-64 rounded-2xl overflow-hidden shadow-xl rotate-[5deg] translate-x-8 sm:translate-x-16">
-                <img src={story2} alt="Story" className="h-[360px] w-full object-cover" />
-                <span className="absolute top-10 right-[-10px] gradient-brand text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full rotate-[22deg] shadow-lg">
-                  Foodie
+              {/* Card 2 – behind right, slightly overlapping */}
+              <div className="absolute left-[45%] sm:left-[48%] top-[6%] z-10 w-52 sm:w-60 rounded-3xl overflow-hidden shadow-xl border-[6px] border-primary-foreground">
+                <img src={story2} alt="Profile" className="h-[360px] sm:h-[400px] w-full object-cover" />
+              </div>
+
+              {/* Vertical tag 2 – between card 2 and 3 */}
+              <div className="absolute left-[76%] sm:left-[75%] top-[4%] z-30">
+                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-xs sm:text-sm font-extrabold px-3 py-2 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
+                  Running
                 </span>
               </div>
 
-              {/* Card 3 – behind left */}
-              <div className="absolute left-0 top-16 z-0 w-48 sm:w-56 rounded-2xl overflow-hidden shadow-lg rotate-[-8deg] -translate-x-4 sm:-translate-x-8 opacity-70">
-                <img src={story3} alt="Story" className="h-[320px] w-full object-cover" />
-                <span className="absolute top-4 right-[-8px] gradient-brand text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full rotate-[15deg] shadow-lg">
-                  Explorer
+              {/* Card 3 – furthest right, mostly hidden */}
+              <div className="absolute left-[68%] sm:left-[72%] top-[4%] z-0 w-44 sm:w-52 rounded-3xl overflow-hidden shadow-lg border-[6px] border-primary-foreground">
+                <img src={story3} alt="Profile" className="h-[320px] sm:h-[360px] w-full object-cover" />
+              </div>
+
+              {/* Vertical tag 3 – on edge of card 3 */}
+              <div className="absolute left-[90%] sm:left-[92%] top-[2%] z-30">
+                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-[10px] sm:text-xs font-extrabold px-2.5 py-1.5 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
+                  Dog parent
                 </span>
               </div>
             </div>
