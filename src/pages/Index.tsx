@@ -114,38 +114,49 @@ const Index = () => {
         </span>
       </div>
 
-      {/* ── SWIPE STORIES ── */}
-      <section className="bg-primary-foreground px-6 py-16">
+      {/* ── CONNECTION SECTION (Bumble-inspired) ── */}
+      <section className="bg-primary-foreground px-6 py-24 lg:py-32 overflow-hidden">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[1fr_3fr]">
-            {/* Left CTA */}
+          <div className="grid items-center gap-16 lg:grid-cols-2">
+            {/* Left – text */}
             <div>
-              <p className="text-xl text-background/70">Made a great connection?</p>
-              <h3 className="mt-1 text-3xl font-extrabold text-background">Your moment belongs here.</h3>
-              <button className="mt-6 rounded-full bg-background px-8 py-3 text-sm font-bold text-primary-foreground">
+              <h2 className="text-5xl font-black leading-[1.1] tracking-tight text-background sm:text-6xl lg:text-7xl">
+                Made a great connection.
+              </h2>
+              <p className="mt-6 max-w-md text-lg text-background/60 leading-relaxed">
+                Your moment belongs here. Share meaningful and authentic stories that ignite confidence and joy.
+              </p>
+              <button className="mt-10 rounded-full bg-background px-10 py-4 text-base font-bold text-primary-foreground transition-transform hover:scale-105">
                 Share your story
               </button>
             </div>
 
-            {/* Stories grid */}
-            <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-              {stories.map((s) => (
-                <div key={s.names}>
-                  <span className={`text-xs font-bold uppercase ${s.tag === "Married" ? "text-primary" : "text-primary"}`}>
-                    {s.tag}
-                  </span>
-                  <h4 className="mt-1 text-sm font-bold leading-tight text-background">{s.title}</h4>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-sm text-background/80">{s.names}</span>
-                    <ArrowUpRight className="h-4 w-4 text-background/50" />
-                  </div>
-                  <img
-                    src={s.image}
-                    alt={s.names}
-                    className="mt-3 aspect-square w-full rounded-lg object-cover"
-                  />
-                </div>
-              ))}
+            {/* Right – overlapping cards with interest tags */}
+            <div className="relative flex justify-center lg:justify-end">
+              {/* Card 1 – main */}
+              <div className="relative z-10 w-72 sm:w-80 rounded-2xl overflow-hidden shadow-xl rotate-[-3deg]">
+                <img src={story1} alt="Story" className="h-[420px] w-full object-cover" />
+                {/* Tag */}
+                <span className="absolute top-6 right-[-16px] gradient-brand text-primary-foreground text-sm font-bold px-4 py-2 rounded-full rotate-[18deg] shadow-lg">
+                  Adventurer
+                </span>
+              </div>
+
+              {/* Card 2 – behind right */}
+              <div className="absolute right-0 top-8 z-20 w-56 sm:w-64 rounded-2xl overflow-hidden shadow-xl rotate-[5deg] translate-x-8 sm:translate-x-16">
+                <img src={story2} alt="Story" className="h-[360px] w-full object-cover" />
+                <span className="absolute top-10 right-[-10px] gradient-brand text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full rotate-[22deg] shadow-lg">
+                  Foodie
+                </span>
+              </div>
+
+              {/* Card 3 – behind left */}
+              <div className="absolute left-0 top-16 z-0 w-48 sm:w-56 rounded-2xl overflow-hidden shadow-lg rotate-[-8deg] -translate-x-4 sm:-translate-x-8 opacity-70">
+                <img src={story3} alt="Story" className="h-[320px] w-full object-cover" />
+                <span className="absolute top-4 right-[-8px] gradient-brand text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full rotate-[15deg] shadow-lg">
+                  Explorer
+                </span>
+              </div>
             </div>
           </div>
         </div>
