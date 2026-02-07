@@ -8,21 +8,21 @@ import story3 from "@/assets/story-3.jpg";
 const connections = [
   {
     image: story1,
-    names: "Elena & Giulia",
+    names: "Aisha & Kwame",
     tag: "Adventurer",
     story:
       "They matched over a shared love of hiking. What started as weekend trail walks turned into a cross-country road trip, a surprise proposal at sunset on a mountain peak, and a life built around exploring the world together.",
   },
   {
     image: story2,
-    names: "Amanda & Miguel",
+    names: "Zuri & Marcus",
     tag: "Foodie",
     story:
       "A first date at a tiny taco stand turned into a tradition. Every anniversary they return to the same spot — now with a family of four. Proof that the best love stories start with good food.",
   },
   {
     image: story3,
-    names: "Will & Monte",
+    names: "Nia & Darius",
     tag: "Dog Parent",
     story:
       "They bonded over rescue dogs and never looked back. Two humans, three dogs, one apartment, and an endless supply of love. Their Sunday park dates became the stuff of legend among friends.",
