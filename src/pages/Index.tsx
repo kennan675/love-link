@@ -1,8 +1,9 @@
-import { Flame, Globe, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Globe, ArrowUpRight, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
 import coupleHero from "@/assets/couple-hero.jpg";
+import logo from "@/assets/blacklovelink-logo.png";
 import ConnectionCards from "@/components/ConnectionCards";
 
 const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
@@ -21,9 +22,9 @@ const Index = () => {
       {/* ── NAVBAR ── */}
       <header className="absolute inset-x-0 top-0 z-30">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div className="flex items-center gap-1">
-            <Flame className="h-8 w-8 text-primary-foreground" fill="currentColor" />
-            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">BlackLoveLink</span>
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="BlackLoveLink" className="h-10 w-10 rounded-full" />
+            <span className="text-xl font-extrabold tracking-tight text-primary-foreground">BlackLoveLink</span>
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
