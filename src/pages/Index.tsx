@@ -3,19 +3,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
 import coupleHero from "@/assets/couple-hero.jpg";
-import story1 from "@/assets/story-1.jpg";
-import story2 from "@/assets/story-2.jpg";
-import story3 from "@/assets/story-3.jpg";
-import story4 from "@/assets/story-4.jpg";
+import ConnectionCards from "@/components/ConnectionCards";
 
 const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
 
-const stories = [
-  { tag: "Married", title: "One Walk, Two Lockdowns, a Cat, and a Ring.", names: "Elena & Giulia", image: story1 },
-  { tag: "Married", title: "First Came Face Masks, Then Came Love", names: "Amanda & Miguel", image: story2 },
-  { tag: "Married", title: "Met on Tinder, Approved by a Psychic, Married by the Sea", names: "Will & Monte", image: story3 },
-  { tag: "Dating", title: "New City, First Date, Forever Love", names: "Aashna & Prateek", image: story4 },
-];
 
 const footerLinks = {
   Legal: ["Privacy", "Consumer Health Data", "Privacy Policy", "Terms", "Cookie Policy", "Intellectual Property", "Accessibility Statement"],
@@ -131,44 +122,8 @@ const Index = () => {
               </button>
             </div>
 
-            {/* Right – fanned cards with vertical rotated tags between them */}
-            <div className="relative h-[520px] flex items-center justify-center">
-              {/* Card 1 – front/main, slightly left */}
-              <div className="absolute left-[10%] sm:left-[15%] z-20 w-64 sm:w-72 rounded-3xl overflow-hidden shadow-2xl border-[6px] border-primary-foreground">
-                <img src={story1} alt="Profile" className="h-[400px] sm:h-[440px] w-full object-cover" />
-              </div>
-
-              {/* Vertical tag 1 – between card 1 and 2 */}
-              <div className="absolute left-[55%] sm:left-[52%] top-[8%] z-30">
-                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-sm sm:text-base font-extrabold px-4 py-2.5 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
-                  Outdoors
-                </span>
-              </div>
-
-              {/* Card 2 – behind right, slightly overlapping */}
-              <div className="absolute left-[45%] sm:left-[48%] top-[6%] z-10 w-52 sm:w-60 rounded-3xl overflow-hidden shadow-xl border-[6px] border-primary-foreground">
-                <img src={story2} alt="Profile" className="h-[360px] sm:h-[400px] w-full object-cover" />
-              </div>
-
-              {/* Vertical tag 2 – between card 2 and 3 */}
-              <div className="absolute left-[76%] sm:left-[75%] top-[4%] z-30">
-                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-xs sm:text-sm font-extrabold px-3 py-2 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
-                  Running
-                </span>
-              </div>
-
-              {/* Card 3 – furthest right, mostly hidden */}
-              <div className="absolute left-[68%] sm:left-[72%] top-[4%] z-0 w-44 sm:w-52 rounded-3xl overflow-hidden shadow-lg border-[6px] border-primary-foreground">
-                <img src={story3} alt="Profile" className="h-[320px] sm:h-[360px] w-full object-cover" />
-              </div>
-
-              {/* Vertical tag 3 – on edge of card 3 */}
-              <div className="absolute left-[90%] sm:left-[92%] top-[2%] z-30">
-                <span className="inline-block bg-[hsl(45,100%,55%)] text-background text-[10px] sm:text-xs font-extrabold px-2.5 py-1.5 rounded-full rotate-[-90deg] origin-center shadow-md whitespace-nowrap">
-                  Dog parent
-                </span>
-              </div>
-            </div>
+            {/* Right – 3D rotating connection cards */}
+            <ConnectionCards />
           </div>
         </div>
       </section>
