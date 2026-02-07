@@ -23,7 +23,7 @@ const Index = () => {
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-1">
             <Flame className="h-8 w-8 text-primary-foreground" fill="currentColor" />
-            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">tinder</span>
+            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">BlackLoveLink</span>
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -52,7 +52,7 @@ const Index = () => {
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         <img
           src={heroBg}
-          alt="Tinder profiles on phones"
+          alt="BlackLoveLink profiles"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -64,7 +64,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Swipe Right<sup className="text-2xl sm:text-4xl align-super">™</sup>
+            BlackLove Link<sup className="text-2xl sm:text-4xl align-super">™</sup>
           </motion.h1>
 
           <motion.div
@@ -93,7 +93,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-x-0 bottom-12 text-center px-4">
           <h2 className="text-3xl font-light text-primary-foreground sm:text-5xl">
-            A new relationship starts on Tinder<br />every <span className="font-bold">3 seconds</span> around the globe
+            A new relationship starts on BlackLoveLink<br />every <span className="font-bold">3 seconds</span> around the globe
           </h2>
         </div>
       </section>
