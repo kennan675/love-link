@@ -83,6 +83,65 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ── MISSION SECTION ── */}
+      <section className="relative bg-background px-6 py-28 lg:py-36 overflow-hidden">
+        {/* Decorative gradient orbs */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-secondary/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <motion.h2
+            className="text-4xl font-black leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            Connections That{" "}
+            <span className="text-gradient-brand">Speak Your Love Language</span>
+          </motion.h2>
+
+          <motion.p
+            className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Empowering vetted accomplished Black professionals and like-minded
+            individuals to overcome loneliness and find meaningful connections,
+            love, and community.
+          </motion.p>
+
+          <motion.p
+            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground/80"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+          >
+            Join thousands of Black singles who've found meaningful connections
+            on a platform that celebrates your identity, understands your culture,
+            and prioritizes genuine compatibility over superficial swiping.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="mt-12"
+          >
+            <Link
+              to="/swipe"
+              className="gradient-brand inline-block rounded-full px-12 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
+            >
+              Find Your Connection
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── STATS SECTION ── */}
       <section className="relative">
         <img
@@ -93,7 +152,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-x-0 bottom-12 text-center px-4">
           <h2 className="text-3xl font-light text-primary-foreground sm:text-5xl">
-            A new relationship starts on Tinder<br />every <span className="font-bold">3 seconds</span> around the globe
+            A new relationship starts on BlackLoveLink<br />every <span className="font-bold">3 seconds</span> around the globe
           </h2>
         </div>
       </section>
