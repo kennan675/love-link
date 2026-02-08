@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
 import coupleHero from "@/assets/couple-hero.jpg";
+import profile1 from "@/assets/profile-1.jpg";
+import profile2 from "@/assets/profile-2.jpg";
+import profile3 from "@/assets/profile-3.jpg";
 import ConnectionCards from "@/components/ConnectionCards";
 
 const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
@@ -83,62 +86,152 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── MISSION SECTION ── */}
-      <section className="relative bg-background px-6 py-28 lg:py-36 overflow-hidden">
+      {/* ── MISSION SECTION (Light Theme) ── */}
+      <section className="relative bg-primary-foreground px-6 py-28 lg:py-36 overflow-hidden">
         {/* Decorative gradient orbs */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-secondary/10 blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none" />
 
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <motion.h2
-            className="text-4xl font-black leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            Connections That{" "}
-            <span className="text-gradient-brand">Speak Your Love Language</span>
-          </motion.h2>
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left – Text Content */}
+            <div>
+              <motion.h2
+                className="text-4xl font-black leading-[1.1] tracking-tight text-background sm:text-5xl lg:text-6xl"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+              >
+                Connections That{" "}
+                <span className="text-gradient-brand">Speak Your Love Language</span>
+              </motion.h2>
 
-          <motion.p
-            className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Empowering vetted accomplished Black professionals and like-minded
-            individuals to overcome loneliness and find meaningful connections,
-            love, and community.
-          </motion.p>
+              <motion.p
+                className="mt-8 max-w-xl text-lg leading-relaxed text-background/70"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Empowering vetted accomplished Black professionals and like-minded
+                individuals to overcome loneliness and find meaningful connections,
+                love, and community.
+              </motion.p>
 
-          <motion.p
-            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground/80"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-          >
-            Join thousands of Black singles who've found meaningful connections
-            on a platform that celebrates your identity, understands your culture,
-            and prioritizes genuine compatibility over superficial swiping.
-          </motion.p>
+              <motion.p
+                className="mt-6 max-w-xl text-base leading-relaxed text-background/50"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+              >
+                Join thousands of Black singles who've found meaningful connections
+                on a platform that celebrates your identity, understands your culture,
+                and prioritizes genuine compatibility over superficial swiping.
+              </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="mt-12"
-          >
-            <Link
-              to="/swipe"
-              className="gradient-brand inline-block rounded-full px-12 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                className="mt-10"
+              >
+                <Link
+                  to="/swipe"
+                  className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
+                >
+                  Find Your Connection
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Right – Feature Card with Stunning Visuals */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
-              Find Your Connection
-            </Link>
-          </motion.div>
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ perspective: "1000px" }}>
+                {/* Main Image */}
+                <img
+                  src={coupleHero}
+                  alt="Happy Black couple"
+                  className="w-full h-[500px] object-cover"
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                
+                {/* Floating Stats Cards */}
+                <motion.div
+                  className="absolute top-6 right-6 bg-primary-foreground/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6, type: "spring" }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full gradient-brand flex items-center justify-center">
+                      <Flame className="h-5 w-5 text-primary-foreground" fill="currentColor" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-background">98%</p>
+                      <p className="text-xs text-background/60">Match Success</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="absolute top-24 left-6 bg-primary-foreground/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8, type: "spring" }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[hsl(45,100%,55%)] flex items-center justify-center">
+                      <span className="text-background font-bold">✓</span>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-background">50K+</p>
+                      <p className="text-xs text-background/60">Verified Profiles</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Bottom Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <motion.div
+                    className="flex items-center gap-4"
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 1 }}
+                  >
+                    <div className="flex -space-x-3">
+                      <img src={profile1} alt="" className="w-10 h-10 rounded-full border-2 border-primary-foreground object-cover" />
+                      <img src={profile2} alt="" className="w-10 h-10 rounded-full border-2 border-primary-foreground object-cover" />
+                      <img src={profile3} alt="" className="w-10 h-10 rounded-full border-2 border-primary-foreground object-cover" />
+                      <div className="w-10 h-10 rounded-full border-2 border-primary-foreground gradient-brand flex items-center justify-center text-xs font-bold text-primary-foreground">
+                        +2K
+                      </div>
+                    </div>
+                    <p className="text-primary-foreground text-sm font-medium">
+                      Joined this week
+                    </p>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute -bottom-4 -right-4 w-full h-full rounded-3xl border-2 border-background/10 -z-10" />
+              <div className="absolute -bottom-8 -right-8 w-full h-full rounded-3xl border-2 border-background/5 -z-20" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
