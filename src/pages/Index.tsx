@@ -8,7 +8,7 @@ import profile2 from "@/assets/profile-2.jpg";
 import profile3 from "@/assets/profile-3.jpg";
 import ConnectionCards from "@/components/ConnectionCards";
 
-const navLinks = ["Home", "How It Works", "Success Stories", "Safety & Trust", "Support", "Download App"];
+const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
 
 
 const footerLinks = {
@@ -26,7 +26,7 @@ const Index = () => {
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-1">
             <Flame className="h-8 w-8 text-primary-foreground" fill="currentColor" />
-            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">BlackLoveLink</span>
+            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">tinder</span>
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -62,22 +62,13 @@ const Index = () => {
 
         <div className="relative z-10 text-center px-4">
           <motion.h1
-            className="text-5xl font-black tracking-tight text-primary-foreground sm:text-7xl lg:text-8xl leading-[1.1]"
+            className="text-6xl font-black tracking-tight text-primary-foreground sm:text-8xl"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            A New Relationship Begins on{" "}
-            <span className="text-gradient-brand">BlackLoveLink</span>
+            Swipe Right<sup className="text-2xl sm:text-4xl align-super">™</sup>
           </motion.h1>
-          <motion.p
-            className="mt-6 mx-auto max-w-2xl text-xl text-primary-foreground/80 font-light"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-          >
-            Because Real Love Grows When Values Align
-          </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -254,7 +245,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-x-0 bottom-12 text-center px-4">
           <h2 className="text-3xl font-light text-primary-foreground sm:text-5xl">
-            A New Relationship Begins on <span className="font-bold">BlackLoveLink</span><br />Because Real Love Grows When Values Align
+            A new relationship starts on BlackLoveLink<br />every <span className="font-bold">3 seconds</span> around the globe
           </h2>
         </div>
       </section>
