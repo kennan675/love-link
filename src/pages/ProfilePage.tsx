@@ -41,7 +41,7 @@ const ProfilePage = () => {
             {[
               { icon: Settings, label: "Settings", desc: "Account, notifications" },
               { icon: Shield, label: "Safety", desc: "Block, report, privacy" },
-              { icon: Star, label: "Get BlackLoveLink Gold", desc: "See who likes you & more", highlight: true },
+              { icon: Star, label: "Get Tinder Gold", desc: "See who likes you & more", highlight: true },
             ].map(({ icon: Icon, label, desc, highlight }) => (
               <button
                 key={label}
