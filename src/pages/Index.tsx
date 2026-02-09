@@ -1,4 +1,4 @@
-import { Flame, Globe, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Flame, ArrowUpRight, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -9,7 +9,7 @@ import profile3 from "@/assets/profile-3.jpg";
 import ConnectionCards from "@/components/ConnectionCards";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo.png";
 
-const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
+const navLinks = ["Home", "How It Works", "Connections", "Success Stories", "Trust & Safety", "Support"];
 
 
 const footerLinks = {
@@ -38,14 +38,11 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="hidden items-center gap-1.5 text-sm font-semibold text-primary-foreground/90 md:flex">
-              <Globe className="h-4 w-4" /> Language
-            </button>
             <Link
               to="/swipe"
               className="rounded-full bg-primary-foreground px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90"
             >
-              Log in
+              Sign In
             </Link>
           </div>
         </nav>
