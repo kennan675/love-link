@@ -7,6 +7,7 @@ import profile1 from "@/assets/profile-1.jpg";
 import profile2 from "@/assets/profile-2.jpg";
 import profile3 from "@/assets/profile-3.jpg";
 import ConnectionCards from "@/components/ConnectionCards";
+import blackLovelinkLogo from "@/assets/blacklovelink-logo.png";
 
 const navLinks = ["Products", "Learn", "Safety", "Support", "Download"];
 
@@ -24,10 +25,9 @@ const Index = () => {
       {/* ── NAVBAR ── */}
       <header className="absolute inset-x-0 top-0 z-30">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div className="flex items-center gap-1">
-            <Flame className="h-8 w-8 text-primary-foreground" fill="currentColor" />
-            <span className="text-3xl font-extrabold tracking-tight text-primary-foreground">tinder</span>
-          </div>
+          <Link to="/" className="flex items-center">
+            <img src={blackLovelinkLogo} alt="BlackLoveLink" className="h-10 w-auto" />
+          </Link>
 
           <div className="hidden items-center gap-8 md:flex">
             {navLinks.map((l) => (
