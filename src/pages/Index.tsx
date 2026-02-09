@@ -1,4 +1,4 @@
-import { Flame, ArrowUpRight, ChevronDown, Globe } from "lucide-react";
+import { Flame, ChevronDown, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -8,18 +8,12 @@ import profile2 from "@/assets/profile-2.jpg";
 import profile3 from "@/assets/profile-3.jpg";
 import ConnectionCards from "@/components/ConnectionCards";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo.png";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Language, languageNames } from "@/contexts/LanguageContext";
 
-const navLinks = ["Home", "How It Works", "Connections", "Success Stories", "Trust & Safety", "Support"];
-
-
-const footerLinks = {
-  Legal: ["Privacy", "Consumer Health Data", "Privacy Policy", "Terms", "Cookie Policy", "Intellectual Property", "Accessibility Statement"],
-  Careers: ["Careers Portal", "Tech Blog"],
-  Social: [],
-  "": ["FAQ", "Destinations", "Press Room", "Contact", "Promo Code"],
-};
 
 const Index = () => {
+  const { t, language, setLanguage } = useTranslation();
   return (
     <div className="min-h-screen bg-foreground font-display">
       {/* ── NAVBAR ── */}
@@ -30,7 +24,7 @@ const Index = () => {
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map((l) => (
+            {[t.nav.home, t.nav.howItWorks, t.nav.connections, t.nav.successStories, t.nav.trustSafety, t.nav.support].map((l) => (
               <a key={l} href="#" className="text-sm font-semibold text-primary-foreground/90 underline decoration-primary-foreground/40 underline-offset-4 hover:text-primary-foreground">
                 {l}
               </a>
@@ -40,12 +34,19 @@ const Index = () => {
           <div className="flex items-center gap-4">
             <div className="relative group hidden md:block">
               <button className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground/90 hover:text-primary-foreground">
-                <Globe className="h-4 w-4" /> Language <ChevronDown className="h-3 w-3" />
+                <Globe className="h-4 w-4" /> {t.nav.language} <ChevronDown className="h-3 w-3" />
               </button>
               <div className="absolute right-0 top-full mt-2 w-44 rounded-lg bg-card/95 backdrop-blur-md py-2 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                {["English", "Français", "Kiswahili", "العربية", "Português", "Hausa", "Yorùbá", "Igbo", "Amharic", "Zulu"].map((lang) => (
-                  <button key={lang} className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-accent transition-colors">
-                    {lang}
+                {(Object.keys(languageNames) as Language[]).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => setLanguage(lang)}
+                    className={`w-full px-4 py-2 text-left text-sm transition-colors ${language === lang
+                        ? 'bg-accent text-accent-foreground font-semibold'
+                        : 'text-foreground hover:bg-accent'
+                      }`}
+                  >
+                    {languageNames[lang]}
                   </button>
                 ))}
               </div>
@@ -54,7 +55,7 @@ const Index = () => {
               to="/swipe"
               className="rounded-full bg-primary-foreground px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90"
             >
-              Sign In
+              {t.nav.signIn}
             </Link>
           </div>
         </nav>
@@ -76,7 +77,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="text-primary-foreground">BlackLoveLink</span>
+            <span className="text-primary-foreground">{t.hero.title}</span>
           </motion.h1>
 
           <motion.div
@@ -89,13 +90,13 @@ const Index = () => {
               to="/swipe"
               className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
             >
-              Start Your Journey
+              {t.hero.startJourney}
             </Link>
             <a
               href="#mission"
               className="inline-block rounded-full border-2 border-primary-foreground/60 px-10 py-4 text-lg font-bold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
             >
-              Learn More
+              {t.hero.learnMore}
             </a>
           </motion.div>
         </div>
@@ -118,8 +119,8 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
               >
-                Connections That{" "}
-                <span className="text-gradient-brand">Speak Your Love Language</span>
+                {t.mission.title}{" "}
+                <span className="text-gradient-brand">{t.mission.titleHighlight}</span>
               </motion.h2>
 
               <motion.p
@@ -129,9 +130,7 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Empowering vetted accomplished Black professionals and like-minded
-                individuals to overcome loneliness and find meaningful connections,
-                love, and community.
+                {t.mission.description}
               </motion.p>
 
               <motion.p
@@ -141,9 +140,7 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.35 }}
               >
-                Join thousands of Black singles who've found meaningful connections
-                on a platform that celebrates your identity, understands your culture,
-                and prioritizes genuine compatibility over superficial swiping.
+                {t.mission.subDescription}
               </motion.p>
 
               <motion.div
@@ -157,7 +154,7 @@ const Index = () => {
                   to="/swipe"
                   className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
                 >
-                  Find Your Connection
+                  {t.mission.cta}
                 </Link>
               </motion.div>
             </div>
@@ -177,10 +174,10 @@ const Index = () => {
                   alt="Happy Black couple"
                   className="w-full h-[500px] object-cover"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                
+
                 {/* Floating Stats Cards */}
                 <motion.div
                   className="absolute top-6 right-6 bg-primary-foreground/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl"
@@ -195,7 +192,7 @@ const Index = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-black text-background">98%</p>
-                      <p className="text-xs text-background/60">Match Success</p>
+                      <p className="text-xs text-background/60">{t.mission.matchSuccess}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -213,7 +210,7 @@ const Index = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-black text-background">50K+</p>
-                      <p className="text-xs text-background/60">Verified Profiles</p>
+                      <p className="text-xs text-background/60">{t.mission.verifiedProfiles}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -236,7 +233,7 @@ const Index = () => {
                       </div>
                     </div>
                     <p className="text-primary-foreground text-sm font-medium">
-                      Joined this week
+                      {t.mission.joinedThisWeek}
                     </p>
                   </motion.div>
                 </div>
@@ -260,7 +257,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-x-0 bottom-12 text-center px-4">
           <h2 className="text-3xl font-light text-primary-foreground sm:text-5xl">
-            A new relationship starts on BlackLoveLink<br />every <span className="font-bold">3 seconds</span> around the globe
+            {t.stats.line1}<br />{t.stats.line2} <span className="font-bold">{t.stats.highlight}</span> {t.stats.line3}
           </h2>
         </div>
       </section>
@@ -268,7 +265,7 @@ const Index = () => {
       {/* ── SWIPE STORIES BANNER ── */}
       <div className="gradient-brand py-4 text-center">
         <span className="text-lg font-bold text-primary-foreground">
-          Swipe Stories™ <ChevronDown className="inline h-5 w-5" />
+          {t.swipeStories} <ChevronDown className="inline h-5 w-5" />
         </span>
       </div>
 
@@ -279,13 +276,13 @@ const Index = () => {
             {/* Left – large bold text */}
             <div>
               <h2 className="text-5xl font-black leading-[1.05] tracking-tight text-background sm:text-6xl lg:text-[4.5rem]">
-                Made a great<br />connection.
+                {t.connection.title.split('\n').map((line, i) => (<span key={i}>{line}{i === 0 && <br />}</span>))}
               </h2>
               <p className="mt-6 max-w-md text-lg text-background/50 leading-relaxed">
-                Your moment belongs here. Share meaningful and authentic stories that ignite confidence and joy.
+                {t.connection.description}
               </p>
               <button className="mt-10 rounded-full bg-background px-10 py-4 text-base font-bold text-primary-foreground transition-transform hover:scale-105">
-                Share your story
+                {t.connection.cta}
               </button>
             </div>
 
@@ -298,26 +295,43 @@ const Index = () => {
       {/* ── FOOTER ── */}
       <footer className="border-t border-background/10 bg-primary-foreground px-6 py-12">
         <div className="mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title || "extra"}>
-              {title && <h5 className="mb-4 text-lg font-bold text-background">{title}</h5>}
-              {title === "Social" ? (
-                <div className="flex gap-4 text-background/60">
-                  {["Instagram", "TikTok", "YouTube", "Twitter", "Facebook"].map((s) => (
-                    <span key={s} className="text-sm hover:text-background cursor-pointer">{s}</span>
-                  ))}
-                </div>
-              ) : (
-                <ul className="space-y-2">
-                  {links.map((l) => (
-                    <li key={l}>
-                      <a href="#" className="text-sm text-background/60 hover:text-background">{l}</a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+          <div>
+            <h5 className="mb-4 text-lg font-bold text-background">{t.footer.legal}</h5>
+            <ul className="space-y-2">
+              {[t.footer.privacy, t.footer.consumerHealth, t.footer.privacyPolicy, t.footer.terms, t.footer.cookiePolicy, t.footer.intellectualProperty, t.footer.accessibilityStatement].map((l) => (
+                <li key={l}>
+                  <a href="#" className="text-sm text-background/60 hover:text-background">{l}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h5 className="mb-4 text-lg font-bold text-background">{t.footer.careers}</h5>
+            <ul className="space-y-2">
+              {[t.footer.careersPortal, t.footer.techBlog].map((l) => (
+                <li key={l}>
+                  <a href="#" className="text-sm text-background/60 hover:text-background">{l}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h5 className="mb-4 text-lg font-bold text-background">{t.footer.social}</h5>
+            <div className="flex gap-4 text-background/60">
+              {["Instagram", "TikTok", "YouTube", "Twitter", "Facebook"].map((s) => (
+                <span key={s} className="text-sm hover:text-background cursor-pointer">{s}</span>
+              ))}
             </div>
-          ))}
+          </div>
+          <div>
+            <ul className="space-y-2">
+              {[t.footer.faq, t.footer.destinations, t.footer.pressRoom, t.footer.contact, t.footer.promoCode].map((l) => (
+                <li key={l}>
+                  <a href="#" className="text-sm text-background/60 hover:text-background">{l}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </footer>
     </div>
