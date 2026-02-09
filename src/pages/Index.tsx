@@ -1,4 +1,4 @@
-import { Flame, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Flame, ArrowUpRight, ChevronDown, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -38,6 +38,18 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <div className="relative group hidden md:block">
+              <button className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground/90 hover:text-primary-foreground">
+                <Globe className="h-4 w-4" /> Language <ChevronDown className="h-3 w-3" />
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-44 rounded-lg bg-card/95 backdrop-blur-md py-2 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                {["English", "Français", "Kiswahili", "العربية", "Português", "Hausa", "Yorùbá", "Igbo", "Amharic", "Zulu"].map((lang) => (
+                  <button key={lang} className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-accent transition-colors">
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
             <Link
               to="/swipe"
               className="rounded-full bg-primary-foreground px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90"
