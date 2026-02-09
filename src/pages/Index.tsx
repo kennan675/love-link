@@ -67,9 +67,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="text-primary-foreground">Black</span>
-            <span className="text-primary">Love</span>
-            <span className="text-[hsl(145,70%,45%)]">Link</span>
+            <span className="text-primary-foreground">BlackLoveLink</span>
           </motion.h1>
 
           <motion.div
