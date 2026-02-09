@@ -62,32 +62,40 @@ const Index = () => {
 
         <div className="relative z-10 text-center px-4">
           <motion.h1
-            className="text-6xl font-black tracking-tight text-primary-foreground sm:text-8xl"
+            className="text-6xl font-black tracking-tight sm:text-8xl"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Swipe Right<sup className="text-2xl sm:text-4xl align-super">™</sup>
+            <span className="text-[hsl(45,100%,55%)]">Black</span>
+            <span className="text-primary">Love</span>
+            <span className="text-primary-foreground">Link</span>
           </motion.h1>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-10"
+            className="mt-10 flex flex-col sm:flex-row items-center gap-4"
           >
             <Link
               to="/swipe"
-              className="gradient-brand inline-block rounded-full px-12 py-4 text-lg font-bold text-primary-foreground shadow-button transition-opacity hover:opacity-90"
+              className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
             >
-              Create account
+              Start Your Journey
             </Link>
+            <a
+              href="#mission"
+              className="inline-block rounded-full border-2 border-primary-foreground/60 px-10 py-4 text-lg font-bold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+            >
+              Learn More
+            </a>
           </motion.div>
         </div>
       </section>
 
       {/* ── MISSION SECTION (Light Theme) ── */}
-      <section className="relative bg-primary-foreground px-6 py-28 lg:py-36 overflow-hidden">
+      <section id="mission" className="relative bg-primary-foreground px-6 py-28 lg:py-36 overflow-hidden scroll-mt-0">
         {/* Decorative gradient orbs */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none" />
