@@ -70,7 +70,7 @@ const SplashScreen = ({ onFinished }: SplashScreenProps) => {
             <BrandName />
           </h1>
           <p className="mt-1.5 text-xs font-medium tracking-widest uppercase text-muted-foreground">
-            Where love meets purpose
+            Where intentional love begins
           </p>
         </motion.div>
 
