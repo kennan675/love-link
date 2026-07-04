@@ -3,8 +3,45 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search, Home, Heart, Users, MessageCircle, User as UserIcon,
-  Bell, Menu, ArrowLeft, Flame, X, Globe,
+  Bell, Menu, ArrowLeft, X, Globe,
 } from "lucide-react";
+
+// Custom BlackLoveLink discover icon — two interlocking rings (our chain/link brand mark)
+const LinkedRingsIcon = ({ className, filled }: { className?: string; filled?: boolean }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
+  >
+    {filled ? (
+      <>
+        {/* Left ring filled */}
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M8.5 4a5.5 5.5 0 1 0 3.18 9.97A7.47 7.47 0 0 1 10.5 12c0-.7.09-1.38.26-2.03A3.5 3.5 0 1 1 8.5 4Z"
+          fill="currentColor"
+        />
+        {/* Right ring filled */}
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M15.5 4a5.5 5.5 0 1 1-3.18 9.97A7.47 7.47 0 0 0 13.5 12c0-.7-.09-1.38-.26-2.03A3.5 3.5 0 1 0 15.5 4Z"
+          fill="currentColor"
+        />
+      </>
+    ) : (
+      <>
+        {/* Left ring outline */}
+        <circle cx="8.5" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
+        {/* Right ring outline */}
+        <circle cx="15.5" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
+      </>
+    )}
+  </svg>
+);
 import logo from "@/assets/blacklovelink-logo-icon.png";
 import LeftRail from "@/components/shell/LeftRail";
 import RightRail from "@/components/shell/RightRail";
@@ -29,11 +66,11 @@ const TopNav = () => {
   const { language, setLanguage, t } = useTranslation();
 
   const tabs = [
-    { to: "/swipe", icon: Flame, label: t.app.discover },
-    { to: "/likes", icon: Heart, label: t.app.likes },
-    { to: "/community", icon: Users, label: t.app.community },
-    { to: "/messages", icon: MessageCircle, label: t.app.messages },
-    { to: "/profile", icon: UserIcon, label: t.app.profile },
+    { to: "/swipe", icon: null, label: t.app.discover, isLinkedRings: true },
+    { to: "/likes", icon: Heart, label: t.app.likes, isLinkedRings: false },
+    { to: "/community", icon: Users, label: t.app.community, isLinkedRings: false },
+    { to: "/messages", icon: MessageCircle, label: t.app.messages, isLinkedRings: false },
+    { to: "/profile", icon: UserIcon, label: t.app.profile, isLinkedRings: false },
   ];
 
   // Toggle body padding so fixed rails don't overlap content on lg+
@@ -126,7 +163,7 @@ const TopNav = () => {
 
           {/* Center: tab nav */}
           <nav className="hidden md:flex items-center justify-center flex-1 max-w-2xl">
-            {tabs.map(({ to, icon: Icon, label }) => {
+            {tabs.map(({ to, icon: Icon, label, isLinkedRings }) => {
               const active = location.pathname === to;
               return (
                 <NavLink
@@ -135,13 +172,22 @@ const TopNav = () => {
                   aria-label={label}
                   className="relative flex items-center justify-center h-14 w-[88px] lg:w-[112px] group"
                 >
-                  <Icon
-                    className={`w-6 h-6 transition-colors ${
-                      active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                    }`}
-                    fill={active ? "currentColor" : "none"}
-                    strokeWidth={active ? 2.4 : 2}
-                  />
+                  {isLinkedRings ? (
+                    <LinkedRingsIcon
+                      className={`w-6 h-6 transition-colors ${
+                        active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                      }`}
+                      filled={active}
+                    />
+                  ) : (
+                    Icon && <Icon
+                      className={`w-6 h-6 transition-colors ${
+                        active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                      }`}
+                      fill={active ? "currentColor" : "none"}
+                      strokeWidth={active ? 2.4 : 2}
+                    />
+                  )}
                   {active && (
                     <motion.div
                       layoutId="topnav-indicator"
@@ -234,7 +280,7 @@ const TopNav = () => {
 
       {/* ── MOBILE BOTTOM TAB BAR ───────────────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-card border-t border-border flex items-center justify-around bottom-safe-tab">
-        {tabs.map(({ to, icon: Icon, label }) => {
+        {tabs.map(({ to, icon: Icon, label, isLinkedRings }) => {
           const active = location.pathname === to;
           return (
             <NavLink
@@ -243,11 +289,18 @@ const TopNav = () => {
               aria-label={label}
               className="relative flex flex-col items-center justify-center flex-1 h-14"
             >
-              <Icon
-                className={`w-6 h-6 ${active ? "text-primary" : "text-muted-foreground"}`}
-                fill={active ? "currentColor" : "none"}
-                strokeWidth={active ? 2.4 : 2}
-              />
+              {isLinkedRings ? (
+                <LinkedRingsIcon
+                  className={`w-6 h-6 ${active ? "text-primary" : "text-muted-foreground"}`}
+                  filled={active}
+                />
+              ) : (
+                Icon && <Icon
+                  className={`w-6 h-6 ${active ? "text-primary" : "text-muted-foreground"}`}
+                  fill={active ? "currentColor" : "none"}
+                  strokeWidth={active ? 2.4 : 2}
+                />
+              )}
             </NavLink>
           );
         })}
