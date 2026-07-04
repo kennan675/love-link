@@ -1,26 +1,47 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
-  Flame, Heart, Users, MessageCircle, User as UserIcon, Bookmark,
+  Heart, Users, MessageCircle, User as UserIcon,
   Settings, ShieldCheck, Sparkles, BookOpen, HelpCircle,
 } from "lucide-react";
 
+// Custom BlackLoveLink discover icon — two interlocking rings (matches TopNav)
+const LinkedRingsIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
+  >
+    <circle cx="8.5" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
+    <circle cx="15.5" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
 const primary = [
-  { to: "/swipe", icon: Flame, label: "Discover" },
-  { to: "/likes", icon: Heart, label: "Who liked you" },
-  { to: "/community", icon: Users, label: "Community" },
-  { to: "/messages", icon: MessageCircle, label: "Messages" },
-  { to: "/profile", icon: UserIcon, label: "Your profile" },
+  { to: "/swipe",     icon: null,          label: "Discover",     isLinkedRings: true  },
+  { to: "/likes",     icon: Heart,         label: "Who liked you", isLinkedRings: false },
+  { to: "/community", icon: Users,         label: "Community",    isLinkedRings: false },
+  { to: "/messages",  icon: MessageCircle, label: "Messages",     isLinkedRings: false },
+  { to: "/profile",   icon: UserIcon,      label: "Your profile", isLinkedRings: false },
 ];
 
 const shortcuts = [
-  { to: "/connections", icon: Sparkles, label: "Smart matches" },
-  { to: "/education", icon: BookOpen, label: "Relationship hub" },
-  { to: "/trust-safety", icon: ShieldCheck, label: "Trust & safety" },
-  { to: "/support", icon: HelpCircle, label: "Help center" },
-  { to: "/settings", icon: Settings, label: "Settings" },
+  { to: "/connections",   icon: Sparkles,   label: "Smart matches"   },
+  { to: "/education",     icon: BookOpen,   label: "Relationship hub" },
+  { to: "/trust-safety",  icon: ShieldCheck,label: "Trust & safety"  },
+  { to: "/support",       icon: HelpCircle, label: "Help center"     },
+  { to: "/settings",      icon: Settings,   label: "Settings"        },
 ];
 
-const Item = ({ to, icon: Icon, label }: { to: string; icon: typeof Flame; label: string }) => (
+const Item = ({
+  to, icon: Icon, label, isLinkedRings = false,
+}: {
+  to: string;
+  icon: any;
+  label: string;
+  isLinkedRings?: boolean;
+}) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
@@ -32,7 +53,10 @@ const Item = ({ to, icon: Icon, label }: { to: string; icon: typeof Flame; label
     }
   >
     <span className="w-9 h-9 rounded-full bg-muted flex items-center justify-center">
-      <Icon className="w-5 h-5" />
+      {isLinkedRings
+        ? <LinkedRingsIcon className="w-5 h-5" />
+        : Icon && <Icon className="w-5 h-5" />
+      }
     </span>
     <span className="text-sm">{label}</span>
   </NavLink>
