@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Heart, X, Star, ChevronLeft, ChevronRight,
-    Briefcase, CheckCircle2, MapPin, MessageCircle
+    Link2, X, ChevronLeft, ChevronRight,
+    Briefcase, CheckCircle2, MessageCircle, Sparkles, Heart
 } from "lucide-react";
 import type { UserProfile } from "@/hooks/useProfileData";
 
@@ -47,14 +47,14 @@ export default function FeedProfileCard({
     }, [photos.length]);
 
     const handleAction = (type: "like" | "pass" | "message") => {
-        if (isLiked) return; // Prevent spamming actions once liked
+        if (isLiked) return;
         setReaction(type);
         setTimeout(() => {
             setReaction(null);
             if (type === "like") onLike();
             else if (type === "pass") onPass();
             else onMessage(introText);
-        }, 400);
+        }, 420);
     };
 
     return (
@@ -66,7 +66,7 @@ export default function FeedProfileCard({
         >
             {/* ── Photo area ── */}
             <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
-                {/* Skeleton shimmer — visible while image loads */}
+                {/* Skeleton shimmer */}
                 <div
                     className={`absolute inset-0 bg-gradient-to-br from-muted via-muted/60 to-muted animate-pulse transition-opacity duration-300 ${imgLoaded ? 'opacity-0' : 'opacity-100'}`}
                     aria-hidden
@@ -123,26 +123,30 @@ export default function FeedProfileCard({
                     {reaction && (
                         <motion.div
                             key="reaction"
-                            initial={{ opacity: 0, scale: 0.5 }}
+                            initial={{ opacity: 0, scale: 0.4 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 1.4 }}
-                            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                            exit={{ opacity: 0, scale: 1.5 }}
+                            className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
                         >
-                            <div className={`rounded-full p-6 ${reaction === "like" ? "bg-green-500/80" :
-                                    reaction === "pass" ? "bg-red-500/80" : "bg-primary/80"
-                                }`}>
-                                {reaction === "like" && <Heart className="w-14 h-14 text-white" fill="white" />}
+                            <div className={`rounded-full p-6 shadow-2xl ${
+                                reaction === "like"
+                                    ? "bg-gradient-to-br from-amber-400 to-orange-500"
+                                    : reaction === "pass"
+                                    ? "bg-gradient-to-br from-slate-400 to-slate-600"
+                                    : "bg-gradient-to-br from-primary to-secondary"
+                            }`}>
+                                {reaction === "like" && <Link2 className="w-14 h-14 text-white" />}
                                 {reaction === "pass" && <X className="w-14 h-14 text-white" />}
-                                {reaction === "message" && <MessageCircle className="w-14 h-14 text-white" fill="currentColor" />}
+                                {reaction === "message" && <Sparkles className="w-14 h-14 text-white" />}
                             </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
 
                 {/* Bottom gradient */}
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-                {/* Name / age overlay */}
+                {/* Name / age / occupation overlay */}
                 <div className="absolute bottom-0 inset-x-0 p-4">
                     <div className="flex items-end justify-between">
                         <div>
@@ -160,6 +164,12 @@ export default function FeedProfileCard({
                                     {profile.occupation_title}
                                     {profile.occupation_company && ` · ${profile.occupation_company}`}
                                 </p>
+                            )}
+                            {profile.intent && (
+                                <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold bg-white/15 backdrop-blur-sm border border-white/20 text-white px-2.5 py-0.5 rounded-full">
+                                    <Heart className="w-3 h-3" />
+                                    {profile.intent}
+                                </span>
                             )}
                         </div>
                         <button
@@ -183,12 +193,6 @@ export default function FeedProfileCard({
                         className="overflow-hidden"
                     >
                         <div className="px-5 py-4 space-y-3 border-t border-border">
-                            {profile.intent && (
-                                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                    <Heart className="w-4 h-4 text-primary" />
-                                    <span className="font-medium text-foreground">{profile.intent}</span>
-                                </p>
-                            )}
                             {profile.bio && (
                                 <p className="text-sm text-foreground/80 leading-relaxed">{profile.bio}</p>
                             )}
@@ -209,62 +213,86 @@ export default function FeedProfileCard({
                 )}
             </AnimatePresence>
 
-            {/* ── Action buttons ── */}
-            <div className="flex items-center justify-center gap-3 px-6 py-5">
-                {/* Pass */}
-                <motion.button
-                    whileTap={isLiked ? {} : { scale: 0.95 }}
-                    onClick={() => handleAction("pass")}
-                    disabled={isLiked}
-                    className={`flex-1 flex items-center justify-center gap-2 h-12 rounded-full border bg-card font-semibold shadow-sm transition-colors ${
-                        isLiked 
-                          ? "opacity-50 cursor-not-allowed border-border text-muted-foreground" 
-                          : "border-border text-muted-foreground hover:bg-red-50 hover:text-red-500 hover:border-red-200 dark:hover:bg-red-950"
-                    }`}
-                >
-                    <X className="w-5 h-5 text-red-500" />
-                    Pass
-                </motion.button>
+            {/* ── Action Bar — BlackLoveLink unique design ── */}
+            <div className="px-5 py-4">
+                {isLiked ? (
+                    /* ── Already connected state ── */
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30"
+                    >
+                        <Link2 className="w-5 h-5 text-amber-500" />
+                        <span className="font-bold text-amber-600 dark:text-amber-400">Connection Sent</span>
+                    </motion.div>
+                ) : (
+                    /* ── 3-action row ── */
+                    <div className="flex items-stretch gap-3">
 
-                {/* Like */}
-                <motion.button
-                    whileTap={isLiked ? {} : { scale: 0.95 }}
-                    onClick={() => handleAction("like")}
-                    disabled={isLiked}
-                    className={`flex-1 flex items-center justify-center gap-2 h-12 rounded-full font-semibold shadow-sm transition-all ${
-                        isLiked 
-                          ? "bg-rose-500 text-white border-transparent cursor-not-allowed" 
-                          : "bg-card border border-border text-muted-foreground hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 dark:hover:bg-rose-950"
-                    }`}
-                >
-                    <Heart className={`w-5 h-5 ${isLiked ? "text-white" : "text-rose-500"}`} fill={isLiked ? "currentColor" : "none"} />
-                    {isLiked ? "Liked" : "Like"}
-                </motion.button>
+                        {/* PASS — minimal ghost button */}
+                        <motion.button
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => handleAction("pass")}
+                            className="flex flex-col items-center justify-center gap-1 w-16 rounded-2xl border border-border bg-card hover:bg-muted/60 transition-colors group"
+                        >
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center bg-muted group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors">
+                                <X className="w-4.5 h-4.5 text-muted-foreground" />
+                            </div>
+                            <span className="text-[10px] font-semibold text-muted-foreground">Pass</span>
+                        </motion.button>
 
-                {/* Message Request */}
-                <motion.button
-                    whileTap={isLiked ? {} : { scale: 0.95 }}
-                    onClick={() => { if (!isLiked) setShowMessageModal(true); }}
-                    disabled={isLiked}
-                    className={`flex-1 flex items-center justify-center gap-2 h-12 rounded-full transition-opacity font-semibold ${
-                        isLiked 
-                          ? "opacity-50 cursor-not-allowed gradient-brand shadow-button text-primary-foreground" 
-                          : "gradient-brand shadow-button text-primary-foreground hover:opacity-90"
-                    }`}
-                >
-                    <MessageCircle className="w-5 h-5" />
-                    Message
-                </motion.button>
+                        {/* CONNECT — large golden primary button */}
+                        <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.02 }}
+                            onClick={() => handleAction("like")}
+                            className="flex-1 relative flex items-center justify-center gap-2.5 h-14 rounded-2xl overflow-hidden font-bold text-white shadow-lg"
+                            style={{
+                                background: "linear-gradient(135deg, #C8102E 0%, #C8973A 100%)",
+                                boxShadow: "0 8px 24px -4px rgba(200,151,58,0.45)"
+                            }}
+                        >
+                            {/* Animated shimmer */}
+                            <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                                initial={{ x: "-100%" }}
+                                whileHover={{ x: "100%" }}
+                                transition={{ duration: 0.6 }}
+                            />
+                            {/* Pulsing ring */}
+                            <motion.div
+                                className="absolute inset-0 rounded-2xl"
+                                animate={{ boxShadow: ["0 0 0 0px rgba(200,151,58,0.4)", "0 0 0 8px rgba(200,151,58,0)"] }}
+                                transition={{ duration: 1.8, repeat: Infinity }}
+                            />
+                            <Link2 className="relative w-5 h-5" />
+                            <span className="relative text-[15px] tracking-wide">Connect</span>
+                        </motion.button>
+
+                        {/* SPARK — secondary accent button */}
+                        <motion.button
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => { if (!isLiked) setShowMessageModal(true); }}
+                            className="flex flex-col items-center justify-center gap-1 w-16 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors group"
+                        >
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                <Sparkles className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="text-[10px] font-semibold text-primary">Spark</span>
+                        </motion.button>
+
+                    </div>
+                )}
             </div>
 
-            {/* ── Message Modal Overlay ── */}
+            {/* ── Spark / Message Modal ── */}
             <AnimatePresence>
                 {showMessageModal && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 rounded-3xl bg-black/60 backdrop-blur-sm flex items-center justify-center p-6"
+                        className="absolute inset-0 z-50 rounded-3xl bg-black/65 backdrop-blur-sm flex items-center justify-center p-6"
                     >
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
@@ -278,30 +306,47 @@ export default function FeedProfileCard({
                             >
                                 <X className="w-4 h-4" />
                             </button>
-                            <h3 className="text-xl font-bold mb-1 text-foreground">Message {profile.full_name.split(' ')[0]}</h3>
-                            <p className="text-sm text-muted-foreground mb-4">You can only send one message. They must accept before you can chat freely.</p>
-                            
+
+                            {/* Header */}
+                            <div className="flex items-center gap-2 mb-1">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <Sparkles className="w-4 h-4 text-primary" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-foreground leading-tight">
+                                        Spark a Convo
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground">with {profile.full_name.split(' ')[0]}</p>
+                                </div>
+                            </div>
+
+                            <p className="text-sm text-muted-foreground mb-4 mt-2 leading-relaxed">
+                                Send one thoughtful message. They'll decide if the spark is mutual ✨
+                            </p>
+
                             <textarea
                                 value={introText}
                                 onChange={(e) => setIntroText(e.target.value)}
-                                placeholder="Type your message here..."
-                                className="w-full h-24 p-3 rounded-xl bg-muted border border-border resize-none text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                                placeholder={`What would you love ${profile.full_name.split(' ')[0]} to know about you?`}
+                                className="w-full h-24 p-3 rounded-xl bg-muted border border-border resize-none text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground/60"
                                 maxLength={200}
                                 autoFocus
                             />
-                            
+
                             <div className="flex items-center justify-between mt-4">
                                 <span className="text-xs text-muted-foreground">{introText.length}/200</span>
-                                <button
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={() => {
                                         setShowMessageModal(false);
                                         handleAction("message");
                                     }}
                                     disabled={!introText.trim()}
-                                    className="px-6 py-2 rounded-full gradient-brand text-primary-foreground font-semibold text-sm hover:opacity-90 disabled:opacity-50 transition-opacity"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-full gradient-brand text-primary-foreground font-semibold text-sm hover:opacity-90 disabled:opacity-40 transition-opacity shadow-button"
                                 >
-                                    Send Request
-                                </button>
+                                    <MessageCircle className="w-4 h-4" />
+                                    Send Spark
+                                </motion.button>
                             </div>
                         </motion.div>
                     </motion.div>
