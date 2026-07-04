@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { 
-  Settings, Crown, CheckCircle2, ChevronRight, 
+  Settings, CheckCircle2, ChevronRight, 
   Bell, Lock, Loader2, Camera, Heart, ChevronLeft, ArrowRight
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
@@ -216,8 +216,8 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
-                {/* Section: Premium */}
-                <div className="mt-8">
+                {/* Section: Premium — Hidden for free launch, restore when ready */}
+                {/* <div className="mt-8">
                   <p className="px-4 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">Premium</p>
                   <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
                     <button className="w-full relative overflow-hidden group p-5 text-left active:scale-[0.98] transition-transform">
@@ -234,7 +234,7 @@ const ProfilePage = () => {
                       </div>
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Section: Account Settings */}
                 <div className="mt-8">

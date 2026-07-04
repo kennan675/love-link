@@ -100,7 +100,7 @@ const HowItWorksPage = () => {
         { icon: CheckCircle, text: "25+ age verified members" },
         { icon: CheckCircle, text: "Privacy controls" },
         { icon: CheckCircle, text: "24/7 support team" },
-        { icon: CheckCircle, text: "Premium Gold tier available" },
+        // { icon: CheckCircle, text: "Premium Gold tier available" }, // Hidden for free launch
     ];
 
     const fadeUp = {

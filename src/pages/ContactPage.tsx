@@ -78,7 +78,7 @@ const ContactPage = () => {
                 Get in <span className="text-gradient-brand">Touch</span>
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Whether you have a question about features, trials, pricing, or anything else, our team is ready to answer all your questions.
+                Whether you have a question about features, your account, or anything else, our team is ready to answer all your questions.
               </p>
             </motion.div>
           </div>
@@ -135,7 +135,7 @@ const ContactPage = () => {
                 <MessageSquare className="w-8 h-8 text-primary mb-4" />
                 <h4 className="text-xl font-bold mb-2">Need immediate help?</h4>
                 <p className="text-muted-foreground text-sm mb-6">
-                  Check out our Help Center for quick answers to common questions about matchmaking, safety, and billing.
+                  Check out our Help Center for quick answers to common questions about matchmaking, safety, and your account.
                 </p>
                 <Link to="/support">
                   <Button variant="outline" className="rounded-full w-full">

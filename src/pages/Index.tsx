@@ -11,7 +11,7 @@ import profile2 from "@/assets/profile-2.png";
 import profile3 from "@/assets/profile-3.png";
 import ConnectionCards from "@/components/ConnectionCards";
 import HeroChatbot from "@/components/HeroChatbot";
-import PricingSection from "@/components/PricingSection";
+// import PricingSection from "@/components/PricingSection"; // Hidden for free launch
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
 import BrandName from "@/components/BrandName";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -627,8 +627,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── PRICING SECTION ── */}
-      <PricingSection />
+      {/* ── PRICING SECTION ── Hidden for free launch — restore when ready */}
+      {/* <PricingSection /> */}
 
       <SiteFooter />
 
