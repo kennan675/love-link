@@ -175,7 +175,7 @@ const SettingsPage = () => {
                             <div className="mx-auto w-full max-w-md px-4 pt-6 space-y-8">
                                 <h1 className="text-3xl font-black text-foreground">Settings</h1>
 
-                                {/* Support */}
+                                 {/* Support */}
                                 <section>
                                     <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
                                         Support & Safety
@@ -192,6 +192,27 @@ const SettingsPage = () => {
                                             title="Help & Support"
                                             subtitle="FAQs, contact us"
                                             onClick={() => navigate("/support")}
+                                        />
+                                    </div>
+                                </section>
+
+                                {/* Privacy & Data */}
+                                <section>
+                                    <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
+                                        Privacy & Data
+                                    </p>
+                                    <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                                        <Row
+                                            icon={Shield}
+                                            title="My Privacy Requests"
+                                            subtitle="Track data access, deletion, and opt-outs"
+                                            onClick={() => navigate("/privacy/requests")}
+                                        />
+                                        <Row
+                                            icon={Shield}
+                                            title="Do Not Share My Information"
+                                            subtitle="Manage behavioral ad-sharing choices"
+                                            onClick={() => navigate("/privacy/do-not-share")}
                                         />
                                     </div>
                                 </section>

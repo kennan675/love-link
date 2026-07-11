@@ -203,7 +203,7 @@ export default function CookieConsent() {
                   <span>·</span>
                   <Link to="/cookie-policy" className="hover:text-primary transition-colors hover:underline">Cookie Policy</Link>
                   <span>·</span>
-                  <Link to="/privacy-policy#do-not-share" className="hover:text-primary transition-colors hover:underline">Do Not Share My Info</Link>
+                  <Link to="/privacy/do-not-share" className="hover:text-primary transition-colors hover:underline">Do Not Share My Info</Link>
                 </div>
               </div>
             </div>

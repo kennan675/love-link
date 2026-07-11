@@ -18,6 +18,7 @@ const footerLinks = {
     { label: "Contact Us", to: "/contact" },
   ],
   legal: [
+    { label: "Privacy FAQ", to: "/privacy/faq" },
     { label: "Privacy Policy", to: "/privacy-policy" },
     { label: "Terms of Service", to: "/terms-of-service" },
     { label: "Cookie Policy", to: "/cookie-policy" },
@@ -173,6 +174,12 @@ const SiteFooter: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} BlackLoveLink. All rights reserved.
             </p>
+            <Link
+              to="/privacy/do-not-share"
+              className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+            >
+              Do Not Share My Personal Information
+            </Link>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Shield className="h-3.5 w-3.5 text-secondary" />
               <span>Verified profiles · Safe messaging · 24/7 support</span>

@@ -35,6 +35,9 @@ import TermsOfServicePage from "./pages/TermsOfServicePage";
 import CookiePolicyPage from "./pages/CookiePolicyPage";
 import IntellectualPropertyPage from "./pages/IntellectualPropertyPage";
 import AccessibilityPage from "./pages/AccessibilityPage";
+import PrivacyFAQPage from "./pages/PrivacyFAQPage";
+import DoNotSharePage from "./pages/DoNotSharePage";
+import PrivacyRequestsPage from "./pages/PrivacyRequestsPage";
 
 // Admin
 import AdminRoute from "./components/AdminRoute";
@@ -86,6 +89,8 @@ const App = () => {
               <Route path="/cookie-policy" element={<CookiePolicyPage />} />
               <Route path="/intellectual-property" element={<IntellectualPropertyPage />} />
               <Route path="/accessibility" element={<AccessibilityPage />} />
+              <Route path="/privacy/faq" element={<PrivacyFAQPage />} />
+              <Route path="/privacy/do-not-share" element={<DoNotSharePage />} />
 
               {/* Onboarding routes (auth required) */}
               <Route path="/create-profile" element={<ProtectedRoute><ProfileCreationPage /></ProtectedRoute>} />
@@ -99,6 +104,7 @@ const App = () => {
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
               <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+              <Route path="/privacy/requests" element={<ProtectedRoute><PrivacyRequestsPage /></ProtectedRoute>} />
 
               {/* Admin lines */}
               <Route path="/admin" element={<AdminRoute />}>
