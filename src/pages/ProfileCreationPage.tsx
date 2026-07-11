@@ -262,7 +262,8 @@ const ProfileCreationPage = () => {
         "w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary/40 transition placeholder:text-muted-foreground/60";
 
     return (
-        <div className="min-h-screen bg-background font-display flex flex-col">
+        <>
+            <div className="min-h-screen bg-background font-display flex flex-col">
             {/* Header */}
             <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur-md px-6 py-4">
                 <nav className="mx-auto flex max-w-6xl items-center justify-between">
@@ -607,6 +608,7 @@ const ProfileCreationPage = () => {
                 onSkip={() => { setShowSensitiveConsent(false); }}
             />
         )}
+        </>
     );
 };
 

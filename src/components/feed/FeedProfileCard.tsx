@@ -227,58 +227,49 @@ export default function FeedProfileCard({
                     </motion.div>
                 ) : (
                     /* ── 3-action row ── */
-                    <div className="flex items-stretch gap-3">
+                    <div className="flex items-center gap-4">
 
-                        {/* PASS — minimal ghost button */}
+                        {/* PASS — Sleek circular floating button */}
                         <motion.button
                             whileTap={{ scale: 0.92 }}
+                            whileHover={{ scale: 1.05 }}
                             onClick={() => handleAction("pass")}
-                            className="flex flex-col items-center justify-center gap-1 w-16 rounded-2xl border border-border bg-card hover:bg-muted/60 transition-colors group"
+                            className="w-14 h-14 rounded-full border border-border bg-card hover:bg-muted/80 flex items-center justify-center shadow-md transition-colors text-muted-foreground hover:text-foreground"
+                            aria-label="Pass"
                         >
-                            <div className="w-9 h-9 rounded-full flex items-center justify-center bg-muted group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors">
-                                <X className="w-4.5 h-4.5 text-muted-foreground" />
-                            </div>
-                            <span className="text-[10px] font-semibold text-muted-foreground">Pass</span>
+                            <X className="w-5 h-5" />
                         </motion.button>
 
-                        {/* CONNECT — large golden primary button */}
+                        {/* CONNECT — Sleek gold primary pill button */}
                         <motion.button
-                            whileTap={{ scale: 0.95 }}
+                            whileTap={{ scale: 0.96 }}
                             whileHover={{ scale: 1.02 }}
                             onClick={() => handleAction("like")}
-                            className="flex-1 relative flex items-center justify-center gap-2.5 h-14 rounded-2xl overflow-hidden font-bold text-white shadow-lg"
+                            className="flex-1 relative flex items-center justify-center gap-2 h-14 rounded-full overflow-hidden font-bold text-white shadow-lg shimmer-gold"
                             style={{
-                                background: "linear-gradient(135deg, #C8102E 0%, #C8973A 100%)",
-                                boxShadow: "0 8px 24px -4px rgba(200,151,58,0.45)"
+                                background: "linear-gradient(135deg, #c8973a 0%, #b0822d 100%)",
+                                boxShadow: "0 8px 24px -4px rgba(200,151,58,0.3)"
                             }}
                         >
-                            {/* Animated shimmer */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                                initial={{ x: "-100%" }}
-                                whileHover={{ x: "100%" }}
-                                transition={{ duration: 0.6 }}
-                            />
                             {/* Pulsing ring */}
                             <motion.div
-                                className="absolute inset-0 rounded-2xl"
+                                className="absolute inset-0 rounded-full"
                                 animate={{ boxShadow: ["0 0 0 0px rgba(200,151,58,0.4)", "0 0 0 8px rgba(200,151,58,0)"] }}
                                 transition={{ duration: 1.8, repeat: Infinity }}
                             />
                             <Link2 className="relative w-5 h-5" />
-                            <span className="relative text-[15px] tracking-wide">Connect</span>
+                            <span className="relative text-sm tracking-wide uppercase">Connect</span>
                         </motion.button>
 
-                        {/* SPARK — secondary accent button */}
+                        {/* SPARK — Sleek circular accent button */}
                         <motion.button
                             whileTap={{ scale: 0.92 }}
+                            whileHover={{ scale: 1.05 }}
                             onClick={() => { if (!isLiked) setShowMessageModal(true); }}
-                            className="flex flex-col items-center justify-center gap-1 w-16 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors group"
+                            className="w-14 h-14 rounded-full border border-primary/25 bg-primary/5 hover:bg-primary/10 flex items-center justify-center shadow-md transition-colors text-primary"
+                            aria-label="Spark"
                         >
-                            <div className="w-9 h-9 rounded-full flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                                <Sparkles className="w-4 h-4 text-primary" />
-                            </div>
-                            <span className="text-[10px] font-semibold text-primary">Spark</span>
+                            <Sparkles className="w-5 h-5" />
                         </motion.button>
 
                     </div>
