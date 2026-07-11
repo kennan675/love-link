@@ -130,14 +130,14 @@ export default function FeedProfileCard({
                         >
                             <div className={`rounded-full p-6 shadow-2xl ${
                                 reaction === "like"
-                                    ? "bg-gradient-to-br from-amber-400 to-orange-500"
+                                    ? "bg-gradient-to-br from-[#fd1d1d] to-[#833ab4]"
                                     : reaction === "pass"
                                     ? "bg-gradient-to-br from-slate-400 to-slate-600"
-                                    : "bg-gradient-to-br from-primary to-secondary"
+                                    : "bg-gradient-to-br from-[#c8973a] to-[#b0822d]"
                             }`}>
-                                {reaction === "like" && <Link2 className="w-14 h-14 text-white" />}
+                                {reaction === "like" && <Heart className="w-14 h-14 text-white fill-white" />}
                                 {reaction === "pass" && <X className="w-14 h-14 text-white" />}
-                                {reaction === "message" && <Sparkles className="w-14 h-14 text-white" />}
+                                {reaction === "message" && <MessageCircle className="w-14 h-14 text-white" />}
                             </div>
                         </motion.div>
                     )}
@@ -220,10 +220,10 @@ export default function FeedProfileCard({
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30"
+                        className="flex items-center justify-center gap-2 h-14 rounded-full bg-secondary/15 border border-secondary/20"
                     >
-                        <Link2 className="w-5 h-5 text-amber-500" />
-                        <span className="font-bold text-amber-600 dark:text-amber-400">Connection Sent</span>
+                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                        <span className="font-bold text-secondary">Connection Requested</span>
                     </motion.div>
                 ) : (
                     /* ── 3-action row ── */
@@ -240,36 +240,36 @@ export default function FeedProfileCard({
                             <X className="w-5 h-5" />
                         </motion.button>
 
-                        {/* CONNECT — Sleek gold primary pill button */}
+                        {/* LIKE (Instagram style) — Center primary heart button */}
                         <motion.button
                             whileTap={{ scale: 0.96 }}
                             whileHover={{ scale: 1.02 }}
                             onClick={() => handleAction("like")}
-                            className="flex-1 relative flex items-center justify-center gap-2 h-14 rounded-full overflow-hidden font-bold text-white shadow-lg shimmer-gold"
+                            className="flex-1 relative flex items-center justify-center gap-2 h-14 rounded-full overflow-hidden font-bold text-white shadow-lg"
                             style={{
-                                background: "linear-gradient(135deg, #c8973a 0%, #b0822d 100%)",
-                                boxShadow: "0 8px 24px -4px rgba(200,151,58,0.3)"
+                                background: "linear-gradient(135deg, #fd1d1d 0%, #dd2a7b 50%, #833ab4 100%)", // Instagram-like gradient
+                                boxShadow: "0 8px 24px -4px rgba(221,42,123,0.35)"
                             }}
                         >
                             {/* Pulsing ring */}
                             <motion.div
                                 className="absolute inset-0 rounded-full"
-                                animate={{ boxShadow: ["0 0 0 0px rgba(200,151,58,0.4)", "0 0 0 8px rgba(200,151,58,0)"] }}
+                                animate={{ boxShadow: ["0 0 0 0px rgba(221,42,123,0.4)", "0 0 0 8px rgba(221,42,123,0)"] }}
                                 transition={{ duration: 1.8, repeat: Infinity }}
                             />
-                            <Link2 className="relative w-5 h-5" />
-                            <span className="relative text-sm tracking-wide uppercase">Connect</span>
+                            <Heart className="relative w-5 h-5 fill-white" />
+                            <span className="relative text-sm tracking-wide uppercase">Like</span>
                         </motion.button>
 
-                        {/* SPARK — Sleek circular accent button */}
+                        {/* CONNECT (Messaging flow) — Sleek circular button */}
                         <motion.button
                             whileTap={{ scale: 0.92 }}
                             whileHover={{ scale: 1.05 }}
                             onClick={() => { if (!isLiked) setShowMessageModal(true); }}
-                            className="w-14 h-14 rounded-full border border-primary/25 bg-primary/5 hover:bg-primary/10 flex items-center justify-center shadow-md transition-colors text-primary"
-                            aria-label="Spark"
+                            className="w-14 h-14 rounded-full border border-secondary/25 bg-secondary/5 hover:bg-secondary/10 flex items-center justify-center shadow-md transition-colors text-secondary"
+                            aria-label="Connect"
                         >
-                            <Sparkles className="w-5 h-5" />
+                            <MessageCircle className="w-5 h-5" />
                         </motion.button>
 
                     </div>
