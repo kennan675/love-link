@@ -9,6 +9,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import SplashScreen from "@/components/SplashScreen";
 import { GlobalSwipeNavigation } from "@/components/GlobalSwipeNavigation";
 import IOSInstallBanner from "@/components/IOSInstallBanner";
+import CookieConsent from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
@@ -112,6 +113,7 @@ const App = () => {
               </Routes>
             </GlobalSwipeNavigation>
           <IOSInstallBanner />
+          <CookieConsent />
           </BrowserRouter>
         </TooltipProvider>
       </LanguageProvider>
