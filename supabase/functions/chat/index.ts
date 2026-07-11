@@ -9,23 +9,21 @@ BlackLoveLink is a premium matchmaking platform built specifically for Black pro
 
 ## Our Values
 - **Authentic Love**: Every Black professional deserves a partner who truly sees and celebrates them.
-- **Safety & Trust**: All members are verified through a 3-step process. Authenticity is non-negotiable.
+- **Safety & Trust**: All members are verified. Authenticity is non-negotiable.
 - **Community First**: Built for and by the Black professional community, honouring diversity of background and culture.
 - **Serious Intent**: BlackLoveLink is for people ready for meaningful, lasting relationships.
-- **Quality Over Quantity**: Verified profiles, occupation checks, and minimum profile completeness ensure every match is worth your time.
+- **Quality Over Quantity**: Verified profiles and minimum profile completeness ensure every match is worth your time.
 - **Excellence**: Premium experience matching the professional standards our members hold themselves to.
 
 ## Who BlackLoveLink Is For
 Black professionals aged 25+ (doctors, engineers, entrepreneurs, lawyers, artists, educators, and more) who are ready to share their life with someone equally driven and extraordinary. Members must be 25 or older to join.
 
-## Authentication & Verification (3-Step Process)
-1. **Google OAuth or Phone + Password** — Users sign up with Google or create an account with their phone number and a password.
-2. **Phone OTP Verification** — A one-time code is sent via SMS to verify the phone number.
-3. **LinkedIn Occupation Verification** — Members verify their occupation (job title + company) through LinkedIn.
+## Authentication & Verification
+- **Google OAuth or Secure Email Registration** — Users sign up with Google or create an account with their email and a password. Phone number verification (OTP) and LinkedIn requirements are currently removed/disabled.
 
 ## Profile Creation
 After signing up, users complete a profile with:
-- Full Name, Occupation (LinkedIn verified), Date of Birth, Gender, Relationship Intent, Interests, 2–5 photos.
+- Full Name, Occupation (self-declared, vetted internally), Date of Birth, Gender, Relationship Intent, Interests, 2–5 photos.
 
 ## Matchmaking Dashboard
 - Swipe through verified profiles, filter by age, location, intent, interests.

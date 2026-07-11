@@ -356,15 +356,7 @@ const AuthPage = () => {
                                     <div className="flex-1 h-px bg-border" />
                                 </div>
 
-                                {/* Phone */}
-                                <motion.button
-                                    onClick={() => setStep("phone-signin")}
-                                    className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-base hover:bg-muted transition-all"
-                                    whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
-                                >
-                                    <Phone className="w-5 h-5 text-primary" />
-                                    Continue with Phone Number
-                                </motion.button>
+
 
                                 {/* Email */}
                                 <motion.button

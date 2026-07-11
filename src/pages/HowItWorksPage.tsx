@@ -22,7 +22,7 @@ const HowItWorksPage = () => {
         {
             icon: Shield,
             title: "Safety & Trust",
-            description: "All members are verified through Google OAuth, phone OTP, and LinkedIn occupation checks. Your privacy and security are non-negotiable.",
+            description: "All members are verified through Google OAuth and active profile screening. Your privacy and security are non-negotiable.",
             color: "from-secondary to-primary",
         },
         {
@@ -56,13 +56,13 @@ const HowItWorksPage = () => {
         {
             icon: UserCheck,
             title: "Create Your Verified Profile",
-            description: "Sign up with Google or phone number. Complete your profile with photos (minimum 2), occupation verified via LinkedIn, date of birth, relationship intent, and interests. Your profile is your brand.",
+            description: "Sign up with Google or Email. Complete your profile with photos (minimum 2), occupation details, date of birth, relationship intent, and interests. Your profile is your brand.",
             color: "from-primary to-secondary",
         },
         {
             icon: Shield,
             title: "Multi-Factor Verification",
-            description: "Every member completes Google OAuth + phone OTP verification. Occupation is confirmed through our LinkedIn integration. You'll always know you're talking to a real, verified professional.",
+            description: "Every member completes Google OAuth or secure email registration. Occupation and profile details are verified through our internal checks to ensure authenticity.",
             color: "from-secondary to-primary",
         },
         {
@@ -93,7 +93,7 @@ const HowItWorksPage = () => {
 
     const features = [
         { icon: CheckCircle, text: "100% verified profiles" },
-        { icon: CheckCircle, text: "LinkedIn occupation checks" },
+        { icon: CheckCircle, text: "Occupation verification" },
         { icon: CheckCircle, text: "Safe & secure messaging" },
         { icon: CheckCircle, text: "Location-based matching" },
         { icon: CheckCircle, text: "Smart interest filters" },
@@ -211,10 +211,10 @@ const HowItWorksPage = () => {
                             Built for <span className="text-gradient-brand">Black Professionals</span>
                         </h2>
                         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                            Whether you're a doctor, engineer, entrepreneur, lawyer, artist, or educator — BlackLoveLink is for Black professionals aged 25 and above who have worked hard to build their lives and are now ready to share it with someone equally driven and equally extraordinary. We require LinkedIn occupation verification because your career is part of your story, and authenticity matters here.
+                            Whether you're a doctor, engineer, entrepreneur, lawyer, artist, or educator — BlackLoveLink is for Black professionals aged 25 and above who have worked hard to build their lives and are now ready to share it with someone equally driven and equally extraordinary. We require profile and background checks because authenticity matters here.
                         </p>
                         <div className="mt-8 flex flex-wrap justify-center gap-3">
-                            {["25+ age verified", "LinkedIn verified", "Real photos", "Serious intent", "Multi-factor auth"].map((tag) => (
+                            {["25+ age verified", "Occupation verified", "Real photos", "Serious intent", "Secure auth"].map((tag) => (
                                 <span key={tag} className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
                                     {tag}
                                 </span>
