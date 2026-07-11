@@ -17,6 +17,7 @@ import {
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PhotoConsentModal, SensitiveDataConsentModal, usePhotoConsent, useSensitiveConsent } from "@/components/ConsentModals";
 
 const GENDERS = ["Male", "Female"];
 const INTENTS = [
@@ -64,6 +65,9 @@ const ProfileCreationPage = () => {
         Array(5).fill(null).map(() => ({ file: null, preview: null }))
     );
     const [saving, setSaving] = useState(false);
+    const [showPhotoConsent, setShowPhotoConsent] = useState(false);
+    const [pendingPhotoIndex, setPendingPhotoIndex] = useState<number | null>(null);
+    const [showSensitiveConsent, setShowSensitiveConsent] = useState(false);
 
     // Occupation is "verified" (complete) once both fields are filled
     const occVerified = occTitle.trim().length > 0 && occCompany.trim().length > 0;
@@ -128,11 +132,29 @@ const ProfileCreationPage = () => {
         );
     };
 
+    /* ─── Photo slot click — show consent first if not yet given ─── */
+    const handlePhotoSlotClick = (index: number) => {
+        if (!usePhotoConsent()) {
+            setPendingPhotoIndex(index);
+            setShowPhotoConsent(true);
+        } else {
+            fileInputRefs.current[index]?.click();
+        }
+    };
 
-    /* ─── Continue ─── */
+
+    /* ─── Continue — gate sensitive data consent ─── */
     const handleContinue = async () => {
         if (!canContinue) return;
-        setSaving(true);
+        // If user hasn't consented to sensitive data processing, show Screen D first
+        if (!useSensitiveConsent()) {
+            setShowSensitiveConsent(true);
+            return;
+        }
+        await doSave();
+    };
+
+    const doSave = async () => {
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session?.user) throw new Error("Not authenticated");
@@ -467,7 +489,7 @@ const ProfileCreationPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Photo slots */}
+                            {/* Photo slots */}
                                 <div className="grid grid-cols-2 gap-3">
                                     {photos.map((slot, index) => (
                                         <div key={index} className={`relative ${index === 0 ? "col-span-2" : ""}`}>
@@ -487,7 +509,6 @@ const ProfileCreationPage = () => {
                                                         alt={`Photo ${index + 1}`}
                                                         className="w-full h-full object-cover"
                                                     />
-                                                    {/* Overlay actions */}
                                                     <button
                                                         onClick={() => handleRemovePhoto(index)}
                                                         className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition"
@@ -501,10 +522,9 @@ const ProfileCreationPage = () => {
                                                     )}
                                                 </div>
                                             ) : (
-                                                <label
-                                                    htmlFor={`photo-slot-${index}`}
-                                                    className={`flex flex-col items-center justify-center rounded-xl bg-muted border-2 border-dashed border-border cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group ${index === 0 ? "aspect-[4/3]" : "aspect-square"
-                                                        } ${index < 2 ? "border-primary/40" : ""}`}
+                                                <button
+                                                    onClick={() => handlePhotoSlotClick(index)}
+                                                    className={`w-full flex flex-col items-center justify-center rounded-xl bg-muted border-2 border-dashed border-border cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group ${index === 0 ? "aspect-[4/3]" : "aspect-square"} ${index < 2 ? "border-primary/40" : ""}`}
                                                 >
                                                     <Upload className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                                     <span className="mt-1 text-xs text-muted-foreground group-hover:text-primary transition-colors font-medium">
@@ -513,7 +533,7 @@ const ProfileCreationPage = () => {
                                                     {index < 2 && (
                                                         <span className="mt-0.5 text-xs text-primary/70">Required</span>
                                                     )}
-                                                </label>
+                                                </button>
                                             )}
                                         </div>
                                     ))}
@@ -565,6 +585,28 @@ const ProfileCreationPage = () => {
 
 
         </div>
+
+        {/* Screen B — Photo consent modal */}
+        {showPhotoConsent && (
+            <PhotoConsentModal
+                onAllow={() => {
+                    setShowPhotoConsent(false);
+                    if (pendingPhotoIndex !== null) {
+                        fileInputRefs.current[pendingPhotoIndex]?.click();
+                        setPendingPhotoIndex(null);
+                    }
+                }}
+                onDeny={() => { setShowPhotoConsent(false); setPendingPhotoIndex(null); }}
+            />
+        )}
+
+        {/* Screen D — Sensitive data consent modal */}
+        {showSensitiveConsent && (
+            <SensitiveDataConsentModal
+                onSave={async () => { setShowSensitiveConsent(false); await doSave(); }}
+                onSkip={() => { setShowSensitiveConsent(false); }}
+            />
+        )}
     );
 };
 

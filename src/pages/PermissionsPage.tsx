@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Bell, ChevronRight, Shield, Heart, AlertCircle, Settings, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
+import { ATTConsentModal, useATTConsent } from "@/components/ConsentModals";
 
 type PermStep = "location" | "notifications" | "done";
 type PermState = "idle" | "requesting" | "granted" | "denied" | "blocked";
@@ -109,6 +110,7 @@ const PermissionsPage = () => {
   const [step, setStep] = useState<PermStep>("location");
   const [locState, setLocState] = useState<PermState>("idle");
   const [notifState, setNotifState] = useState<PermState>("idle");
+  const [showATT, setShowATT] = useState(!useATTConsent());
 
   // Check if permissions were already granted previously — skip straight through
   useEffect(() => {
@@ -388,6 +390,14 @@ const PermissionsPage = () => {
 
         </AnimatePresence>
       </div>
+
+      {/* Screen C — ATT tracking pre-prompt (shown once, before system ATT) */}
+      {showATT && (
+        <ATTConsentModal
+          onContinue={() => setShowATT(false)}
+          onSkip={() => setShowATT(false)}
+        />
+      )}
     </div>
   );
 };

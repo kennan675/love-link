@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import TopNav from "@/components/TopNav";
@@ -8,6 +8,7 @@ import { useProfiles, type UserProfile } from "@/hooks/useProfileData";
 import { useSwipe } from "@/hooks/useSwipe";
 import { Loader2, SearchX, ArrowLeft, Home, Sparkles } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { LocationConsentModal, useLocationConsent } from "@/components/ConsentModals";
 
 // ── LocalStorage helpers ──────────────────────────────────────────────────────
 const LS_PASSED = "bll_passed_profiles";
@@ -24,6 +25,7 @@ const SwipePage = () => {
   const [likedProfiles, setLikedProfiles] = useState<Set<string>>(new Set());
   const [passedProfiles, setPassedProfiles] = useState<Set<string>>(new Set());
   const [isResetting, setIsResetting] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(!useLocationConsent());
 
   // Initialize likedProfiles with data from server ONCE when it loads
   useMemo(() => {
@@ -170,6 +172,14 @@ const SwipePage = () => {
       </main>
 
       <MatchOverlay profile={matchedProfile} onClose={() => setMatchedProfile(null)} />
+
+      {/* Screen A — Location consent (first visit only) */}
+      {showLocationModal && (
+        <LocationConsentModal
+          onAllow={() => setShowLocationModal(false)}
+          onDeny={() => setShowLocationModal(false)}
+        />
+      )}
     </div>
   );
 };

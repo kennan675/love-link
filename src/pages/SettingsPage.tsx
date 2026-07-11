@@ -9,6 +9,7 @@ import TopNav from "@/components/TopNav";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { DeleteAccountConsentModal } from "@/components/ConsentModals";
 
 /* ─── types ─── */
 type View = "main" | "leave-flow";
@@ -411,46 +412,14 @@ const SettingsPage = () => {
                                         </motion.div>
                                     )}
 
-                                    {/* STEP 3b — Delete confirm */}
+                                    {/* STEP 3b — Delete confirm (Screen F — legal compliant) */}
                                     {step === "delete-confirm" && (
-                                        <motion.div key="delete" {...slideIn} className="space-y-6">
-                                            <div className="rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/50 p-5 flex gap-4">
-                                                <AlertTriangle className="w-8 h-8 text-red-500 shrink-0 mt-0.5" />
-                                                <div>
-                                                    <p className="font-bold text-red-500">30-day deletion window</p>
-                                                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                                                        Your account enters a 30-day grace period. You can cancel deletion by logging back in
-                                                        within 30 days. After that, <strong>everything is permanently deleted</strong>.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="rounded-2xl bg-card border border-red-200/50 p-4 space-y-2">
-                                                <p className="text-sm font-semibold text-foreground">What will be permanently deleted:</p>
-                                                {[
-                                                    "🗑️ Your profile and photos",
-                                                    "🗑️ All matches and connections",
-                                                    "🗑️ All your messages",
-                                                    "🗑️ Your account credentials",
-                                                ].map(item => (
-                                                    <p key={item} className="text-sm text-muted-foreground">{item}</p>
-                                                ))}
-                                            </div>
-                                            <div className="space-y-3">
-                                                <button
-                                                    onClick={handleDelete}
-                                                    disabled={isLoading}
-                                                    className="w-full flex justify-center items-center gap-2 py-4 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold text-base transition-colors shadow-sm disabled:opacity-50"
-                                                >
-                                                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
-                                                    {isLoading ? "Processing…" : "Request Account Deletion"}
-                                                </button>
-                                                <button
-                                                    onClick={() => { setView("main"); setStep("why"); }}
-                                                    className="w-full py-4 rounded-2xl bg-muted text-foreground font-bold text-base hover:bg-muted/80 transition-colors"
-                                                >
-                                                    Keep My Account
-                                                </button>
-                                            </div>
+                                        <motion.div key="delete" {...slideIn}>
+                                            <DeleteAccountConsentModal
+                                                isLoading={isLoading}
+                                                onConfirm={handleDelete}
+                                                onCancel={() => { setView("main"); setStep("why"); }}
+                                            />
                                         </motion.div>
                                     )}
 
