@@ -59,20 +59,21 @@
     --gradient-like: linear-gradient(135deg, hsl(43, 90%, 45%), hsl(45, 95%, 55%));
     --gradient-superlike: linear-gradient(135deg, hsl(200, 90%, 55%), hsl(210, 95%, 50%));
 
-    --shadow-card: 0 4px 24px -4px hsla(220, 15%, 10%, 0.10);
-    --shadow-glow: 0 0 40px hsla(0, 80%, 48%, 0.18);
-    --shadow-button: 0 8px 25px -5px hsla(0, 80%, 48%, 0.25);
+    --shadow-card: 0 10px 40px -6px hsla(220, 15%, 10%, 0.06);
+    --shadow-glow: 0 0 50px hsla(38, 90%, 55%, 0.12);
+    --shadow-button: 0 10px 30px -5px hsla(38, 90%, 45%, 0.2);
 
-    --font-display: 'Montserrat', sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-serif: 'Playfair Display', serif;
 
     --sidebar-background: 0 0% 99%;
     --sidebar-foreground: 220 15% 10%;
-    --sidebar-primary: 0 80% 48%;
+    --sidebar-primary: 38 90% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 14% 95%;
     --sidebar-accent-foreground: 220 15% 10%;
     --sidebar-border: 220 13% 88%;
-    --sidebar-ring: 0 80% 48%;
+    --sidebar-ring: 38 90% 45%;
   }
 
   .dark {
@@ -145,6 +146,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.02em;
+  }
+
   #root {
     height: 100%;
   }
@@ -188,6 +194,62 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  /* ── Premium Luxury Styles ── */
+  .glass-premium {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
+  }
+  .dark .glass-premium {
+    background: rgba(15, 17, 24, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .card-hover-gold {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-hover-gold:hover {
+    transform: translateY(-4px);
+    border-color: hsla(38, 90%, 50%, 0.3);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 0 30px hsla(38, 90%, 55%, 0.06);
+  }
+
+  .bg-dot-matrix {
+    background-image: radial-gradient(rgba(200, 151, 58, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .shimmer-gold {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer-gold::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 30%;
+    height: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15) 30%,
+      rgba(255, 255, 255, 0.25) 50%,
+      rgba(255, 255, 255, 0.15) 70%,
+      transparent
+    );
+    transform: rotate(30deg);
+    animation: goldShimmer 6s infinite ease-in-out;
+  }
+
+  @keyframes goldShimmer {
+    0% { left: -60%; }
+    20% { left: 140%; }
+    100% { left: 140%; }
   }
 
   /* ── Safe-area inset utilities (notch / Dynamic Island / home bar) ── */

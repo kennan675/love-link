@@ -22,12 +22,7 @@ interface BrandNameProps {
 }
 
 export default function BrandName({ className = "", dark = false }: BrandNameProps) {
-  const blackTone = FLAG_BLACK;
-
-  // Soft white glow so "black" is readable over the dark hero image even when the text color is black
-  const blackGlow = dark
-    ? "0 0 8px rgba(255,255,255,0.95), 0 0 16px rgba(255,255,255,0.85), 0 0 24px rgba(255,255,255,0.75)"
-    : "none";
+  const blackTone = dark ? "#ffffff" : FLAG_BLACK;
 
   return (
     <span
@@ -35,7 +30,7 @@ export default function BrandName({ className = "", dark = false }: BrandNamePro
       style={{ fontFamily: '"Playfair Display", "Cormorant Garamond", Georgia, serif', fontWeight: 600 }}
       aria-label="blacklovelink"
     >
-      <span style={{ color: blackTone, textShadow: blackGlow }}>black</span>
+      <span style={{ color: blackTone }}>black</span>
       <span style={{ color: FLAG_RED }}>love</span>
       <span style={{ color: FLAG_GOLD }}>link</span>
     </span>

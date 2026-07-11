@@ -435,56 +435,109 @@ const Index = () => {
       <HeroChatbot />
 
       {/* ── MISSION SECTION ── */}
-      <section id="mission" className="relative bg-muted/30 px-6 py-28 lg:py-36 overflow-hidden scroll-mt-0">
+      <section id="mission" className="relative px-6 py-28 lg:py-36 overflow-hidden bg-dot-matrix scroll-mt-0">
         <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none" />
 
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <motion.h2
-            className="text-4xl font-black leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            {t.mission.title}{" "}
-            <span className="text-gradient-brand">{t.mission.titleHighlight}</span>
-          </motion.h2>
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left - Heading & Action */}
+            <div className="lg:col-span-5 space-y-6">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="space-y-4"
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+                  <span className="text-xs font-bold text-secondary uppercase tracking-widest">Our Vision</span>
+                </div>
+                <h2 className="text-4xl sm:text-5xl font-black leading-[1.1] tracking-tight text-foreground">
+                  {t.mission.title}{" "}
+                  <span className="text-gradient-brand block mt-1">{t.mission.titleHighlight}</span>
+                </h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary rounded-full" />
+              </motion.div>
 
-          <motion.p
-            className="mt-8 max-w-2xl mx-auto text-lg leading-relaxed text-foreground/70"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            {t.mission.description}
-          </motion.p>
+              <motion.p
+                className="text-lg leading-relaxed text-foreground/80 font-medium"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                {t.mission.description}
+              </motion.p>
 
-          <motion.p
-            className="mt-6 max-w-2xl mx-auto text-base leading-relaxed text-foreground/50"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-          >
-            {t.mission.subDescription}
-          </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="pt-2"
+              >
+                <Link
+                  to="/auth"
+                  className="gradient-brand inline-flex items-center justify-center rounded-full px-10 py-4 text-base font-bold text-primary-foreground shadow-button transition-transform hover:scale-105 shimmer-gold"
+                >
+                  {t.mission.cta}
+                </Link>
+              </motion.div>
+            </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="mt-10"
-          >
-            <Link
-              to="/auth"
-              className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
-            >
-              {t.mission.cta}
-            </Link>
-          </motion.div>
+            {/* Right - Premium Value Proposition Cards */}
+            <div className="lg:col-span-7 space-y-4">
+              {[
+                {
+                  title: "Cultural Alignment",
+                  desc: t.mission.subDescription,
+                  badge: "Tailored Experience",
+                  icon: "✨"
+                },
+                {
+                  title: "Vetted Professionals Only",
+                  desc: "We screen profiles for active professional backgrounds, establishing a community of accomplished individuals focused on serious commitments.",
+                  badge: "Elite Verification",
+                  icon: "🎓"
+                },
+                {
+                  title: "Intentional Spaces",
+                  desc: "Designed to overcome superficial swiping fatigue. We focus on genuine compatibility, deep conversation, and real-life connections.",
+                  badge: "No Compromise",
+                  icon: "🤝"
+                }
+              ].map((card, i) => (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.15 }}
+                  className="glass-premium card-hover-gold rounded-3xl p-6 relative overflow-hidden group"
+                >
+                  {/* Subtle hover accent light */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative z-10 flex gap-4">
+                    <span className="text-3xl flex-shrink-0 mt-0.5">{card.icon}</span>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center flex-wrap gap-2.5">
+                        <h3 className="font-serif font-black text-lg text-foreground tracking-tight">{card.title}</h3>
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-secondary/10 border border-secondary/20 text-secondary px-2.5 py-0.5 rounded-full">
+                          {card.badge}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground/75 leading-relaxed">{card.desc}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+          </div>
         </div>
       </section>
 
