@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import TopNav from "@/components/TopNav";
 import MatchOverlay from "@/components/MatchOverlay";
 import FeedProfileCard from "@/components/feed/FeedProfileCard";
@@ -18,6 +18,8 @@ const saveSet = (key: string, set: Set<string>) => localStorage.setItem(key, JSO
 
 const SwipePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetProfileId = searchParams.get("profileId");
   const { t } = useTranslation();
   const { profiles, likedIds, loading } = useProfiles();
   const { recordSwipe } = useSwipe();
@@ -34,10 +36,19 @@ const SwipePage = () => {
     }
   }, [likedIds]);
 
-  const visibleProfiles = useMemo(
-    () => profiles.filter(p => !passedProfiles.has(p.user_id)),
-    [profiles, passedProfiles]
-  );
+  const visibleProfiles = useMemo(() => {
+    // If targetProfileId is requested, allow it even if previously passed
+    const filtered = profiles.filter(p => p.user_id === targetProfileId || !passedProfiles.has(p.user_id));
+    if (targetProfileId) {
+      const targetIdx = filtered.findIndex(p => p.user_id === targetProfileId);
+      if (targetIdx > -1) {
+        const target = filtered[targetIdx];
+        const rest = filtered.filter(p => p.user_id !== targetProfileId);
+        return [target, ...rest];
+      }
+    }
+    return filtered;
+  }, [profiles, passedProfiles, targetProfileId]);
 
   const handleLike = async (profile: UserProfile) => {
     const next = new Set(likedProfiles).add(profile.user_id);

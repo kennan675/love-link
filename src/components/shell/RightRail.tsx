@@ -79,7 +79,7 @@ export default function RightRail() {
                 <li
                   key={profile.user_id}
                   className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted transition cursor-pointer"
-                  onClick={() => navigate("/swipe")}
+                  onClick={() => navigate(`/swipe?profileId=${profile.user_id}`)}
                 >
                   <img
                     src={photo}
