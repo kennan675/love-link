@@ -136,6 +136,21 @@ const SettingsPage = () => {
                 ].join(" | "),
             }).eq("user_id", session.user.id);
 
+            // Save request to privacy requests list
+            try {
+                const raw = localStorage.getItem("bll_privacy_requests");
+                const currentReqs = raw ? JSON.parse(raw) : [];
+                const newReq = {
+                    id: `del_${Date.now()}`,
+                    type: "account_deletion",
+                    status: "scheduled",
+                    timestamp: new Date().toISOString(),
+                };
+                localStorage.setItem("bll_privacy_requests", JSON.stringify([newReq, ...currentReqs]));
+            } catch (e) {
+                console.error("Failed to log deletion request to local storage", e);
+            }
+
             setStep("farewell");
             setLeaveChoice("delete");
         } catch {

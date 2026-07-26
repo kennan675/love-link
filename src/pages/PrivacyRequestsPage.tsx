@@ -7,6 +7,7 @@ import {
   Clock, XCircle, AlertCircle, Mail, ExternalLink, RefreshCw,
 } from "lucide-react";
 import TopNav from "@/components/TopNav";
+import { supabase } from "@/integrations/supabase/client";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RequestStatus =
@@ -226,13 +227,30 @@ const PrivacyRequestsPage: React.FC = () => {
     showToast("Request submitted! We'll email you when your data is ready.");
   };
 
-  const handleCancel = (id: string) => {
-    const updated = requests.map((r) =>
-      r.id === id ? { ...r, status: "canceled" as RequestStatus } : r
-    );
-    setRequests(updated);
-    saveRequests(updated);
-    showToast("Deletion canceled. Your account has been restored.");
+  const handleCancel = async (id: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase
+          .from("profiles")
+          .update({
+            is_public: true,
+            deactivated_at: null,
+            scheduled_deletion_at: null,
+            deletion_requested: false,
+          })
+          .eq("user_id", session.user.id);
+      }
+
+      const updated = requests.map((r) =>
+        r.id === id ? { ...r, status: "canceled" as RequestStatus } : r
+      );
+      setRequests(updated);
+      saveRequests(updated);
+      showToast("Deletion canceled. Your account has been restored.");
+    } catch (err) {
+      showToast("Failed to restore account. Please contact legal@blacklovelink.com.");
+    }
   };
 
   const handleRequestAgain = (id: string) => {
