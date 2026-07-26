@@ -97,7 +97,8 @@ const RequestCard: React.FC<{
   req: PrivacyRequest;
   onCancel?: (id: string) => void;
   onRequestAgain?: (id: string) => void;
-}> = ({ req, onCancel, onRequestAgain }) => {
+  onDownload?: (req: PrivacyRequest) => void;
+}> = ({ req, onCancel, onRequestAgain, onDownload }) => {
   const Icon = TypeIcon[req.type];
   const ts = new Date(req.timestamp);
   const now = Date.now();
@@ -144,8 +145,11 @@ const RequestCard: React.FC<{
           "You are opted out of cross-context ad sharing. Change your choice anytime."}
       </p>
       <div className="pl-12 flex flex-wrap gap-2">
-        {req.type === "data_download" && req.status === "ready" && (
-          <button className="inline-flex items-center gap-1.5 rounded-full gradient-brand text-primary-foreground text-xs font-bold px-4 py-2 hover:opacity-90 transition-all">
+        {req.type === "data_download" && req.status === "ready" && onDownload && (
+          <button
+            onClick={() => onDownload(req)}
+            className="inline-flex items-center gap-1.5 rounded-full gradient-brand text-primary-foreground text-xs font-bold px-4 py-2 hover:opacity-90 transition-all"
+          >
             <Download className="w-3.5 h-3.5" /> Download Data
           </button>
         )}
@@ -209,14 +213,15 @@ const PrivacyRequestsPage: React.FC = () => {
 
   const handleRequestDownload = () => {
     const existing = requests.find(
-      (r) => r.type === "data_download" && r.status === "in_progress"
+      (r) => r.type === "data_download" && (r.status === "in_progress" || r.status === "ready")
     );
     if (existing) {
-      showToast("You already have a pending data request.");
+      showToast("You already have an active data request.");
       return;
     }
+    const reqId = `dr_${Date.now()}`;
     const newReq: PrivacyRequest = {
-      id: `dr_${Date.now()}`,
+      id: reqId,
       type: "data_download",
       status: "in_progress",
       timestamp: new Date().toISOString(),
@@ -224,7 +229,85 @@ const PrivacyRequestsPage: React.FC = () => {
     const updated = [newReq, ...requests];
     setRequests(updated);
     saveRequests(updated);
-    showToast("Request submitted! We'll email you when your data is ready.");
+    showToast("Request submitted! We'll prepare your download.");
+
+    // Simulate compilation delay of 4 seconds, then transition to ready
+    setTimeout(() => {
+      setRequests((currentRequests) => {
+        const next = currentRequests.map((r) =>
+          r.id === reqId ? { ...r, status: "ready" as RequestStatus } : r
+        );
+        saveRequests(next);
+        return next;
+      });
+      showToast("Your data download is now ready!");
+    }, 4000);
+  };
+
+  const handleDownloadFile = async (req: PrivacyRequest) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      let exportData: any = {
+        request_id: req.id,
+        request_type: req.type,
+        requested_timestamp: req.timestamp,
+        fulfilled_timestamp: new Date().toISOString(),
+        site: "BlackLoveLink",
+      };
+
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+
+        exportData.account = {
+          user_id: session.user.id,
+          email: session.user.email,
+          phone: session.user.phone,
+          created_at: session.user.created_at,
+        };
+
+        if (profile) {
+          exportData.profile = {
+            full_name: profile.full_name,
+            occupation_title: profile.occupation_title,
+            company: profile.company,
+            dob: profile.dob,
+            gender: profile.gender,
+            intent: profile.intent,
+            bio: profile.bio,
+            interests: profile.interests,
+            is_public: profile.is_public,
+          };
+        }
+      } else {
+        // Fallback mock export for unauthenticated demonstration
+        exportData.profile = {
+          full_name: "Mock User",
+          occupation_title: "Product Manager",
+          dob: "1994-05-12",
+          intent: "Serious relationship",
+          bio: "Just exploring my options and looking for something meaningful.",
+          interests: ["Travel", "Photography", "Cooking"],
+        };
+      }
+
+      const jsonStr = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `blacklovelink_data_export_${req.id}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast("Data export downloaded successfully.");
+    } catch (e) {
+      showToast("Failed to compile export file.");
+    }
   };
 
   const handleCancel = async (id: string) => {
@@ -370,6 +453,7 @@ const PrivacyRequestsPage: React.FC = () => {
                       req={req}
                       onCancel={handleCancel}
                       onRequestAgain={handleRequestAgain}
+                      onDownload={handleDownloadFile}
                     />
                   </motion.div>
                 ))}
@@ -390,7 +474,7 @@ const PrivacyRequestsPage: React.FC = () => {
           ) : (
             <div className="space-y-3">
               {historyRequests.map((req) => (
-                <RequestCard key={req.id} req={req} />
+                <RequestCard key={req.id} req={req} onDownload={handleDownloadFile} />
               ))}
             </div>
           )}
