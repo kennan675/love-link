@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X, ChevronDown, ChevronUp, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "bll_cookie_consent";
 const POLICY_VERSION = "1.0";
@@ -17,6 +18,25 @@ interface Preferences {
 
 const DEFAULT_ALL: Preferences   = { essential: true, analytics: true,  ads: true,  preferences: true  };
 const DEFAULT_NONE: Preferences  = { essential: true, analytics: false, ads: false, preferences: false };
+
+export async function logConsentToDB(prefs: Preferences, version: string) {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
+
+    const logEntries = Object.entries(prefs).map(([key, val]) => ({
+      user_id: session.user.id,
+      setting_key: `cookie_${key}`,
+      value: val,
+      policy_version: version,
+      source: "web",
+    }));
+
+    await supabase.from("consent_logs").insert(logEntries);
+  } catch (e) {
+    console.error("Failed to log consent to database:", e);
+  }
+}
 
 export function useCookieConsent() {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -36,15 +56,26 @@ export default function CookieConsent() {
       // Small delay so banner doesn't collide with splash screen
       const t = setTimeout(() => setVisible(true), 3200);
       return () => clearTimeout(t);
+    } else {
+      // Sync log once on mount if authenticated
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed?.prefs) {
+          logConsentToDB(parsed.prefs, parsed.version || POLICY_VERSION);
+        }
+      } catch (e) {
+        // ignore
+      }
     }
   }, []);
 
-  const save = (choice: CookieChoice, finalPrefs: Preferences) => {
+  const save = async (choice: CookieChoice, finalPrefs: Preferences) => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ choice, prefs: finalPrefs, version: POLICY_VERSION, timestamp: new Date().toISOString() })
     );
     setVisible(false);
+    await logConsentToDB(finalPrefs, POLICY_VERSION);
   };
 
   const Toggle = ({ label, desc, checked, onChange, disabled = false }: {
