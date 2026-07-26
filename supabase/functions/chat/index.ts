@@ -19,7 +19,7 @@ BlackLoveLink is a premium matchmaking platform built specifically for Black pro
 Black professionals aged 25+ (doctors, engineers, entrepreneurs, lawyers, artists, educators, and more) who are ready to share their life with someone equally driven and extraordinary. Members must be 25 or older to join.
 
 ## Authentication & Verification
-- **Google OAuth or Secure Email Registration** — Users sign up with Google or create an account with their email and a password. Phone number verification (OTP) and LinkedIn requirements are currently removed/disabled.
+- **Google OAuth or Secure Email Registration** — Users sign up with Google or create an account with their email and a password. Phone number verification (OTP) is currently disabled.
 
 ## Profile Creation
 After signing up, users complete a profile with:
