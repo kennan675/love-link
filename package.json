@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "cap:sync": "vite build && npx cap sync android",
+    "cap:open": "npx cap open android",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
