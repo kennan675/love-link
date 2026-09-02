@@ -40,9 +40,8 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Decode Android Keystore
-        if: env.HAS_KEYSTORE == 'true'
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         env:
-          HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release-key.jks
