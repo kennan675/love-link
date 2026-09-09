@@ -35,7 +35,7 @@ export const useSuggestedProfiles = () => {
         if (myGender === "male") targetGender = "Female";
         else if (myGender === "female") targetGender = "Male";
 
-        let query = supabase
+        let query = (supabase as any)
           .from("profiles")
           .select("*")
           .eq("profile_completed", true)

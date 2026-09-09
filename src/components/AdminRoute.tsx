@@ -25,7 +25,7 @@ const AdminRoute = () => {
       }
       setUserId(user.id);
 
-      const { data: profile } = await supabase
+      const { data: profile } = await (supabase as any)
         .from('profiles')
         .select('is_admin')
         .eq('id', user.id)
@@ -46,7 +46,7 @@ const AdminRoute = () => {
       // Auto-upgrade user to admin in DB if they aren't already
       if (!isAdmin && userId) {
         setIsUpdating(true);
-        await supabase.from('profiles').update({ is_admin: true }).eq('id', userId);
+        await (supabase as any).from('profiles').update({ is_admin: true }).eq('id', userId);
         setIsAdmin(true);
         setIsUpdating(false);
       }
