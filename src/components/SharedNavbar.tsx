@@ -38,15 +38,21 @@ const SharedNavbar = () => {
         >
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 h-16">
                 {/* Logo */}
-                <Link to="/" className="flex items-center group relative z-50">
+                <Link to="/" className="group relative z-50 flex shrink-0 items-center gap-2.5 rounded-full bg-white/95 pl-1.5 pr-3 py-1.5 shadow-lg ring-1 ring-black/5 transition-all duration-300 hover:shadow-xl">
                     <motion.img
                         src={blackLovelinkLogo}
                         alt="BlackLoveLink"
-                        className="h-10 w-auto object-contain"
-                        whileHover={{ scale: 1.05 }}
+                        className="h-8 w-8 sm:h-9 sm:w-9 object-contain"
+                        whileHover={{ rotate: -6, scale: 1.06 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     />
+                    <span className="hidden sm:block font-serif text-base font-black leading-none tracking-tight">
+                        <span className="text-neutral-900">black</span>
+                        <span className="text-primary">love</span>
+                        <span className="text-secondary">link</span>
+                    </span>
                 </Link>
+
 
                 {/* Desktop Nav Links */}
                 <div className="hidden items-center gap-1 lg:flex">
