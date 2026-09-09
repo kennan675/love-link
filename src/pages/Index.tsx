@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "@/components/SEO";
-import { Flame, ChevronDown, Globe } from "lucide-react";
+import { Flame, ChevronDown, Globe, Sparkles, GraduationCap, Handshake } from "lucide-react";
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
