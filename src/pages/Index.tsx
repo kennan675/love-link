@@ -77,7 +77,7 @@ const Index = () => {
           </Link>
 
           {/* Desktop Nav Links */}
-          <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md lg:flex">
+          <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md xl:flex">
             {[
               { label: t.nav.home, to: "/" },
               { label: t.nav.howItWorks, to: "/how-it-works" },
@@ -95,7 +95,7 @@ const Index = () => {
               >
                 <Link
                   to={link.to}
-                  className="relative block rounded-full px-3.5 py-2 text-[13px] font-semibold text-white/80 transition-all duration-300 hover:bg-white/15 hover:text-white"
+                  className="relative block whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold text-white/80 transition-all duration-300 hover:bg-white/15 hover:text-white"
                 >
                   {link.label}
                 </Link>
@@ -167,7 +167,7 @@ const Index = () => {
 
             {/* Mobile Menu Button */}
             <motion.button
-              className="lg:hidden p-2 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-primary-foreground hover:bg-white/10 transition-all"
+              className="xl:hidden p-2 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-primary-foreground hover:bg-white/10 transition-all"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
             >
@@ -209,7 +209,7 @@ const Index = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden border-t border-white/10 bg-black/40 backdrop-blur-2xl overflow-hidden"
+              className="xl:hidden border-t border-white/10 bg-black/40 backdrop-blur-2xl overflow-hidden"
             >
               <div className="px-6 py-6 space-y-2">
                 {[t.nav.home, t.nav.howItWorks, t.nav.successStories, t.nav.trustSafety, t.nav.support].map((l, i) => (
