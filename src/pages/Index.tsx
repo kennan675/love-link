@@ -59,153 +59,50 @@ const Index = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 py-4">
-          {/* Logo */}
-          <Link to="/" className="flex items-center group relative z-50">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16 lg:h-18">
+          {/* Logo — always visible on any background */}
+          <Link to="/" className="group relative z-50 flex shrink-0 items-center gap-2.5 rounded-full bg-white/95 pl-1.5 pr-3 py-1.5 shadow-lg ring-1 ring-black/5 backdrop-blur-md transition-all duration-300 hover:shadow-xl">
             <motion.img
               src={blackLovelinkLogo}
               alt="BlackLoveLink"
-              className="h-12 w-auto"
-              whileHover={{ scale: 1.05 }}
+              className="h-8 w-8 sm:h-9 sm:w-9 object-contain"
+              whileHover={{ rotate: -6, scale: 1.06 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <span className="hidden sm:block font-serif text-base font-black tracking-tight leading-none">
+              <span className="text-neutral-900">black</span>
+              <span className="text-primary">love</span>
+              <span className="text-secondary">link</span>
+            </span>
           </Link>
 
           {/* Desktop Nav Links */}
-          <div className="hidden items-center gap-1 lg:flex">
-            <motion.a
-              href="/"
-              className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0, duration: 0.5 }}
-            >
-              <span className="relative z-10">{t.nav.home}</span>
-              <motion.span
-                className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.a>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-            >
-              <Link
-                to="/how-it-works"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
+          <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md lg:flex">
+            {[
+              { label: t.nav.home, to: "/" },
+              { label: t.nav.howItWorks, to: "/how-it-works" },
+              { label: t.nav.successStories, to: "/success-stories" },
+              { label: t.nav.trustSafety, to: "/trust-safety" },
+              { label: t.nav.support, to: "/support" },
+              { label: "Relationship Hub", to: "/education" },
+              { label: "Contact", to: "/contact" },
+            ].map((link, i) => (
+              <motion.div
+                key={link.to}
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06, duration: 0.4 }}
               >
-                <span className="relative z-10">{t.nav.howItWorks}</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <Link
-                to="/success-stories"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              >
-                <span className="relative z-10">{t.nav.successStories}</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              <Link
-                to="/trust-safety"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              >
-                <span className="relative z-10">{t.nav.trustSafety}</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <Link
-                to="/support"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              >
-                <span className="relative z-10">{t.nav.support}</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              <Link
-                to="/education"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              >
-                <span className="relative z-10">Relationship Hub</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-            >
-              <Link
-                to="/contact"
-                className="group relative px-4 py-2.5 text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-              >
-                <span className="relative z-10">Contact</span>
-                <motion.span
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
+                <Link
+                  to={link.to}
+                  className="relative block rounded-full px-3.5 py-2 text-[13px] font-semibold text-white/80 transition-all duration-300 hover:bg-white/15 hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
           </div>
+
 
           {/* Right Side - Language & CTA */}
           <div className="flex items-center gap-3">
