@@ -55,7 +55,7 @@ const SharedNavbar = () => {
 
 
                 {/* Desktop Nav Links */}
-                <div className="hidden items-center gap-1 lg:flex">
+                <div className="hidden items-center gap-1 xl:flex">
                     {navLinks.map((link, i) => (
                         <motion.div
                             key={link.to}
@@ -137,7 +137,7 @@ const SharedNavbar = () => {
 
                     {/* Mobile Menu Button */}
                     <motion.button
-                        className="lg:hidden p-2 rounded-xl bg-muted/50 backdrop-blur-md border border-border text-foreground hover:bg-muted transition-all"
+                        className="xl:hidden p-2 rounded-xl bg-muted/50 backdrop-blur-md border border-border text-foreground hover:bg-muted transition-all"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -170,7 +170,7 @@ const SharedNavbar = () => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="lg:hidden border-t border-border bg-background/95 backdrop-blur-2xl overflow-hidden"
+                        className="xl:hidden border-t border-border bg-background/95 backdrop-blur-2xl overflow-hidden"
                     >
                         <div className="px-6 py-6 space-y-2">
                             {navLinks.map((link, i) => (
