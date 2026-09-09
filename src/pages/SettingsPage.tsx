@@ -84,7 +84,7 @@ const SettingsPage = () => {
             const scheduledDeletion = new Date();
             scheduledDeletion.setDate(scheduledDeletion.getDate() + 30);
 
-            await supabase.from("profiles").update({
+            await (supabase as any).from("profiles").update({
                 is_public: false,
                 // @ts-ignore – column may not be in generated types yet
                 deactivated_at: new Date().toISOString(),
@@ -119,7 +119,7 @@ const SettingsPage = () => {
             const scheduledDeletion = new Date();
             scheduledDeletion.setDate(scheduledDeletion.getDate() + 30);
 
-            await supabase.from("profiles").update({
+            await (supabase as any).from("profiles").update({
                 is_public: false,
                 // @ts-ignore
                 deactivated_at: new Date().toISOString(),

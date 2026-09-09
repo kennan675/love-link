@@ -32,7 +32,7 @@ export async function logConsentToDB(prefs: Preferences, version: string) {
       source: "web",
     }));
 
-    await supabase.from("consent_logs").insert(logEntries);
+    await (supabase as any).from("consent_logs").insert(logEntries);
   } catch (e) {
     console.error("Failed to log consent to database:", e);
   }

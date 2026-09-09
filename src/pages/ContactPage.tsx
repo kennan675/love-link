@@ -25,7 +25,7 @@ const ContactPage = () => {
     const message = (form.querySelector('#message') as HTMLTextAreaElement).value;
 
     try {
-        const { error } = await supabase.from('support_tickets').insert({
+        const { error } = await (supabase as any).from('support_tickets').insert({
             sender_name: `${firstName} ${lastName}`,
             sender_email: email,
             subject,

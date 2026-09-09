@@ -84,7 +84,7 @@ const TopNav = () => {
     const style = document.createElement("style");
     style.innerHTML = `.bottom-safe-tab { padding-bottom: env(safe-area-inset-bottom, 0px); height: calc(3.5rem + env(safe-area-inset-bottom, 0px)); }`;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => { document.head.removeChild(style); };
   }, []);
 
   // Close notification panel on route change

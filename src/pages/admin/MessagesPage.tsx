@@ -20,7 +20,7 @@ const AdminMessagesPage = () => {
 
   const fetchTickets = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('support_tickets')
         .select('*')
         .order('created_at', { ascending: false });
@@ -41,7 +41,7 @@ const AdminMessagesPage = () => {
 
   const markResolved = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('support_tickets')
         .update({ status: 'resolved' })
         .eq('id', id);

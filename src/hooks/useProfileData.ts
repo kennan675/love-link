@@ -93,7 +93,7 @@ const computeScore = (
     if (candidate.verified) score += 5;
 
     // Recency bonus — up to 5 points (profiles created in last 90 days)
-    if (candidate.created_at) {
+    if ((candidate as any).created_at) {
         const daysSinceCreation = (Date.now() - new Date((candidate as any).created_at).getTime()) / (1000 * 60 * 60 * 24);
         if (daysSinceCreation < 90) {
             score += Math.round(5 * (1 - daysSinceCreation / 90));
@@ -144,7 +144,7 @@ export const useProfiles = () => {
                     .map((s: any) => s.swiped_id);
 
                 // 2. Fetch candidate profiles
-                let query = supabase
+                let query = (supabase as any)
                     .from("profiles")
                     .select("*")
                     .eq("profile_completed", true)

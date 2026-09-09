@@ -38,18 +38,24 @@ const SharedNavbar = () => {
         >
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 h-16">
                 {/* Logo */}
-                <Link to="/" className="flex items-center group relative z-50">
+                <Link to="/" className="group relative z-50 flex shrink-0 items-center gap-2.5 rounded-full bg-white/95 pl-1.5 pr-3 py-1.5 shadow-lg ring-1 ring-black/5 transition-all duration-300 hover:shadow-xl">
                     <motion.img
                         src={blackLovelinkLogo}
                         alt="BlackLoveLink"
-                        className="h-10 w-auto object-contain"
-                        whileHover={{ scale: 1.05 }}
+                        className="h-8 w-8 sm:h-9 sm:w-9 object-contain"
+                        whileHover={{ rotate: -6, scale: 1.06 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     />
+                    <span className="hidden sm:block font-serif text-base font-black leading-none tracking-tight">
+                        <span className="text-neutral-900">black</span>
+                        <span className="text-primary">love</span>
+                        <span className="text-secondary">link</span>
+                    </span>
                 </Link>
 
+
                 {/* Desktop Nav Links */}
-                <div className="hidden items-center gap-1 lg:flex">
+                <div className="hidden items-center gap-1 xl:flex">
                     {navLinks.map((link, i) => (
                         <motion.div
                             key={link.to}
@@ -131,7 +137,7 @@ const SharedNavbar = () => {
 
                     {/* Mobile Menu Button */}
                     <motion.button
-                        className="lg:hidden p-2 rounded-xl bg-muted/50 backdrop-blur-md border border-border text-foreground hover:bg-muted transition-all"
+                        className="xl:hidden p-2 rounded-xl bg-muted/50 backdrop-blur-md border border-border text-foreground hover:bg-muted transition-all"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -164,7 +170,7 @@ const SharedNavbar = () => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="lg:hidden border-t border-border bg-background/95 backdrop-blur-2xl overflow-hidden"
+                        className="xl:hidden border-t border-border bg-background/95 backdrop-blur-2xl overflow-hidden"
                     >
                         <div className="px-6 py-6 space-y-2">
                             {navLinks.map((link, i) => (
