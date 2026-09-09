@@ -392,46 +392,55 @@ const Index = () => {
                   title: "Cultural Alignment",
                   desc: t.mission.subDescription,
                   badge: "Tailored Experience",
-                  icon: "✨"
+                  Icon: Sparkles,
                 },
                 {
                   title: "Vetted Professionals Only",
                   desc: "We screen profiles for active professional backgrounds, establishing a community of accomplished individuals focused on serious commitments.",
                   badge: "Elite Verification",
-                  icon: "🎓"
+                  Icon: GraduationCap,
                 },
                 {
                   title: "Intentional Spaces",
                   desc: "Designed to overcome superficial swiping fatigue. We focus on genuine compatibility, deep conversation, and real-life connections.",
                   badge: "No Compromise",
-                  icon: "🤝"
+                  Icon: Handshake,
                 }
               ].map((card, i) => (
                 <motion.div
                   key={card.title}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.15 }}
-                  className="glass-premium card-hover-gold rounded-3xl p-6 relative overflow-hidden group"
+                  transition={{ duration: 0.5, delay: i * 0.12 }}
+                  className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card/40 px-6 py-6 backdrop-blur-sm transition-all duration-500 hover:border-primary/40 hover:bg-card/70"
                 >
-                  {/* Subtle hover accent light */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  <div className="relative z-10 flex gap-4">
-                    <span className="text-3xl flex-shrink-0 mt-0.5">{card.icon}</span>
-                    <div className="space-y-1.5">
-                      <div className="flex items-center flex-wrap gap-2.5">
-                        <h3 className="font-serif font-black text-lg text-foreground tracking-tight">{card.title}</h3>
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-secondary/10 border border-secondary/20 text-secondary px-2.5 py-0.5 rounded-full">
-                          {card.badge}
-                        </span>
-                      </div>
-                      <p className="text-sm text-foreground/75 leading-relaxed">{card.desc}</p>
+                  {/* Left accent rail that grows on hover */}
+                  <span className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-gradient-to-b from-primary via-primary/40 to-secondary opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  {/* Oversized editorial index number */}
+                  <span className="pointer-events-none absolute right-5 top-3 select-none font-serif text-6xl font-black leading-none text-foreground/[0.05] transition-colors duration-500 group-hover:text-primary/10">
+                    0{i + 1}
+                  </span>
+
+                  <div className="relative z-10 flex gap-5">
+                    <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-background/60 text-primary transition-all duration-500 group-hover:border-primary/40 group-hover:bg-primary/10">
+                      <card.Icon className="h-5 w-5" strokeWidth={1.6} />
+                    </span>
+                    <div className="min-w-0 space-y-2">
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-secondary">
+                        {card.badge}
+                      </span>
+                      <h3 className="font-serif text-xl font-black tracking-tight text-foreground">
+                        {card.title}
+                      </h3>
+                      <div className="h-px w-10 bg-border transition-all duration-500 group-hover:w-16 group-hover:bg-primary/50" />
+                      <p className="pr-6 text-sm leading-relaxed text-foreground/70">{card.desc}</p>
                     </div>
                   </div>
                 </motion.div>
               ))}
+
             </div>
 
           </div>
