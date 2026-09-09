@@ -273,13 +273,13 @@ const PrivacyRequestsPage: React.FC = () => {
           exportData.profile = {
             full_name: profile.full_name,
             occupation_title: profile.occupation_title,
-            company: profile.company,
+            company: (profile as any).company,
             dob: profile.dob,
             gender: profile.gender,
             intent: profile.intent,
             bio: profile.bio,
             interests: profile.interests,
-            is_public: profile.is_public,
+            is_public: (profile as any).is_public,
           };
         }
       } else {
@@ -314,7 +314,7 @@ const PrivacyRequestsPage: React.FC = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        await supabase
+        await (supabase as any)
           .from("profiles")
           .update({
             is_public: true,

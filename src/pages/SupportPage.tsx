@@ -76,7 +76,7 @@ const SupportPage = () => {
         e.preventDefault();
         
         try {
-            const { error } = await supabase.from('support_tickets').insert({
+            const { error } = await (supabase as any).from('support_tickets').insert({
                 sender_name: formData.name,
                 sender_email: formData.email,
                 subject: formData.subject,
