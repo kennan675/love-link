@@ -23,7 +23,7 @@ const AdminUsersPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
