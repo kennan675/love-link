@@ -105,7 +105,7 @@ const Index = () => {
 
 
           {/* Right Side - Language & CTA */}
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2">
             {/* Language Dropdown */}
             <div className="relative group hidden md:block">
               <motion.button
