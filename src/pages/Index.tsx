@@ -212,17 +212,27 @@ const Index = () => {
               className="xl:hidden border-t border-white/10 bg-black/40 backdrop-blur-2xl overflow-hidden"
             >
               <div className="px-6 py-6 space-y-2">
-                {[t.nav.home, t.nav.howItWorks, t.nav.successStories, t.nav.trustSafety, t.nav.support].map((l, i) => (
-                  <motion.a
-                    key={l}
-                    href="#"
-                    className="block px-4 py-3 text-sm font-medium text-primary-foreground/90 rounded-xl hover:bg-white/5 transition-colors"
+                {[
+                  { label: t.nav.home, to: "/" },
+                  { label: t.nav.howItWorks, to: "/how-it-works" },
+                  { label: t.nav.successStories, to: "/success-stories" },
+                  { label: t.nav.trustSafety, to: "/trust-safety" },
+                  { label: t.nav.support, to: "/support" },
+                ].map((l, i) => (
+                  <motion.div
+                    key={l.to}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    {l}
-                  </motion.a>
+                    <Link
+                      to={l.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-3 text-sm font-medium text-primary-foreground/90 rounded-xl hover:bg-white/5 transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  </motion.div>
                 ))}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
