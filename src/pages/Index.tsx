@@ -59,7 +59,7 @@ const Index = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16 lg:h-18">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8 h-16 lg:h-18">
           {/* Logo — always visible on any background */}
           <Link to="/" className="group relative z-50 flex shrink-0 items-center gap-2.5 rounded-full bg-white/95 pl-1.5 pr-3 py-1.5 shadow-lg ring-1 ring-black/5 backdrop-blur-md transition-all duration-300 hover:shadow-xl">
             <motion.img
@@ -109,7 +109,7 @@ const Index = () => {
             {/* Language Dropdown */}
             <div className="relative group hidden md:block">
               <motion.button
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground/90 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-primary/10"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-primary-foreground/90 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-primary/10"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -153,7 +153,7 @@ const Index = () => {
             >
               <Link
                 to="/auth"
-                className="group relative overflow-hidden rounded-full gradient-brand px-8 py-3 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
+                className="group relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full gradient-brand px-6 py-2.5 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
               >
                 <span className="relative z-10">{t.nav.signIn}</span>
                 <motion.span
