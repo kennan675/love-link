@@ -89,6 +89,22 @@ const SiteFooter: React.FC = () => {
                 </li>
               ))}
             </ul>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-2 mt-6">
+              {socialLinks.map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 border border-border text-muted-foreground transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
           </motion.div>
 
           {/* Platform Links */}
