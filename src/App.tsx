@@ -53,14 +53,7 @@ const App = () => {
   const handleSplashFinished = useCallback(() => setShowSplash(false), []);
 
   useEffect(() => {
-    const applyTheme = () => {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.classList.toggle('dark', prefersDark);
-    };
-    applyTheme();
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-    mql.addEventListener('change', applyTheme);
-    return () => mql.removeEventListener('change', applyTheme);
+    document.documentElement.classList.remove('dark');
   }, []);
 
   return (
