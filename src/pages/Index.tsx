@@ -285,7 +285,7 @@ const Index = () => {
               </span>
 
               {/* BlackLoveLink — text logo */}
-              <BrandName dark stacked className="text-[3.5rem] sm:text-[5.5rem] lg:text-[7.5rem] mx-auto" />
+              <BrandName className="text-[3.5rem] sm:text-[5.5rem] lg:text-[7.5rem] mx-auto" />
             </h1>
             <p className="mt-5 text-xl sm:text-2xl lg:text-3xl font-semibold text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.7)] tracking-wide">
               Where Intentional Love Begins
