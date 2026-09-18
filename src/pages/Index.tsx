@@ -50,7 +50,11 @@ const Index = () => {
       <SEO title={"BlackLoveLink – Where Black Love Begins"} description={"Verified Black professionals building authentic, marriage-minded connections. Join the premier Black dating community today."} path="/" ogType="website" />
       {/* ── ULTRA PREMIUM NAVBAR ── */}
       <motion.header
-        className="fixed inset-x-0 top-0 z-50 transition-all duration-500 bg-transparent"
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "backdrop-blur-2xl bg-background/90 border-b border-border shadow-sm"
+            : "backdrop-blur-md bg-background/50 border-b border-border/30"
+        }`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -59,14 +63,14 @@ const Index = () => {
           {/* Logo — always visible on any background */}
           <Link to="/" className="group relative z-50 flex shrink-0 items-center rounded-full px-4 py-2 transition-all duration-300">
             <span className="font-serif italic text-lg font-semibold leading-none tracking-tight whitespace-nowrap">
-              <span className="text-black drop-shadow-sm">black</span>
-              <span className="text-primary drop-shadow-sm">love</span>
-              <span className="text-secondary drop-shadow-sm">link</span>
+              <span className="text-black">black</span>
+              <span className="text-primary">love</span>
+              <span className="text-secondary">link</span>
             </span>
           </Link>
 
           {/* Desktop Nav Links */}
-          <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md xl:flex">
+          <div className="hidden items-center gap-0.5 rounded-full border border-border/80 bg-background/80 p-1 backdrop-blur-md shadow-xs xl:flex">
             {[
               { label: t.nav.home, to: "/" },
               { label: t.nav.howItWorks, to: "/how-it-works" },
@@ -84,7 +88,7 @@ const Index = () => {
               >
                 <Link
                   to={link.to}
-                  className="relative block whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold text-white/80 transition-all duration-300 hover:bg-white/15 hover:text-white"
+                  className="relative block whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold text-foreground/80 transition-all duration-300 hover:bg-muted hover:text-foreground"
                 >
                   {link.label}
                 </Link>
@@ -98,7 +102,7 @@ const Index = () => {
             {/* Language Dropdown */}
             <div className="relative group hidden md:block">
               <motion.button
-                className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-primary-foreground/90 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-primary/10"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-foreground/80 bg-background/80 backdrop-blur-md border border-border/80 shadow-xs transition-all duration-300 hover:bg-muted hover:text-foreground"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -109,7 +113,7 @@ const Index = () => {
 
               {/* Dropdown Menu */}
               <motion.div
-                className="absolute right-0 top-full mt-3 w-52 rounded-2xl bg-background/98 backdrop-blur-2xl border border-white/10 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden"
+                className="absolute right-0 top-full mt-3 w-52 rounded-2xl bg-background/98 backdrop-blur-2xl border border-border shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden"
                 initial={{ y: -10, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
               >
@@ -156,7 +160,7 @@ const Index = () => {
 
             {/* Mobile Menu Button */}
             <motion.button
-              className="xl:hidden p-2 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-primary-foreground hover:bg-white/10 transition-all"
+              className="xl:hidden p-2 rounded-xl bg-background/80 backdrop-blur-md border border-border/80 text-foreground hover:bg-muted transition-all shadow-xs"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
             >
@@ -169,21 +173,21 @@ const Index = () => {
                     closed: { rotate: 0, y: 0 },
                     open: { rotate: 45, y: 8 }
                   }}
-                  className="w-full h-0.5 bg-white/80 rounded-full"
+                  className="w-full h-0.5 bg-foreground rounded-full"
                 />
                 <motion.span
                   variants={{
                     closed: { opacity: 1 },
                     open: { opacity: 0 }
                   }}
-                  className="w-full h-0.5 bg-white/80 rounded-full"
+                  className="w-full h-0.5 bg-foreground rounded-full"
                 />
                 <motion.span
                   variants={{
                     closed: { rotate: 0, y: 0 },
                     open: { rotate: -45, y: -8 }
                   }}
-                  className="w-full h-0.5 bg-white/80 rounded-full"
+                  className="w-full h-0.5 bg-foreground rounded-full"
                 />
               </motion.div>
             </motion.button>
@@ -198,7 +202,7 @@ const Index = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="xl:hidden border-t border-white/10 bg-black/40 backdrop-blur-2xl overflow-hidden"
+              className="xl:hidden border-t border-border bg-background/95 backdrop-blur-2xl overflow-hidden shadow-xl"
             >
               <div className="px-6 py-6 space-y-2">
                 {[
@@ -217,7 +221,7 @@ const Index = () => {
                     <Link
                       to={l.to}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-3 text-sm font-medium text-primary-foreground/90 rounded-xl hover:bg-white/5 transition-colors"
+                      className="block px-4 py-3 text-sm font-medium text-foreground/80 rounded-xl hover:bg-muted hover:text-foreground transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -230,7 +234,7 @@ const Index = () => {
                 >
                   <Link
                     to="/education"
-                    className="block px-4 py-3 text-sm font-medium text-primary-foreground/90 rounded-xl hover:bg-white/5 transition-colors"
+                    className="block px-4 py-3 text-sm font-medium text-foreground/80 rounded-xl hover:bg-muted hover:text-foreground transition-colors"
                   >
                     Relationship Hub
                   </Link>
@@ -242,7 +246,7 @@ const Index = () => {
                 >
                   <Link
                     to="/contact"
-                    className="block px-4 py-3 text-sm font-medium text-primary-foreground/90 rounded-xl hover:bg-white/5 transition-colors"
+                    className="block px-4 py-3 text-sm font-medium text-foreground/80 rounded-xl hover:bg-muted hover:text-foreground transition-colors"
                   >
                     Contact
                   </Link>
