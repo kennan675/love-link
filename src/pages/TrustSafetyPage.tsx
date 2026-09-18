@@ -2,7 +2,7 @@ import React from "react";
 import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, UserCheck, Lock, Eye, AlertCircle, MessageSquare } from "lucide-react";
+import { Shield, UserCheck, Lock, Eye, AlertCircle, MessageSquare, ShieldAlert } from "lucide-react";
 import SharedNavbar from "@/components/SharedNavbar";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -140,6 +140,31 @@ const TrustSafetyPage = () => {
                                 <p className="text-foreground/90">{tip}</p>
                             </motion.div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Child Safety & CSAE Standards Section */}
+            <section className="py-16 px-6">
+                <div className="mx-auto max-w-4xl">
+                    <div className="p-8 rounded-3xl bg-destructive/5 border-2 border-destructive/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                        <div className="space-y-2 max-w-2xl">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-xs font-bold uppercase tracking-wider">
+                                <ShieldAlert className="w-3.5 h-3.5" /> Child Safety Standards
+                            </div>
+                            <h2 className="text-2xl font-black text-foreground">
+                                Zero Tolerance for Child Sexual Abuse & Exploitation (CSAE)
+                            </h2>
+                            <p className="text-sm text-foreground/80 leading-relaxed">
+                                BlackLoveLink is strictly 18+. We enforce comprehensive published standards, proactive detection, immediate termination, and mandatory reporting to the National Center for Missing & Exploited Children (NCMEC).
+                            </p>
+                        </div>
+                        <Link
+                            to="/child-safety"
+                            className="shrink-0 px-6 py-3 rounded-full bg-destructive text-destructive-foreground font-bold text-sm hover:bg-destructive/90 transition-all hover:scale-105"
+                        >
+                            Read CSAE Standards →
+                        </Link>
                     </div>
                 </div>
             </section>

@@ -38,6 +38,7 @@ import AccessibilityPage from "./pages/AccessibilityPage";
 import PrivacyFAQPage from "./pages/PrivacyFAQPage";
 import DoNotSharePage from "./pages/DoNotSharePage";
 import DeleteAccountPage from "./pages/DeleteAccountPage";
+import ChildSafetyPage from "./pages/ChildSafetyPage";
 import PrivacyRequestsPage from "./pages/PrivacyRequestsPage";
 
 // Admin
@@ -86,6 +87,8 @@ const App = () => {
               <Route path="/privacy/faq" element={<PrivacyFAQPage />} />
               <Route path="/privacy/do-not-share" element={<DoNotSharePage />} />
               <Route path="/delete-account" element={<DeleteAccountPage />} />
+              <Route path="/child-safety" element={<ChildSafetyPage />} />
+              <Route path="/csae-standards" element={<ChildSafetyPage />} />
 
               {/* Onboarding routes (auth required) */}
               <Route path="/create-profile" element={<ProtectedRoute><ProfileCreationPage /></ProtectedRoute>} />

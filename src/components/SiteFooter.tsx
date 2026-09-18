@@ -37,6 +37,7 @@ const footerLinks = {
     { label: "Privacy FAQ", to: "/privacy/faq" },
     { label: "Privacy Policy", to: "/privacy-policy" },
     { label: "Terms of Service", to: "/terms-of-service" },
+    { label: "Child Safety (CSAE Standards)", to: "/child-safety" },
     { label: "Cookie Policy", to: "/cookie-policy" },
     { label: "Intellectual Property", to: "/intellectual-property" },
     { label: "Accessibility", to: "/accessibility" },
