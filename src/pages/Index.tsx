@@ -50,10 +50,7 @@ const Index = () => {
       <SEO title={"BlackLoveLink – Where Black Love Begins"} description={"Verified Black professionals building authentic, marriage-minded connections. Join the premier Black dating community today."} path="/" ogType="website" />
       {/* ── ULTRA PREMIUM NAVBAR ── */}
       <motion.header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled
-          ? 'backdrop-blur-2xl bg-black/40 border-b border-white/20 shadow-2xl shadow-black/20'
-          : 'backdrop-blur-xl bg-black/20 border-b border-white/10'
-          }`}
+        className="fixed inset-x-0 top-0 z-50 transition-all duration-500 bg-transparent"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
