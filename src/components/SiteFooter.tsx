@@ -1,8 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Heart, Mail, MessageCircle, Shield, ArrowUpRight } from "lucide-react";
+import { Heart, Mail, MessageCircle, Shield, ArrowUpRight, Instagram, Youtube, Facebook, Twitter } from "lucide-react";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
+
+const socialLinks = [
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/blacklove.link/" },
+  { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@blacklove.link" },
+  { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@blacklovelink" },
+  { icon: Facebook, label: "Facebook", href: "https://web.facebook.com/people/Black-Love-Link/61594268287175/" },
+  { icon: Twitter, label: "X", href: "https://www.x.com/blacklovelimit" },
+];
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.2v12.55a3.04 3.04 0 0 1-3.04 2.86 3.04 3.04 0 0 1-3.04-3.04 3.04 3.04 0 0 1 3.04-3.04c.3 0 .6.04.88.13V8.3a6.4 6.4 0 0 0-.88-.06A6.25 6.25 0 0 0 3.33 14.5a6.25 6.25 0 0 0 6.25 6.25 6.25 6.25 0 0 0 6.25-6.25V8.66a8.03 8.03 0 0 0 4.7 1.51V6.98a4.85 4.85 0 0 1-.94-.29z" />
+    </svg>
+  );
+}
 
 const footerLinks = {
   platform: [
@@ -73,6 +89,22 @@ const SiteFooter: React.FC = () => {
                 </li>
               ))}
             </ul>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-2 mt-6">
+              {socialLinks.map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 border border-border text-muted-foreground transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
           </motion.div>
 
           {/* Platform Links */}
