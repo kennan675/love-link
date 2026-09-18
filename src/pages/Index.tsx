@@ -254,18 +254,18 @@ const Index = () => {
       </motion.header>
 
       <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden">
-        {/* Hero image with reduced opacity for premium feel */}
+        {/* Hero image with refined clarity */}
         <img
           src={heroBg}
           alt="Black professionals connecting on BlackLoveLink"
-        className="absolute inset-0 h-full w-full object-cover opacity-90"
+          className="absolute inset-0 h-full w-full object-cover opacity-95"
         />
-        {/* Clear overlay — light wash keeps the photo visible and the wordmark crisp */}
-        <div className="absolute inset-0 bg-white/15" />
-        {/* Brand color tint — gives it that signature warm-gold/red glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
-        {/* Bottom fade keeps lower text readable without a dark band */}
-        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-white/40 to-transparent" />
+        {/* Clear overlay — subtle light wash keeps the photo crystal clear and text crisp */}
+        <div className="absolute inset-0 bg-white/10" />
+        {/* Brand color tint — gentle warm-gold/red glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+        {/* Bottom fade keeps lower text readable with a gentle transition */}
+        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-white/25 to-transparent" />
 
         <div className="relative z-10 text-center px-4">
           <motion.div

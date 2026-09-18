@@ -37,6 +37,7 @@ import IntellectualPropertyPage from "./pages/IntellectualPropertyPage";
 import AccessibilityPage from "./pages/AccessibilityPage";
 import PrivacyFAQPage from "./pages/PrivacyFAQPage";
 import DoNotSharePage from "./pages/DoNotSharePage";
+import DeleteAccountPage from "./pages/DeleteAccountPage";
 import PrivacyRequestsPage from "./pages/PrivacyRequestsPage";
 
 // Admin
@@ -84,6 +85,7 @@ const App = () => {
               <Route path="/accessibility" element={<AccessibilityPage />} />
               <Route path="/privacy/faq" element={<PrivacyFAQPage />} />
               <Route path="/privacy/do-not-share" element={<DoNotSharePage />} />
+              <Route path="/delete-account" element={<DeleteAccountPage />} />
 
               {/* Onboarding routes (auth required) */}
               <Route path="/create-profile" element={<ProtectedRoute><ProfileCreationPage /></ProtectedRoute>} />
