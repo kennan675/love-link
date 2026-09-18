@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Globe } from "lucide-react";
-import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Language, languageNames } from "@/contexts/LanguageContext";
 
