@@ -258,17 +258,14 @@ const Index = () => {
         <img
           src={heroBg}
           alt="Black professionals connecting on BlackLoveLink"
-          className="absolute inset-0 h-full w-full object-cover opacity-75"
+        className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
-        {/* Premium layered overlays */}
-        {/* Base dark scrim */}
-        <div className="absolute inset-0 bg-black/50" />
-        {/* Vignette — darkens edges, keeps center visible */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.75)_100%)]" />
+        {/* Clear overlay — light wash keeps the photo visible and the wordmark crisp */}
+        <div className="absolute inset-0 bg-white/15" />
         {/* Brand color tint — gives it that signature warm-gold/red glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/15" />
-        {/* Bottom fade so hero text is always crisp. We keep it dark in light mode to avoid a milky white wash over the dark image. */}
-        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-black/80 dark:from-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+        {/* Bottom fade keeps lower text readable without a dark band */}
+        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-white/40 to-transparent" />
 
         <div className="relative z-10 text-center px-4">
           <motion.div
@@ -288,7 +285,7 @@ const Index = () => {
               </span>
 
               {/* BlackLoveLink — text logo */}
-              <BrandName dark stacked className="text-[3.5rem] sm:text-[5.5rem] lg:text-[7.5rem] mx-auto" />
+              <BrandName className="text-[3.5rem] sm:text-[5.5rem] lg:text-[7.5rem] mx-auto" />
             </h1>
             <p className="mt-5 text-xl sm:text-2xl lg:text-3xl font-semibold text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.7)] tracking-wide">
               Where Intentional Love Begins
