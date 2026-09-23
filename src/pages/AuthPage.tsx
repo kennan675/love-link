@@ -361,7 +361,7 @@ const AuthPage = () => {
                   {step === "email-signin" && "Enter your credentials to continue"}
                   {step === "email-signup" && "Create your account — it only takes a minute"}
                   {step === "onboard-you" && "Tell us a little about yourself"}
-                  {step === "onboard-work" && "Your professional background helps us find better matches"}
+                  {step === "onboard-work" && "Share what you're looking for, plus optional career details"}
                   {step === "onboard-photos" && ""}
                 </motion.p>
               </AnimatePresence>
@@ -580,12 +580,18 @@ const AuthPage = () => {
               <motion.div key="onboard-work" {...fadeUp} className="space-y-4">
                 <div className="rounded-2xl bg-card border border-border p-6 space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-foreground flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5 text-primary" /> Job Title</label>
+                    <label className="text-sm font-semibold text-foreground flex items-center justify-between">
+                      <span className="flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5 text-primary" /> Job Title</span>
+                      <span className="text-xs font-normal text-muted-foreground">Optional</span>
+                    </label>
                     <input type="text" placeholder="e.g. Software Engineer" value={occTitle}
                       onChange={e => setOccTitle(e.target.value)} className={inputCls} />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-foreground">Company / Organisation</label>
+                    <label className="text-sm font-semibold text-foreground flex items-center justify-between">
+                      <span>Company / Organisation</span>
+                      <span className="text-xs font-normal text-muted-foreground">Optional</span>
+                    </label>
                     <input type="text" placeholder="e.g. Google, Self-employed…" value={occCompany}
                       onChange={e => setOccCompany(e.target.value)} className={inputCls} />
                   </div>
@@ -603,7 +609,7 @@ const AuthPage = () => {
                 </div>
                 <motion.button
                   onClick={() => setStep("onboard-photos")}
-                  disabled={!occTitle.trim() || !occCompany.trim() || !intent}
+                  disabled={!intent}
                   className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-40"
                   whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                   <ArrowRight className="w-5 h-5" /> Continue

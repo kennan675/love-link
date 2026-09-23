@@ -69,7 +69,7 @@ const ProfileCreationPage = () => {
     const [pendingPhotoIndex, setPendingPhotoIndex] = useState<number | null>(null);
     const [showSensitiveConsent, setShowSensitiveConsent] = useState(false);
 
-    // Occupation is "verified" (complete) once both fields are filled
+    // Occupation is optional
     const occVerified = occTitle.trim().length > 0 && occCompany.trim().length > 0;
 
     // Computed
@@ -78,7 +78,6 @@ const ProfileCreationPage = () => {
     const photoCount = photos.filter((p) => p.preview !== null).length;
     const canContinue =
         fullName.trim().length > 0 &&
-        occVerified &&
         dob !== "" &&
         ageValid &&
         gender !== "" &&
@@ -88,7 +87,6 @@ const ProfileCreationPage = () => {
     // Completion percentage for the visual bar
     const steps = [
         !!fullName.trim(),
-        occVerified,
         dob !== "" && ageValid,
         gender !== "",
         intent !== "",
@@ -335,7 +333,7 @@ const ProfileCreationPage = () => {
                             <div className="rounded-2xl bg-card border border-border p-6 space-y-3">
                                 <h2 className="flex items-center gap-2 font-semibold text-foreground text-base">
                                     <Briefcase className="w-4 h-4 text-primary" /> Occupation
-                                    <span className="text-destructive ml-0.5">*</span>
+                                    <span className="text-xs font-normal text-muted-foreground ml-1">(Optional)</span>
                                 </h2>
                                 <div className="space-y-3">
                                     <div className="space-y-1.5">

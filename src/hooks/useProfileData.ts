@@ -128,11 +128,6 @@ export const useProfiles = () => {
                 const myProfile = myProfileResult.data;
                 const existingSwipes = existingSwipesResult.data;
 
-                const myGender = myProfile?.gender?.toLowerCase();
-                let targetGender: string | null = null;
-                if (myGender === "male") targetGender = "Female";
-                else if (myGender === "female") targetGender = "Male";
-
                 const passedSwipeIds = new Set(
                     (existingSwipes ?? [])
                         .filter((s: any) => s.direction === "left")
@@ -143,7 +138,7 @@ export const useProfiles = () => {
                     .filter((s: any) => s.direction === "right" || s.direction === "message")
                     .map((s: any) => s.swiped_id);
 
-                // 2. Fetch candidate profiles
+                // 2. Fetch candidate profiles (both male and female accounts)
                 let query = (supabase as any)
                     .from("profiles")
                     .select("*")
@@ -151,10 +146,6 @@ export const useProfiles = () => {
                     .eq("is_public", true)
                     .neq("user_id", session.user.id)
                     .order("created_at", { ascending: false });
-
-                if (targetGender) {
-                    query = query.ilike("gender", targetGender);
-                }
 
                 const { data, error } = await query;
                 if (error) throw error;

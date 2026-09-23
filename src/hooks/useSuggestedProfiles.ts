@@ -30,11 +30,6 @@ export const useSuggestedProfiles = () => {
           (swipesResult.data ?? []).map((s: any) => s.swiped_id)
         );
 
-        const myGender = myProfile?.gender?.toLowerCase();
-        let targetGender: string | null = null;
-        if (myGender === "male") targetGender = "Female";
-        else if (myGender === "female") targetGender = "Male";
-
         let query = (supabase as any)
           .from("profiles")
           .select("*")
@@ -43,8 +38,6 @@ export const useSuggestedProfiles = () => {
           .neq("user_id", userId)
           .order("created_at", { ascending: false })
           .limit(40);
-
-        if (targetGender) query = query.ilike("gender", targetGender);
 
         const { data, error } = await query;
         if (error) throw error;

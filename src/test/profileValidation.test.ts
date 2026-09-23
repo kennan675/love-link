@@ -14,17 +14,16 @@ function calculateAge(dob: string): number {
 // Profile completeness check (mirrors Continue button logic)
 function isProfileComplete(data: {
     fullName: string;
-    occupationVerified: boolean;
+    occupationVerified?: boolean;
     dob: string;
     gender: string;
     intent: string;
     photoCount: number;
 }): boolean {
-    const { fullName, occupationVerified, dob, gender, intent, photoCount } = data;
+    const { fullName, dob, gender, intent, photoCount } = data;
     const age = calculateAge(dob);
     return (
         fullName.trim().length > 0 &&
-        occupationVerified &&
         dob !== "" &&
         age >= 18 &&
         gender !== "" &&
@@ -81,8 +80,8 @@ describe("Profile Completeness", () => {
         expect(isProfileComplete({ ...completeProfile, fullName: "" })).toBe(false);
     });
 
-    it("returns false when occupation not verified", () => {
-        expect(isProfileComplete({ ...completeProfile, occupationVerified: false })).toBe(false);
+    it("returns true even when occupation is not provided", () => {
+        expect(isProfileComplete({ ...completeProfile, occupationVerified: false })).toBe(true);
     });
 
     it("returns false when under 18", () => {
