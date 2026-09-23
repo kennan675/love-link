@@ -69,30 +69,34 @@ const AdminRoute = () => {
   }
   if (!isUnlocked) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-        <form onSubmit={handleUnlock} className="w-full max-w-sm bg-card border border-border p-8 rounded-3xl shadow-xl text-center">
-          <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <Lock className="w-8 h-8 text-primary" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 selection:bg-secondary/30">
+        <form onSubmit={handleUnlock} className="w-full max-w-sm bg-card border border-border p-8 rounded-3xl shadow-card text-center space-y-4">
+          <div className="w-16 h-16 mx-auto bg-secondary/15 rounded-2xl flex items-center justify-center text-secondary border border-secondary/30 shadow-glow">
+            <Lock className="w-7 h-7" />
           </div>
-          <h2 className="text-2xl font-black mb-2">Admin Portal</h2>
-          <p className="text-muted-foreground mb-8 text-sm">Please enter the master password to unlock the dashboard.</p>
+          <div>
+            <h2 className="font-serif text-2xl font-black text-foreground">Admin Console</h2>
+            <p className="text-muted-foreground text-xs mt-1">Enter your master security key to unlock.</p>
+          </div>
           
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setError(false);
-            }}
-            placeholder="Password"
-            className={`w-full px-4 py-3 rounded-xl bg-background border ${error ? 'border-destructive' : 'border-border'} text-foreground focus:outline-none focus:border-primary mb-4 transition-colors`}
-          />
-          {error && <p className="text-destructive text-sm font-bold mb-4">Incorrect password</p>}
+          <div className="pt-2">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError(false);
+              }}
+              placeholder="Master Security Key"
+              className={`w-full px-4 py-3 rounded-xl bg-background border ${error ? 'border-destructive' : 'border-border'} text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-secondary transition-colors text-sm`}
+            />
+            {error && <p className="text-destructive text-xs font-bold mt-2">Incorrect master key</p>}
+          </div>
           
           <button 
             type="submit" 
             disabled={isUpdating}
-            className="w-full h-12 flex items-center justify-center rounded-xl gradient-brand text-primary-foreground font-bold shadow-button hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full h-12 flex items-center justify-center rounded-xl gradient-brand text-white font-bold text-sm shadow-button hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {isUpdating ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : "Unlock Dashboard"}
           </button>
