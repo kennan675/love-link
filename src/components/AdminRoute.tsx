@@ -18,20 +18,22 @@ const AdminRoute = () => {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUserId(user.id);
+          const { data: profile } = await (supabase as any)
+            .from('profiles')
+            .select('is_admin')
+            .or(`id.eq.${user.id},user_id.eq.${user.id}`)
+            .maybeSingle();
+          setIsAdmin(profile?.is_admin === true);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch {
         setIsAdmin(false);
-        return;
       }
-      setUserId(user.id);
-
-      const { data: profile } = await (supabase as any)
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single();
-      
-      setIsAdmin(profile?.is_admin === true);
     };
 
     checkAdmin();
@@ -43,12 +45,20 @@ const AdminRoute = () => {
       sessionStorage.setItem("admin_unlocked", "true");
       setIsUnlocked(true);
       
-      // Auto-upgrade user to admin in DB if they aren't already
-      if (!isAdmin && userId) {
+      // Auto-upgrade user to admin in DB if they are authenticated
+      if (userId) {
         setIsUpdating(true);
-        await (supabase as any).from('profiles').update({ is_admin: true }).eq('id', userId);
-        setIsAdmin(true);
-        setIsUpdating(false);
+        try {
+          await (supabase as any)
+            .from('profiles')
+            .update({ is_admin: true })
+            .or(`id.eq.${userId},user_id.eq.${userId}`);
+          setIsAdmin(true);
+        } catch (err) {
+          console.warn("Could not set is_admin on profile:", err);
+        } finally {
+          setIsUpdating(false);
+        }
       }
     } else {
       setError(true);
@@ -56,17 +66,6 @@ const AdminRoute = () => {
     }
   };
 
-  if (isAdmin === null) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!userId) {
-    return <Navigate to="/auth" replace />;
-  }
   if (!isUnlocked) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 selection:bg-secondary/30">

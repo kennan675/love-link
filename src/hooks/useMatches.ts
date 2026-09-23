@@ -75,7 +75,7 @@ export const useMatches = () => {
                 .map((m: any) => {
                     const otherId = m.user_a === userId ? m.user_b : m.user_a;
                     const prof = profileMap.get(otherId);
-                    if (!prof) return null;
+                    if (!prof || prof.deactivated_at || prof.deletion_requested) return null;
 
                     const msgs = messagesByMatch.get(m.id) || [];
 

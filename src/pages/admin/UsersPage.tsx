@@ -96,9 +96,9 @@ const AdminUsersPage = () => {
       setUserToSuspend(null);
       setSuspendReason("");
       await loadUsers();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error("Failed to suspend user.");
+      toast.error(e?.message || "Failed to suspend user.");
     } finally {
       setIsProcessing(false);
     }
@@ -108,12 +108,12 @@ const AdminUsersPage = () => {
   const handleReactivate = async (user: AdminProfile) => {
     setIsProcessing(true);
     try {
-      await adminService.reactivateUser(user.user_id);
+      await adminService.reactivateUser(user.user_id || user.id);
       toast.success(`Account for ${user.full_name} has been restored & reactivated.`);
       await loadUsers();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error("Failed to reactivate user.");
+      toast.error(e?.message || "Failed to reactivate user.");
     } finally {
       setIsProcessing(false);
     }
@@ -122,18 +122,18 @@ const AdminUsersPage = () => {
   // Action: Toggle Verified
   const handleToggleVerified = async (user: AdminProfile) => {
     try {
-      await adminService.toggleVerification(user.user_id, !user.verified);
+      await adminService.toggleVerification(user.user_id || user.id, !user.verified);
       toast.success(
         `${user.full_name} is now ${!user.verified ? "Verified" : "Unverified"}.`
       );
       setUsers((prev) =>
         prev.map((u) =>
-          u.user_id === user.user_id ? { ...u, verified: !user.verified } : u
+          u.user_id === user.user_id || u.id === user.id ? { ...u, verified: !user.verified } : u
         )
       );
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error("Failed to update verification status.");
+      toast.error(e?.message || "Failed to update verification status.");
     }
   };
 
@@ -142,14 +142,22 @@ const AdminUsersPage = () => {
     if (!userToDelete) return;
     setIsProcessing(true);
     try {
-      await adminService.deleteUser(userToDelete.user_id);
+      await adminService.deleteUser(userToDelete.user_id || userToDelete.id);
       toast.success(`Account for ${userToDelete.full_name} has been permanently deleted.`);
       setUserToDelete(null);
-      setUsers((prev) => prev.filter((u) => u.user_id !== userToDelete.user_id));
-      if (selectedUser?.user_id === userToDelete.user_id) setSelectedUser(null);
-    } catch (e) {
+      setUsers((prev) =>
+        prev.filter((u) => u.user_id !== userToDelete.user_id && u.id !== userToDelete.id)
+      );
+      if (
+        selectedUser?.user_id === userToDelete.user_id ||
+        selectedUser?.id === userToDelete.id
+      ) {
+        setSelectedUser(null);
+      }
+      await loadUsers();
+    } catch (e: any) {
       console.error(e);
-      toast.error("Failed to delete user account.");
+      toast.error(e?.message || "Failed to delete user account.");
     } finally {
       setIsProcessing(false);
     }

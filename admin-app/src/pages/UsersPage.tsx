@@ -110,7 +110,7 @@ export default function UsersPage() {
     if (!userToSuspend) return;
     setIsProcessing(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({
           is_public: false,
@@ -118,16 +118,19 @@ export default function UsersPage() {
           leave_reason: suspendReason.trim() || 'Suspended by administrator',
           deletion_requested: false,
         })
-        .eq('user_id', userToSuspend.user_id);
+        .or(`id.eq.${userToSuspend.id},user_id.eq.${userToSuspend.user_id}`)
+        .select();
 
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error('No user profile was found to update.');
+
       toast.success(`Account for ${userToSuspend.full_name} has been suspended.`);
       setUserToSuspend(null);
       setSuspendReason('');
       await fetchUsers();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error('Failed to suspend user.');
+      toast.error(e?.message || 'Failed to suspend user.');
     } finally {
       setIsProcessing(false);
     }
@@ -137,7 +140,7 @@ export default function UsersPage() {
   const handleReactivate = async (user: Profile) => {
     setIsProcessing(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({
           is_public: true,
@@ -147,14 +150,17 @@ export default function UsersPage() {
           leave_feedback: null,
           deletion_requested: false,
         })
-        .eq('user_id', user.user_id);
+        .or(`id.eq.${user.id},user_id.eq.${user.user_id}`)
+        .select();
 
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error('No user profile was found to update.');
+
       toast.success(`Account for ${user.full_name} has been restored & reactivated.`);
       await fetchUsers();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error('Failed to reactivate user.');
+      toast.error(e?.message || 'Failed to reactivate user.');
     } finally {
       setIsProcessing(false);
     }
@@ -163,19 +169,22 @@ export default function UsersPage() {
   // Action: Toggle Verified
   const handleToggleVerified = async (user: Profile) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({ verified: !user.verified })
-        .eq('user_id', user.user_id);
+        .or(`id.eq.${user.id},user_id.eq.${user.user_id}`)
+        .select();
 
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error('No user profile was found to update.');
+
       toast.success(`${user.full_name} is now ${!user.verified ? 'Verified' : 'Unverified'}.`);
       setUsers(prev =>
-        prev.map(u => (u.user_id === user.user_id ? { ...u, verified: !user.verified } : u))
+        prev.map(u => (u.user_id === user.user_id || u.id === user.id ? { ...u, verified: !user.verified } : u))
       );
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast.error('Failed to update verification.');
+      toast.error(e?.message || 'Failed to update verification.');
     }
   };
 
@@ -185,24 +194,67 @@ export default function UsersPage() {
     setIsProcessing(true);
     try {
       const uid = userToDelete.user_id;
+      const pid = userToDelete.id;
 
-      // Delete child rows
-      await supabase.from('swipes').delete().eq('swiper_id', uid);
-      await supabase.from('swipes').delete().eq('swiped_id', uid);
-      await supabase.from('messages').delete().eq('sender_id', uid);
-      await supabase.from('matches').delete().eq('user1_id', uid);
-      await supabase.from('matches').delete().eq('user2_id', uid);
+      // 1. Matches & messages
+      try {
+        const { data: matches } = await supabase
+          .from('matches')
+          .select('id')
+          .or(`user_a.eq.${uid},user_b.eq.${uid}`);
 
-      const { error } = await supabase.from('profiles').delete().eq('user_id', uid);
+        const matchIds = (matches || []).map((m: any) => m.id);
+        if (matchIds.length > 0) {
+          await supabase.from('messages').delete().in('match_id', matchIds);
+        }
+        await supabase.from('messages').delete().eq('sender_id', uid);
+        await supabase.from('matches').delete().or(`user_a.eq.${uid},user_b.eq.${uid}`);
+      } catch (err) {
+        console.warn('Could not clean up matches/messages:', err);
+      }
+
+      // 2. Swipes
+      try {
+        await supabase.from('swipes').delete().or(`swiper_id.eq.${uid},swiped_id.eq.${uid}`);
+      } catch (err) {
+        console.warn('Could not delete swipes:', err);
+      }
+
+      // 3. Storage
+      try {
+        const { data: files } = await supabase.storage.from('profile-photos').list(uid);
+        if (files && files.length > 0) {
+          const filePaths = files.map((f: any) => `${uid}/${f.name}`);
+          await supabase.storage.from('profile-photos').remove(filePaths);
+        }
+      } catch (err) {
+        console.warn('Could not remove storage files:', err);
+      }
+
+      // 4. Delete profile row
+      const { data: deleted, error } = await supabase
+        .from('profiles')
+        .delete()
+        .or(`id.eq.${pid},user_id.eq.${uid}`)
+        .select();
+
       if (error) throw error;
+
+      // 5. Auth user
+      try {
+        await supabase.auth.admin.deleteUser(uid);
+      } catch (err) {
+        console.warn('Could not delete auth user:', err);
+      }
 
       toast.success(`Account for ${userToDelete.full_name} has been permanently deleted.`);
       setUserToDelete(null);
-      setUsers(prev => prev.filter(u => u.user_id !== uid));
-      if (selectedUser?.user_id === uid) setSelectedUser(null);
-    } catch (e) {
+      setUsers(prev => prev.filter(u => u.user_id !== uid && u.id !== pid));
+      if (selectedUser?.user_id === uid || selectedUser?.id === pid) setSelectedUser(null);
+      await fetchUsers();
+    } catch (e: any) {
       console.error(e);
-      toast.error('Failed to delete user.');
+      toast.error(e?.message || 'Failed to delete user.');
     } finally {
       setIsProcessing(false);
     }

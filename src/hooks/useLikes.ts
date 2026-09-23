@@ -45,7 +45,7 @@ export const useLikes = () => {
             const entries: LikeEntry[] = swipes
                 .map((s: any) => {
                     const liker = profileMap.get(s.swiper_id);
-                    if (!liker) return null;
+                    if (!liker || liker.deactivated_at || !liker.is_public) return null;
                     return {
                         swipe_id: s.id,
                         direction: s.direction,

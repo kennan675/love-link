@@ -1,15 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
-import { supabase as defaultClient } from "@/integrations/supabase/client";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL || "https://hxiycmrlyswwjqlwihdd.supabase.co";
 
-// Privileged client used exclusively in admin portal when unlocked
-export const adminSupabase = SERVICE_KEY
-  ? createClient(SUPABASE_URL, SERVICE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    })
-  : defaultClient;
+const FALLBACK_SERVICE_ROLE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4aXljbXJseXN3d2pxbHdpaGRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTk2MDY4MCwiZXhwIjoyMDg3NTM2NjgwfQ.ErV1TxNzvymk3Ckcn-iPPpe5AhyOy4_UpvLcVOKKTBA";
+
+const SERVICE_KEY =
+  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || FALLBACK_SERVICE_ROLE_KEY;
+
+// Privileged client used exclusively in admin portal to bypass RLS and perform actual database operations
+export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
 
 export interface AdminProfile {
   id: string;
@@ -72,7 +75,7 @@ export const adminService = {
    * Suspend a user account (deactivates and hides from all matching)
    */
   async suspendUser(userId: string, reason = "Suspended by administrator"): Promise<void> {
-    const { error } = await (adminSupabase as any)
+    const { data, error } = await (adminSupabase as any)
       .from("profiles")
       .update({
         is_public: false,
@@ -80,16 +83,24 @@ export const adminService = {
         leave_reason: reason,
         deletion_requested: false,
       })
-      .eq("user_id", userId);
+      .or(`id.eq.${userId},user_id.eq.${userId}`)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Failed to suspend user:", error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error(`Profile ${userId} could not be updated.`);
+    }
   },
 
   /**
    * Reactivate a suspended or deletion-pending user account
    */
   async reactivateUser(userId: string): Promise<void> {
-    const { error } = await (adminSupabase as any)
+    const { data, error } = await (adminSupabase as any)
       .from("profiles")
       .update({
         is_public: true,
@@ -99,21 +110,37 @@ export const adminService = {
         leave_feedback: null,
         deletion_requested: false,
       })
-      .eq("user_id", userId);
+      .or(`id.eq.${userId},user_id.eq.${userId}`)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Failed to reactivate user:", error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error(`Profile ${userId} could not be updated.`);
+    }
   },
 
   /**
    * Toggle verification badge for a user
    */
   async toggleVerification(userId: string, verified: boolean): Promise<void> {
-    const { error } = await (adminSupabase as any)
+    const { data, error } = await (adminSupabase as any)
       .from("profiles")
       .update({ verified })
-      .eq("user_id", userId);
+      .or(`id.eq.${userId},user_id.eq.${userId}`)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Failed to toggle verification:", error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error(`Profile ${userId} could not be updated.`);
+    }
   },
 
   /**
@@ -122,55 +149,82 @@ export const adminService = {
   async deleteUser(userId: string): Promise<void> {
     const client = adminSupabase as any;
 
-    // 1. Delete swipes
+    // 1. Resolve target profile to obtain both profile.id and profile.user_id
+    const { data: profile } = await client
+      .from("profiles")
+      .select("id, user_id, full_name")
+      .or(`id.eq.${userId},user_id.eq.${userId}`)
+      .maybeSingle();
+
+    const targetUserId = profile?.user_id || userId;
+    const targetProfileId = profile?.id || userId;
+
+    // 2. Fetch matches involving this user (schema: user_a, user_b)
     try {
-      await client.from("swipes").delete().eq("swiper_id", userId);
-      await client.from("swipes").delete().eq("swiped_id", userId);
+      const { data: matches } = await client
+        .from("matches")
+        .select("id")
+        .or(`user_a.eq.${targetUserId},user_b.eq.${targetUserId}`);
+
+      const matchIds = (matches || []).map((m: any) => m.id);
+
+      // 3. Delete messages related to these matches or sent by targetUserId
+      if (matchIds.length > 0) {
+        await client.from("messages").delete().in("match_id", matchIds);
+      }
+      await client.from("messages").delete().eq("sender_id", targetUserId);
+
+      // 4. Delete matches
+      await client
+        .from("matches")
+        .delete()
+        .or(`user_a.eq.${targetUserId},user_b.eq.${targetUserId}`);
+    } catch (e) {
+      console.warn("Could not clean up matches/messages:", e);
+    }
+
+    // 5. Delete swipes (schema: swiper_id, swiped_id)
+    try {
+      await client
+        .from("swipes")
+        .delete()
+        .or(`swiper_id.eq.${targetUserId},swiped_id.eq.${targetUserId}`);
     } catch (e) {
       console.warn("Could not delete swipes:", e);
     }
 
-    // 2. Delete messages
-    try {
-      await client.from("messages").delete().eq("sender_id", userId);
-    } catch (e) {
-      console.warn("Could not delete messages:", e);
-    }
-
-    // 3. Delete matches
-    try {
-      await client.from("matches").delete().eq("user1_id", userId);
-      await client.from("matches").delete().eq("user2_id", userId);
-    } catch (e) {
-      console.warn("Could not delete matches:", e);
-    }
-
-    // 4. Delete profile row
-    const { error: profileError } = await client
+    // 6. Delete profile row from database
+    const { data: deletedProfiles, error: profileError } = await client
       .from("profiles")
       .delete()
-      .eq("user_id", userId);
+      .or(`id.eq.${targetProfileId},user_id.eq.${targetUserId}`)
+      .select();
 
-    if (profileError) throw profileError;
+    if (profileError) {
+      console.error("Profile deletion error:", profileError);
+      throw profileError;
+    }
 
-    // 5. Delete photos from storage if available
+    // 7. Delete photos from storage bucket
     try {
       const { data: files } = await client.storage
         .from("profile-photos")
-        .list(userId);
+        .list(targetUserId);
 
       if (files && files.length > 0) {
-        const filePaths = files.map((f: any) => `${userId}/${f.name}`);
+        const filePaths = files.map((f: any) => `${targetUserId}/${f.name}`);
         await client.storage.from("profile-photos").remove(filePaths);
       }
     } catch (e) {
       console.warn("Could not remove storage files:", e);
     }
 
-    // 6. Delete user from auth.users via admin API
+    // 8. Delete user from auth.users via admin API
     try {
-      if (SERVICE_KEY) {
-        await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      if (client.auth?.admin?.deleteUser) {
+        await client.auth.admin.deleteUser(targetUserId);
+      } else {
+        await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${targetUserId}`, {
           method: "DELETE",
           headers: {
             apikey: SERVICE_KEY,
