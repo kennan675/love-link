@@ -182,7 +182,7 @@ const ProfilePage = () => {
 
                   <button 
                     onClick={() => navigate('/create-profile')}
-                    className="mt-3 px-5 py-2 rounded-full bg-white dark:bg-card border border-border shadow-sm text-sm font-semibold text-foreground hover:bg-muted transition-colors active:scale-95"
+                    className="mt-3 px-5 py-2 rounded-full bg-card border border-border shadow-sm text-sm font-semibold text-foreground hover:bg-muted transition-colors active:scale-95"
                   >
                     Edit Profile
                   </button>
@@ -190,7 +190,7 @@ const ProfilePage = () => {
 
                 {/* Completeness Bar */}
                 {completeness < 100 && (
-                  <div className="mt-8 rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50 p-5">
+                  <div className="mt-8 rounded-2xl bg-card shadow-sm border border-border/50 p-5">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[15px] font-bold text-foreground">Complete your profile</p>
                       <p className="text-sm font-black text-primary">{completeness}%</p>
@@ -206,11 +206,11 @@ const ProfilePage = () => {
 
                 {/* Stats Row */}
                 <div className="mt-6 flex justify-between gap-3">
-                  <div className="flex-1 rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50 p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => navigate('/likes')}>
+                  <div className="flex-1 rounded-2xl bg-card shadow-sm border border-border/50 p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => navigate('/likes')}>
                     <p className="text-2xl font-black text-primary">{stats.likes}</p>
                     <p className="mt-0.5 text-[13px] font-semibold text-muted-foreground">Likes You</p>
                   </div>
-                  <div className="flex-1 rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50 p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => navigate('/connections')}>
+                  <div className="flex-1 rounded-2xl bg-card shadow-sm border border-border/50 p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => navigate('/connections')}>
                     <p className="text-2xl font-black text-foreground">{stats.matches}</p>
                     <p className="mt-0.5 text-[13px] font-semibold text-muted-foreground">Matches</p>
                   </div>
@@ -219,7 +219,7 @@ const ProfilePage = () => {
                 {/* Section: Premium — Hidden for free launch, restore when ready */}
                 {/* <div className="mt-8">
                   <p className="px-4 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">Premium</p>
-                  <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                  <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                     <button className="w-full relative overflow-hidden group p-5 text-left active:scale-[0.98] transition-transform">
                       <div className="absolute inset-0 gradient-gold opacity-10 group-hover:opacity-20 transition-opacity" />
                       <div className="flex items-center gap-4 relative z-10">
@@ -239,7 +239,7 @@ const ProfilePage = () => {
                 {/* Section: Account Settings */}
                 <div className="mt-8">
                   <p className="px-4 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">Account</p>
-                  <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                  <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                     <SettingsRow icon={Bell} title="Notifications" onClick={() => setActiveView('notifications')} />
                     <SettingsRow icon={Lock} title="Privacy & Security" value={prefs.is_public ? "Public" : "Hidden"} onClick={() => setActiveView('privacy')} />
                     <SettingsRow icon={CheckCircle2} title="Verification" value={profile?.verified ? "Verified" : "Pending"} onClick={() => setActiveView('verification')} />

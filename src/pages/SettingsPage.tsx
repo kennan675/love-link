@@ -195,7 +195,7 @@ const SettingsPage = () => {
                                     <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
                                         Support & Safety
                                     </p>
-                                    <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                                    <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                                         <Row
                                             icon={Shield}
                                             title="Safety Center"
@@ -216,7 +216,7 @@ const SettingsPage = () => {
                                     <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
                                         Privacy & Data
                                     </p>
-                                    <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                                    <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                                         <Row
                                             icon={Shield}
                                             title="My Privacy Requests"
@@ -237,7 +237,7 @@ const SettingsPage = () => {
                                     <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
                                         Account
                                     </p>
-                                    <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                                    <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                                         <Row
                                             icon={LogOut}
                                             title="Log Out"
@@ -252,7 +252,7 @@ const SettingsPage = () => {
                                     <p className="px-1 text-[13px] font-bold uppercase tracking-wider text-muted-foreground/70 mb-2">
                                         Account Management
                                     </p>
-                                    <div className="overflow-hidden rounded-2xl bg-white dark:bg-card shadow-sm border border-border/50">
+                                    <div className="overflow-hidden rounded-2xl bg-card shadow-sm border border-border/50">
                                         <Row
                                             icon={PauseCircle}
                                             title="Deactivate or Delete Account"
