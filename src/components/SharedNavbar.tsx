@@ -114,7 +114,7 @@ const SharedNavbar = () => {
                         transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
                     >
                         <Link
-                            to="/auth"
+                            to="/auth?mode=signin"
                             className="group relative overflow-hidden rounded-full gradient-brand px-6 py-2.5 text-sm font-bold text-primary-foreground shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105 whitespace-nowrap"
                         >
                             <span className="relative z-10">{t.nav.signIn}</span>

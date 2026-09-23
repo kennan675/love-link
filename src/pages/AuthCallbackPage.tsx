@@ -30,9 +30,9 @@ const AuthCallbackPage = () => {
             done = true;
             try {
                 const status = await getProfileStatus(userId);
-                navigate(status === "complete" ? "/swipe" : "/create-profile", { replace: true });
+                navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
             } catch {
-                navigate("/create-profile", { replace: true });
+                navigate("/auth?step=onboard-you", { replace: true });
             }
         };
 

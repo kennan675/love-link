@@ -14,7 +14,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: brokeredPreviewStorage(),
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true,   // parses #access_token from OAuth/magic-link redirects
-    flowType: 'implicit',       // Google OAuth uses the implicit (hash) flow
+    detectSessionInUrl: true,   // parses ?code= from PKCE OAuth redirects
+    flowType: 'pkce',           // modern, reliable on Capacitor WebViews
   }
 });

@@ -144,7 +144,7 @@ const Index = () => {
               transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
             >
               <Link
-                to="/auth"
+                to="/auth?mode=signin"
                 className="group relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full gradient-brand px-6 py-2.5 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
               >
                 <span className="relative z-10">{t.nav.signIn}</span>
@@ -300,7 +300,7 @@ const Index = () => {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              to="/auth"
+              to="/auth?mode=signup"
               className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
             >
               {t.hero.startJourney}
@@ -569,7 +569,7 @@ const Index = () => {
                 {t.connection.description}
               </p>
               <Link
-                to="/auth"
+                to="/auth?mode=signup"
                 className="mt-10 inline-block rounded-full gradient-brand px-10 py-4 text-base font-bold text-primary-foreground shadow-button transition-all hover:scale-105"
               >
                 {t.connection.cta}
