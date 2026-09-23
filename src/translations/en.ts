@@ -8,7 +8,7 @@ export const en = {
         trustSafety: 'Trust & Safety',
         support: 'Support',
         language: 'Language',
-        signIn: 'Sign In',
+        signIn: 'Sign Up',
     },
 
     // Hero Section

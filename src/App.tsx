@@ -55,7 +55,8 @@ const App = () => {
   const handleSplashFinished = useCallback(() => setShowSplash(false), []);
 
   useEffect(() => {
-    document.documentElement.classList.remove('dark');
+    // Always-dark: Obsidian & Gold theme applied globally.
+    document.documentElement.classList.add('dark');
   }, []);
 
   return (

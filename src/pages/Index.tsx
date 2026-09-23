@@ -62,7 +62,7 @@ const Index = () => {
           {/* Logo — always visible on any background */}
           <Link to="/" className="group relative z-50 flex shrink-0 items-center rounded-full px-4 py-2 transition-all duration-300">
             <span className="font-serif italic text-lg font-semibold leading-none tracking-tight whitespace-nowrap">
-              <span className="text-black">black</span>
+              <span className="text-black dark:text-foreground">black</span>
               <span className="text-primary">love</span>
               <span className="text-secondary">link</span>
             </span>
