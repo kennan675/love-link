@@ -8,13 +8,13 @@ export const en = {
         trustSafety: 'Trust & Safety',
         support: 'Support',
         language: 'Language',
-        signIn: 'Sign Up',
+        signIn: 'Sign In',
     },
 
     // Hero Section
     hero: {
         title: 'BlackLoveLink',
-        startJourney: 'Start Your Journey',
+        startJourney: 'Sign Up',
         learnMore: 'Learn More',
     },
 
