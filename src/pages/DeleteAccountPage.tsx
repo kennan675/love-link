@@ -24,7 +24,7 @@ const DeleteAccountPage = () => {
     setIsSubmitting(true);
     try {
       // Check if user exists and flag for deletion
-      const { data: profiles } = await supabase
+      const { data: profiles } = await (supabase as any)
         .from("profiles")
         .select("user_id")
         .eq("email", email.trim().toLowerCase())
@@ -34,7 +34,7 @@ const DeleteAccountPage = () => {
         const scheduledDeletion = new Date();
         scheduledDeletion.setDate(scheduledDeletion.getDate() + 30);
 
-        await supabase.from("profiles").update({
+        await (supabase as any).from("profiles").update({
           is_public: false,
           // @ts-ignore
           deactivated_at: new Date().toISOString(),
