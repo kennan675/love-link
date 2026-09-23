@@ -263,10 +263,9 @@ const Index = () => {
           alt="Black couple celebrating together in a sunlit field"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        {/* Sage-toned veil mirrors the supplied reference while keeping the photograph clear. */}
-        <div className="absolute inset-0 bg-foreground/45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/25 via-transparent to-background/20" />
-        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-background/35 to-transparent" />
+        {/* Overlay — identical to the stats section below */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10" />
 
         <div className="relative z-10 text-center px-4">
           <motion.div

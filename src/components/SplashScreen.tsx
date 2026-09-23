@@ -23,7 +23,7 @@ const SplashScreen = ({ onFinished }: SplashScreenProps) => {
       // Smooth cinematic exit: fade out + very slight scale up
       transition={{ duration: 0 }}
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "hsl(var(--background))" }}
+      style={{ background: "#ffffff" }}
     >
       {/* Wrap everything so we can fade the whole scene out at t=2.4s */}
       <motion.div
@@ -77,7 +77,7 @@ const SplashScreen = ({ onFinished }: SplashScreenProps) => {
         {/* Progress bar — fills linearly from 0 → 100% over 1.8s */}
         <motion.div
           className="relative z-10 mt-10 h-[3px] w-44 rounded-full overflow-hidden"
-          style={{ background: "hsl(var(--muted))" }}
+          style={{ background: "#e5e7eb" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.3 }}
