@@ -22,14 +22,15 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 220 15% 10%;
+    /* Soft eucalyptus canvas inspired by the homepage couple photograph. */
+    --background: 91 13% 89%;
+    --foreground: 135 12% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 10%;
+    --card: 88 15% 94%;
+    --card-foreground: 135 12% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 10%;
+    --popover: 88 15% 94%;
+    --popover-foreground: 135 12% 12%;
 
     --primary: 0 86% 43%;
     --primary-foreground: 0 0% 100%;
@@ -37,8 +38,8 @@
     --secondary: 43 90% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 14% 95%;
-    --muted-foreground: 220 10% 40%;
+    --muted: 91 12% 84%;
+    --muted-foreground: 120 7% 36%;
 
     --accent: 43 85% 40%;
     --accent-foreground: 0 0% 100%;
@@ -46,8 +47,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
+    --border: 92 10% 75%;
+    --input: 92 10% 75%;
     --ring: 0 80% 48%;
 
     --radius: 0.75rem;
@@ -66,13 +67,13 @@
     --font-display: 'Plus Jakarta Sans', sans-serif;
     --font-serif: 'Playfair Display', serif;
 
-    --sidebar-background: 0 0% 99%;
-    --sidebar-foreground: 220 15% 10%;
+    --sidebar-background: 91 13% 89%;
+    --sidebar-foreground: 135 12% 12%;
     --sidebar-primary: 38 90% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 95%;
-    --sidebar-accent-foreground: 220 15% 10%;
-    --sidebar-border: 220 13% 88%;
+    --sidebar-accent: 91 12% 84%;
+    --sidebar-accent-foreground: 135 12% 12%;
+    --sidebar-border: 92 10% 75%;
     --sidebar-ring: 38 90% 45%;
   }
 

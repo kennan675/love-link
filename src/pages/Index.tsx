@@ -4,7 +4,6 @@ import { Flame, ChevronDown, Globe, Sparkles, GraduationCap, Handshake } from "l
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
-import heroBg from "@/assets/hero-bg.png";
 import coupleHero from "@/assets/couple-hero.png";
 import profile1 from "@/assets/profile-1.png";
 import profile2 from "@/assets/profile-2.png";
@@ -260,16 +259,14 @@ const Index = () => {
       <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden">
         {/* Hero image with refined clarity */}
         <img
-          src={heroBg}
-          alt="Black professionals connecting on BlackLoveLink"
-          className="absolute inset-0 h-full w-full object-cover opacity-95"
+          src={coupleHero}
+          alt="Black couple celebrating together in a sunlit field"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        {/* Clear overlay — subtle light wash keeps the photo crystal clear and text crisp */}
-        <div className="absolute inset-0 bg-white/10" />
-        {/* Brand color tint — gentle warm-gold/red glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-        {/* Bottom fade keeps lower text readable with a gentle transition */}
-        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-white/25 to-transparent" />
+        {/* Sage-toned veil mirrors the supplied reference while keeping the photograph clear. */}
+        <div className="absolute inset-0 bg-foreground/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/25 via-transparent to-background/20" />
+        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-background/35 to-transparent" />
 
         <div className="relative z-10 text-center px-4">
           <motion.div
