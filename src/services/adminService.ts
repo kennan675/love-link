@@ -1,18 +1,20 @@
 import { createClient } from "@supabase/supabase-js";
+import { supabase as defaultClient } from "@/integrations/supabase/client";
 
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || "https://hxiycmrlyswwjqlwihdd.supabase.co";
 
-const FALLBACK_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4aXljbXJseXN3d2pxbHdpaGRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTk2MDY4MCwiZXhwIjoyMDg3NTM2NjgwfQ.ErV1TxNzvymk3Ckcn-iPPpe5AhyOy4_UpvLcVOKKTBA";
+// IMPORTANT: VITE_SUPABASE_SERVICE_ROLE_KEY must be set in your hosting platform's
+// environment variables (Vercel/Netlify). NEVER hardcode this key in source code.
+const SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined;
 
-const SERVICE_KEY =
-  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || FALLBACK_SERVICE_ROLE_KEY;
-
-// Privileged client used exclusively in admin portal to bypass RLS and perform actual database operations
-export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+// Privileged client used exclusively in the password-protected admin portal.
+// Falls back to the public client if the service role key is not set (actions will fail with RLS errors).
+export const adminSupabase = SERVICE_KEY
+  ? createClient(SUPABASE_URL, SERVICE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : (defaultClient as any);
 
 export interface AdminProfile {
   id: string;
