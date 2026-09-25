@@ -57,7 +57,7 @@ const SupportPage = () => {
         {
             icon: MessageCircle,
             title: "Live Chat",
-            description: "Available Mon-Fri, 9AM-6PM ET",
+            description: "Available Mon–Fri, 9:00 a.m.–6:00 p.m. ET",
             action: "Start Chat",
             color: "from-secondary to-primary",
             onClick: () => window.dispatchEvent(new CustomEvent("open-chatbot"))

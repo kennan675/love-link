@@ -1,16 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Heart, Mail, MessageCircle, Shield, ArrowUpRight, Instagram, Youtube, Facebook, Twitter } from "lucide-react";
+import { Heart, Mail, MessageCircle, Shield, ArrowUpRight, Instagram, Youtube, Facebook } from "lucide-react";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
-
-const socialLinks = [
-  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/blacklove.link/" },
-  { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@blacklove.link" },
-  { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@blacklovelink" },
-  { icon: Facebook, label: "Facebook", href: "https://web.facebook.com/people/Black-Love-Link/61594268287175/" },
-  { icon: Twitter, label: "X", href: "https://www.x.com/blacklovelimit" },
-];
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -19,6 +11,23 @@ function TikTokIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+const socialLinks = [
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/blacklove.link/" },
+  { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@blacklove.link" },
+  { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@blacklovelink" },
+  { icon: Facebook, label: "Facebook", href: "https://web.facebook.com/people/Black-Love-Link/61594268287175/" },
+  { icon: XIcon, label: "X", href: "https://www.x.com/blacklovelimit" },
+];
+
 
 const footerLinks = {
   platform: [
