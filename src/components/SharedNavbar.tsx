@@ -98,8 +98,9 @@ const SharedNavbar = () => {
 
                 {/* Right Side */}
                 <div className="flex shrink-0 items-center gap-2">
-                    {/* Social Icons — desktop only */}
-                    <div className="hidden lg:flex items-center gap-1 mr-1">
+
+                    {/* Social Icons — desktop */}
+                    <div className="hidden lg:flex items-center gap-0.5">
                         {socialLinks.map(({ icon: Icon, label, href }) => (
                             <a
                                 key={label}
@@ -114,10 +115,13 @@ const SharedNavbar = () => {
                         ))}
                     </div>
 
+                    {/* Divider */}
+                    <div className="hidden lg:block w-px h-5 bg-border mx-1" />
+
                     {/* Language Dropdown */}
                     <div className="relative group hidden md:block">
                         <motion.button
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-foreground/80 bg-muted/50 backdrop-blur-md border border-border transition-all duration-300 hover:bg-muted hover:border-border"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-foreground/70 bg-muted/40 backdrop-blur-md border border-border/60 transition-all duration-300 hover:bg-muted hover:text-foreground"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -147,26 +151,6 @@ const SharedNavbar = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Sign In / Sign Up Button */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-                    >
-                        <Link
-                            to="/auth"
-                            className="group relative overflow-hidden rounded-full gradient-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105 whitespace-nowrap"
-                        >
-                            <span className="relative z-10">Sign In / Sign Up</span>
-                            <motion.span
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                                initial={{ x: "-100%" }}
-                                whileHover={{ x: "100%" }}
-                                transition={{ duration: 0.6 }}
-                            />
-                        </Link>
-                    </motion.div>
 
                     {/* Mobile Menu Button */}
                     <motion.button
@@ -224,7 +208,7 @@ const SharedNavbar = () => {
                             ))}
 
                             {/* Social icons in mobile menu */}
-                            <div className="flex items-center gap-2 pt-4 px-4">
+                            <div className="flex items-center gap-2 pt-4 px-2">
                                 {socialLinks.map(({ icon: Icon, label, href }) => (
                                     <a
                                         key={label}
@@ -237,17 +221,6 @@ const SharedNavbar = () => {
                                         <Icon className="h-4 w-4" />
                                     </a>
                                 ))}
-                            </div>
-
-                            {/* Sign In / Sign Up button in mobile menu */}
-                            <div className="pt-2 px-4">
-                                <Link
-                                    to="/auth"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block w-full text-center rounded-full gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-button"
-                                >
-                                    Sign In / Sign Up
-                                </Link>
                             </div>
                         </div>
                     </motion.div>

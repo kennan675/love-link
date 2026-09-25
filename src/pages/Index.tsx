@@ -121,10 +121,10 @@ const Index = () => {
           </div>
 
 
-          {/* Right Side - Socials, Language & CTA */}
+          {/* Right Side - Socials & Language */}
           <div className="flex shrink-0 items-center gap-2">
             {/* Social Icons — desktop only */}
-            <div className="hidden lg:flex items-center gap-1 mr-1">
+            <div className="hidden lg:flex items-center gap-0.5">
               {homeSocialLinks.map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
@@ -132,12 +132,15 @@ const Index = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-white/60 transition-all duration-200 hover:text-white hover:bg-white/10"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground/60 transition-all duration-200 hover:text-foreground hover:bg-muted/60"
                 >
                   <Icon className="h-3.5 w-3.5" />
                 </a>
               ))}
             </div>
+
+            {/* Divider */}
+            <div className="hidden lg:block w-px h-5 bg-border/60 mx-1" />
 
             {/* Language Dropdown */}
             <div className="relative group hidden md:block">
@@ -177,26 +180,6 @@ const Index = () => {
                 </div>
               </motion.div>
             </div>
-
-            {/* Sign In / Sign Up Button */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-            >
-              <Link
-                to="/auth"
-                className="group relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full gradient-brand px-5 py-2.5 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
-              >
-                <span className="relative z-10">Sign In / Sign Up</span>
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.6 }}
-                />
-              </Link>
-            </motion.div>
 
             {/* Mobile Menu Button */}
             <motion.button
@@ -293,7 +276,7 @@ const Index = () => {
                 </motion.div>
 
                 {/* Social icons in mobile menu */}
-                <div className="flex items-center gap-2 pt-4 px-4">
+                <div className="flex items-center gap-2 pt-4 px-2">
                   {homeSocialLinks.map(({ icon: Icon, label, href }) => (
                     <a
                       key={label}
@@ -306,17 +289,6 @@ const Index = () => {
                       <Icon className="h-4 w-4" />
                     </a>
                   ))}
-                </div>
-
-                {/* Sign In / Sign Up button in mobile menu */}
-                <div className="pt-2 px-4">
-                  <Link
-                    to="/auth"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center rounded-full gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-button"
-                  >
-                    Sign In / Sign Up
-                  </Link>
                 </div>
               </div>
             </motion.div>
