@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "@/components/SEO";
-import { Flame, ChevronDown, Globe, Sparkles, GraduationCap, Handshake } from "lucide-react";
+import { Flame, ChevronDown, Globe, Sparkles, GraduationCap, Handshake, Instagram, Youtube, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,31 @@ import { usePlatformStats } from "@/hooks/usePlatformStats";
 import { Language, languageNames } from "@/contexts/LanguageContext";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import InstallPrompt from "@/components/InstallPrompt";
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.2v12.55a3.04 3.04 0 0 1-3.04 2.86 3.04 3.04 0 0 1-3.04-3.04 3.04 3.04 0 0 1 3.04-3.04c.3 0 .6.04.88.13V8.3a6.4 6.4 0 0 0-.88-.06A6.25 6.25 0 0 0 3.33 14.5a6.25 6.25 0 0 0 6.25 6.25 6.25 6.25 0 0 0 6.25-6.25V8.66a8.03 8.03 0 0 0 4.7 1.51V6.98a4.85 4.85 0 0 1-.94-.29z" />
+    </svg>
+  );
+}
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+const homeSocialLinks = [
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/blacklove.link/" },
+  { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@blacklove.link" },
+  { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@blacklovelink" },
+  { icon: Facebook, label: "Facebook", href: "https://web.facebook.com/people/Black-Love-Link/61594268287175/" },
+  { icon: XIcon, label: "X", href: "https://www.x.com/blacklovelimit" },
+];
+
 
 
 const Index = () => {
@@ -96,8 +121,24 @@ const Index = () => {
           </div>
 
 
-          {/* Right Side - Language & CTA */}
+          {/* Right Side - Socials, Language & CTA */}
           <div className="flex shrink-0 items-center gap-2">
+            {/* Social Icons — desktop only */}
+            <div className="hidden lg:flex items-center gap-1 mr-1">
+              {homeSocialLinks.map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-white/60 transition-all duration-200 hover:text-white hover:bg-white/10"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </a>
+              ))}
+            </div>
+
             {/* Language Dropdown */}
             <div className="relative group hidden md:block">
               <motion.button
@@ -106,7 +147,7 @@ const Index = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 <Globe className="h-4 w-4" />
-                <span className="hidden lg:inline font-medium">{t.nav.language}</span>
+                <span className="hidden xl:inline font-medium">{t.nav.language}</span>
                 <ChevronDown className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-180" />
               </motion.button>
 
@@ -137,17 +178,17 @@ const Index = () => {
               </motion.div>
             </div>
 
-            {/* Sign In Button */}
+            {/* Sign In / Sign Up Button */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
             >
               <Link
-                to="/auth?mode=signin"
-                className="group relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full gradient-brand px-6 py-2.5 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
+                to="/auth"
+                className="group relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full gradient-brand px-5 py-2.5 text-sm font-bold text-white shadow-button transition-all duration-300 hover:opacity-90 hover:scale-105"
               >
-                <span className="relative z-10">{t.nav.signIn}</span>
+                <span className="relative z-10">Sign In / Sign Up</span>
                 <motion.span
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                   initial={{ x: '-100%' }}
@@ -250,6 +291,33 @@ const Index = () => {
                     Contact
                   </Link>
                 </motion.div>
+
+                {/* Social icons in mobile menu */}
+                <div className="flex items-center gap-2 pt-4 px-4">
+                  {homeSocialLinks.map(({ icon: Icon, label, href }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 border border-border text-muted-foreground transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+
+                {/* Sign In / Sign Up button in mobile menu */}
+                <div className="pt-2 px-4">
+                  <Link
+                    to="/auth"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center rounded-full gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-button"
+                  >
+                    Sign In / Sign Up
+                  </Link>
+                </div>
               </div>
             </motion.div>
           )}
@@ -300,10 +368,10 @@ const Index = () => {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              to="/auth?mode=signup"
+              to="/auth"
               className="gradient-brand inline-block rounded-full px-10 py-4 text-lg font-bold text-primary-foreground shadow-button transition-transform hover:scale-105"
             >
-              {t.hero.startJourney}
+              Sign In / Sign Up
             </Link>
             <a
               href="#mission"
