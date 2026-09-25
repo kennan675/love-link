@@ -48,6 +48,8 @@ import DashboardPage from "./pages/admin/DashboardPage";
 import AdminMessagesPage from "./pages/admin/MessagesPage";
 import AdminUsersPage from "./pages/admin/UsersPage";
 
+import ScrollToTop from "@/components/ScrollToTop";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -67,6 +69,7 @@ const App = () => {
           <Sonner />
           {showSplash && <SplashScreen onFinished={handleSplashFinished} />}
           <BrowserRouter>
+            <ScrollToTop />
             <GlobalSwipeNavigation>
               <Routes>
               {/* Public routes */}

@@ -118,7 +118,7 @@ const SwipePage = () => {
             </div>
             {!loading && visibleProfiles.length > 0 && (
               <span className="text-xs text-primary-foreground bg-white/25 backdrop-blur-sm px-3 py-1.5 rounded-full font-bold">
-                {visibleProfiles.length} nearby
+                {visibleProfiles.length} Profiles
               </span>
             )}
           </motion.div>

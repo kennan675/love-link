@@ -1,7 +1,7 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   Heart, Users, MessageCircle, User as UserIcon,
-  Settings, ShieldCheck, Sparkles, BookOpen, HelpCircle,
+  Settings, ShieldCheck, BookOpen, HelpCircle,
 } from "lucide-react";
 
 // Custom BlackLoveLink discover icon — two interlocking rings (matches TopNav)
@@ -27,7 +27,6 @@ const primary = [
 ];
 
 const shortcuts = [
-  { to: "/connections",   icon: Sparkles,   label: "Smart matches"   },
   { to: "/education",     icon: BookOpen,   label: "Relationship hub" },
   { to: "/trust-safety",  icon: ShieldCheck,label: "Trust & safety"  },
   { to: "/support",       icon: HelpCircle, label: "Help center"     },
