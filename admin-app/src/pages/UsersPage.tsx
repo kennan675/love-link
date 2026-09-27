@@ -239,6 +239,9 @@ export default function UsersPage() {
         .select();
 
       if (error) throw error;
+      if (!deleted || deleted.length === 0) {
+        throw new Error('Profile row could not be deleted. Please verify admin privileges.');
+      }
 
       // 5. Auth user
       try {

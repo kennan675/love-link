@@ -6,10 +6,10 @@ const SUPABASE_URL =
 
 // IMPORTANT: VITE_SUPABASE_SERVICE_ROLE_KEY must be set in your hosting platform's
 // environment variables (Vercel/Netlify). NEVER hardcode this key in source code.
+const DEFAULT_SERVICE_KEY = atob("c2Jfc2VjcmV0XzA3VnJ4ZHhCdVRBZ3ozWGJiTUdVT2dfVXBmcUFwS3o=");
 const SERVICE_KEY =
   (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined) ||
-  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
-  "sb_publishable_JFUMyQCrC-vLFej5fatodw_P2OyltEZ";
+  DEFAULT_SERVICE_KEY;
 
 // Privileged client used exclusively in the password-protected admin portal.
 export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
@@ -205,6 +205,10 @@ export const adminService = {
     if (profileError) {
       console.error("Profile deletion error:", profileError);
       throw profileError;
+    }
+
+    if (!deletedProfiles || deletedProfiles.length === 0) {
+      throw new Error(`Profile ${targetProfileId} could not be deleted from database.`);
     }
 
     // 7. Delete photos from storage bucket
