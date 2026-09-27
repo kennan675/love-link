@@ -29,40 +29,53 @@ export function useDeepLinkAuth() {
       // Check if this is an auth callback
       if (urlStr.includes("auth/callback") || urlStr.includes("com.blacklovelink.app")) {
         try {
+          let authedUser: { id: string } | null = null;
+
           // Case 1: PKCE code exchange (?code=...)
-          if (urlStr.includes("code=")) {
-            const normalized = urlStr.replace("com.blacklovelink.app://", "https://localhost/");
-            const urlObj = new URL(normalized);
-            const code = urlObj.searchParams.get("code");
-            if (code) {
+          const codeMatch = urlStr.match(/[?&]code=([^&#]+)/);
+          if (codeMatch) {
+            const code = decodeURIComponent(codeMatch[1]);
+            try {
               const { data, error } = await supabase.auth.exchangeCodeForSession(code);
               if (!error && data?.session?.user) {
-                const status = await getProfileStatus(data.session.user.id);
-                navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
-                return;
+                authedUser = data.session.user;
               }
+            } catch (err) {
+              console.warn("PKCE exchange error, trying fallback session:", err);
             }
           }
 
           // Case 2: Implicit token hash (#access_token=...&refresh_token=...)
-          if (urlStr.includes("access_token=")) {
-            const rawHash = urlStr.includes("#") ? urlStr.split("#")[1] : urlStr.split("?")[1];
-            if (rawHash) {
-              const params = new URLSearchParams(rawHash);
-              const access_token = params.get("access_token");
-              const refresh_token = params.get("refresh_token");
-              if (access_token && refresh_token) {
-                const { data, error } = await supabase.auth.setSession({
-                  access_token,
-                  refresh_token,
-                });
-                if (!error && data?.session?.user) {
-                  const status = await getProfileStatus(data.session.user.id);
-                  navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
-                  return;
-                }
+          const accessMatch = urlStr.match(/[#?&]access_token=([^&#]+)/);
+          const refreshMatch = urlStr.match(/[#?&]refresh_token=([^&#]+)/);
+          if (!authedUser && accessMatch && refreshMatch) {
+            const access_token = decodeURIComponent(accessMatch[1]);
+            const refresh_token = decodeURIComponent(refreshMatch[1]);
+            try {
+              const { data, error } = await supabase.auth.setSession({
+                access_token,
+                refresh_token,
+              });
+              if (!error && data?.session?.user) {
+                authedUser = data.session.user;
               }
+            } catch (err) {
+              console.warn("setSession error:", err);
             }
+          }
+
+          // Fallback: check if session is already stored/refreshed
+          if (!authedUser) {
+            const { data } = await supabase.auth.getSession();
+            if (data?.session?.user) {
+              authedUser = data.session.user;
+            }
+          }
+
+          if (authedUser) {
+            const status = await getProfileStatus(authedUser.id);
+            navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
+            return;
           }
         } catch (err) {
           console.error("Deep link auth error:", err);

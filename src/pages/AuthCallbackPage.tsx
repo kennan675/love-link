@@ -14,6 +14,7 @@ import { getProfileStatus } from "@/services/profileStatus";
 const AuthCallbackPage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
+    const [tokens, setTokens] = useState<{ access: string; refresh: string } | null>(null);
 
     useEffect(() => {
         let done = false;
@@ -29,11 +30,21 @@ const AuthCallbackPage = () => {
             }
         }
 
-        const finish = async (userId: string) => {
+        const finish = async (session: any) => {
             if (done) return;
             done = true;
+
+            // If on mobile browser, also bounce tokens into app via deep link hash
+            if (isMobile && session?.access_token && session?.refresh_token && !window.location.origin.includes("localhost")) {
+                try {
+                    window.location.href = `com.blacklovelink.app://auth/callback#access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
+                } catch (e) {
+                    console.warn("Could not bounce token deep link:", e);
+                }
+            }
+
             try {
-                const status = await getProfileStatus(userId);
+                const status = await getProfileStatus(session.user.id);
                 navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
             } catch {
                 navigate("/auth?step=onboard-you", { replace: true });
@@ -43,7 +54,10 @@ const AuthCallbackPage = () => {
         // Primary: listen for the session event fired after token exchange
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if ((event === "INITIAL_SESSION" || event === "SIGNED_IN") && session?.user) {
-                finish(session.user.id);
+                if (session.access_token && session.refresh_token) {
+                    setTokens({ access: session.access_token, refresh: session.refresh_token });
+                }
+                finish(session);
             } else if (event === "INITIAL_SESSION" && !session) {
                 // Token exchange failed or no session — send back to auth
                 if (!done) {
@@ -55,7 +69,12 @@ const AuthCallbackPage = () => {
 
         // Fallback: if session is already in storage (e.g. back-button scenario)
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) finish(session.user.id);
+            if (session?.user) {
+                if (session.access_token && session.refresh_token) {
+                    setTokens({ access: session.access_token, refresh: session.refresh_token });
+                }
+                finish(session);
+            }
         });
 
         // Safety timeout — if nothing happens in 8s, send back to auth
@@ -99,7 +118,7 @@ const AuthCallbackPage = () => {
                     </div>
                     {/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.location.origin.includes("localhost") && (
                         <a
-                            href={`com.blacklovelink.app://auth/callback${window.location.search}${window.location.hash}`}
+                            href={tokens ? `com.blacklovelink.app://auth/callback#access_token=${encodeURIComponent(tokens.access)}&refresh_token=${encodeURIComponent(tokens.refresh)}` : `com.blacklovelink.app://auth/callback${window.location.search}${window.location.hash}`}
                             className="mt-3 px-5 py-2.5 rounded-xl border border-primary/40 bg-primary/10 text-primary font-medium text-xs hover:bg-primary/20 transition"
                         >
                             Open in BlackLoveLink App

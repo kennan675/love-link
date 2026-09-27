@@ -96,25 +96,38 @@ const AuthPage = () => {
 
   /* ─── Redirect already-logged-in users ───────────────────────── */
   useEffect(() => {
+    const handleUserSession = async (user: { id: string; user_metadata?: any }) => {
+      const metaName = user.user_metadata?.full_name || user.user_metadata?.name || "";
+      if (metaName) {
+        setFullName((prev) => prev || metaName);
+      }
+
+      const status = await getProfileStatus(user.id);
+      if (status === "complete") {
+        navigate("/swipe", { replace: true });
+      } else {
+        setStep("onboard-you");
+      }
+    };
+
+    // Check existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        // Pre-fill name from Google OAuth metadata if available
-        const metaName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || "";
-        if (metaName) {
-          setFullName((prev) => prev || metaName);
-        }
-
-        getProfileStatus(session.user.id).then(status => {
-          if (status === "complete") {
-            navigate("/swipe", { replace: true });
-          } else {
-            setStep("onboard-you");
-          }
-        });
+        handleUserSession(session.user);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    // Also listen for auth state changes (e.g. Google OAuth deep link completion)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session?.user) {
+        handleUserSession(session.user);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const fadeUp = {
     initial: { opacity: 0, y: 24 },
