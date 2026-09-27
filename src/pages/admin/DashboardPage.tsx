@@ -22,13 +22,17 @@ const INTENT_COLORS = [GOLD, BRAND_RED, EMERALD, AMBER, PURPLE, ROSE];
 const DashboardPage = () => {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const loadStats = async () => {
+    setLoading(true);
+    setErrorMsg(null);
     try {
       const data = await adminService.fetchStats();
       setStats(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching admin stats:", err);
+      setErrorMsg(err?.message || "Failed to load admin stats. Please check network connection.");
     } finally {
       setLoading(false);
     }
@@ -40,8 +44,27 @@ const DashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-3">
         <div className="w-8 h-8 border-3 border-secondary/20 border-t-secondary rounded-full animate-spin" />
+        <p className="text-xs text-muted-foreground font-medium animate-pulse">Loading platform statistics…</p>
+      </div>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-4 text-center max-w-md mx-auto p-6 bg-card border border-destructive/30 rounded-3xl">
+        <AlertTriangle className="w-10 h-10 text-destructive" />
+        <div>
+          <h2 className="text-lg font-bold text-foreground">Could not load dashboard</h2>
+          <p className="text-xs text-muted-foreground mt-1">{errorMsg}</p>
+        </div>
+        <button
+          onClick={loadStats}
+          className="px-5 py-2.5 rounded-xl gradient-brand text-white font-bold text-xs shadow-button hover:opacity-90 transition-opacity"
+        >
+          Try Again
+        </button>
       </div>
     );
   }
@@ -181,46 +204,54 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={genderData}
-                  innerRadius={65}
-                  outerRadius={85}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {genderData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <RechartsTooltip
-                  contentStyle={{
-                    backgroundColor: "#171513",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: "12px",
-                    color: "#f5f5f4",
-                    fontSize: "12px",
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-6 mt-4 pt-4 border-t border-border/60">
-            {genderData.map((d) => (
-              <div key={d.name} className="flex items-center gap-2">
-                <span
-                  className="w-3 h-3 rounded-full shrink-0"
-                  style={{ backgroundColor: d.color }}
-                />
-                <span className="text-xs font-semibold text-foreground">
-                  {d.name} <span className="text-muted-foreground">({d.value})</span>
-                </span>
+          {genderData.length > 0 ? (
+            <>
+              <div className="h-[250px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={genderData}
+                      innerRadius={65}
+                      outerRadius={85}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {genderData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip
+                      contentStyle={{
+                        backgroundColor: "#171513",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "12px",
+                        color: "#f5f5f4",
+                        fontSize: "12px",
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+
+              <div className="flex flex-wrap justify-center gap-6 mt-4 pt-4 border-t border-border/60">
+                {genderData.map((d) => (
+                  <div key={d.name} className="flex items-center gap-2">
+                    <span
+                      className="w-3 h-3 rounded-full shrink-0"
+                      style={{ backgroundColor: d.color }}
+                    />
+                    <span className="text-xs font-semibold text-foreground">
+                      {d.name} <span className="text-muted-foreground">({d.value})</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="h-[250px] flex items-center justify-center text-sm text-muted-foreground">
+              No demographic data recorded yet.
+            </div>
+          )}
         </div>
 
         {/* Relationship Intent */}
@@ -234,37 +265,44 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={intentData}
-                  outerRadius={85}
-                  dataKey="value"
-                  label={({ name, percent }) =>
-                    `${name ? name.split(" ")[0] : "Other"} ${(percent * 100).toFixed(0)}%`
-                  }
-                  labelLine={false}
-                >
-                  {intentData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={INTENT_COLORS[index % INTENT_COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <RechartsTooltip
-                  contentStyle={{
-                    backgroundColor: "#171513",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: "12px",
-                    color: "#f5f5f4",
-                    fontSize: "12px",
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          {intentData.length > 0 ? (
+            <div className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={intentData}
+                    outerRadius={85}
+                    dataKey="value"
+                    label={({ name, percent }) => {
+                      const p = typeof percent === "number" && !isNaN(percent) ? (percent * 100).toFixed(0) : "0";
+                      return `${name ? name.split(" ")[0] : "Other"} ${p}%`;
+                    }}
+                    labelLine={false}
+                  >
+                    {intentData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={INTENT_COLORS[index % INTENT_COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip
+                    contentStyle={{
+                      backgroundColor: "#171513",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: "12px",
+                      color: "#f5f5f4",
+                      fontSize: "12px",
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="h-[250px] flex items-center justify-center text-sm text-muted-foreground">
+              No intent data recorded yet.
+            </div>
+          )}
 
           <div className="flex flex-wrap justify-center gap-4 mt-4 pt-4 border-t border-border/60">
             {intentData.map((d, i) => (

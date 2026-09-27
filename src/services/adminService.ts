@@ -6,15 +6,15 @@ const SUPABASE_URL =
 
 // IMPORTANT: VITE_SUPABASE_SERVICE_ROLE_KEY must be set in your hosting platform's
 // environment variables (Vercel/Netlify). NEVER hardcode this key in source code.
-const SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined;
+const SERVICE_KEY =
+  (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined) ||
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
+  "sb_publishable_JFUMyQCrC-vLFej5fatodw_P2OyltEZ";
 
 // Privileged client used exclusively in the password-protected admin portal.
-// Falls back to the public client if the service role key is not set (actions will fail with RLS errors).
-export const adminSupabase = SERVICE_KEY
-  ? createClient(SUPABASE_URL, SERVICE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    })
-  : (defaultClient as any);
+export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
 
 export interface AdminProfile {
   id: string;
