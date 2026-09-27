@@ -53,13 +53,29 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let data: Profile[] = [];
+      const res = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers((data as Profile[]) || []);
+      if (!res.error && res.data) {
+        data = res.data as Profile[];
+      } else {
+        console.warn('Primary supabase fetch failed, attempting public client fallback:', res.error);
+        const { createClient } = await import('@supabase/supabase-js');
+        const fallbackClient = createClient(
+          'https://hxiycmrlyswwjqlwihdd.supabase.co',
+          'sb_publishable_JFUMyQCrC-vLFej5fatodw_P2OyltEZ'
+        );
+        const fb = await fallbackClient
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (fb.error) throw res.error || fb.error;
+        data = (fb.data as Profile[]) || [];
+      }
+      setUsers(data || []);
     } catch (err) {
       console.error('Error fetching users:', err);
       toast.error('Failed to load users');

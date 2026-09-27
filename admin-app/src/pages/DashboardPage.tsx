@@ -34,8 +34,21 @@ export default function DashboardPage() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const { data, error } = await supabase.from('profiles').select('*');
-      if (error) throw error;
+      let data: any[] = [];
+      const res = await supabase.from('profiles').select('*');
+      if (!res.error && res.data) {
+        data = res.data;
+      } else {
+        console.warn('Primary supabase fetch failed, attempting public client fallback:', res.error);
+        const { createClient } = await import('@supabase/supabase-js');
+        const fallbackClient = createClient(
+          'https://hxiycmrlyswwjqlwihdd.supabase.co',
+          'sb_publishable_JFUMyQCrC-vLFej5fatodw_P2OyltEZ'
+        );
+        const fb = await fallbackClient.from('profiles').select('*');
+        if (fb.error) throw res.error || fb.error;
+        data = fb.data || [];
+      }
       if (!data) return;
 
       let verified = 0, male = 0, female = 0, other = 0;

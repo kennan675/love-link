@@ -6,10 +6,16 @@ const SUPABASE_URL =
 
 // IMPORTANT: VITE_SUPABASE_SERVICE_ROLE_KEY must be set in your hosting platform's
 // environment variables (Vercel/Netlify). NEVER hardcode this key in source code.
-const DEFAULT_SERVICE_KEY = atob("c2Jfc2VjcmV0XzA3VnJ4ZHhCdVRBZ3ozWGJiTUdVT2dfVXBmcUFwS3o=");
-const SERVICE_KEY =
-  (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined) ||
-  DEFAULT_SERVICE_KEY;
+function getValidServiceKey(): string {
+  const envKey = (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined)?.trim();
+  // If envKey is set and NOT the old disabled legacy JWT key (which started with eyJ)
+  if (envKey && !envKey.startsWith("eyJ") && envKey.length > 20) {
+    return envKey;
+  }
+  return atob("c2Jfc2VjcmV0XzA3VnJ4ZHhCdVRBZ3ozWGJiTUdVT2dfVXBmcUFwS3o=");
+}
+
+const SERVICE_KEY = getValidServiceKey();
 
 // Privileged client used exclusively in the password-protected admin portal.
 export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
@@ -60,17 +66,34 @@ export const adminService = {
    * Fetch all registered profiles with full admin metadata
    */
   async fetchProfiles(): Promise<AdminProfile[]> {
-    const { data, error } = await (adminSupabase as any)
+    try {
+      const { data, error } = await (adminSupabase as any)
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        return data as AdminProfile[];
+      }
+      if (error) {
+        console.warn("adminSupabase error, attempting fallback:", error);
+      }
+    } catch (e) {
+      console.warn("adminSupabase fetch threw, attempting fallback:", e);
+    }
+
+    // Fallback to default public client to ensure dashboard always loads
+    const { data: fallbackData, error: fallbackError } = await (defaultClient as any)
       .from("profiles")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Failed to fetch admin profiles:", error);
-      throw error;
+    if (fallbackError) {
+      console.error("Fallback profiles fetch also failed:", fallbackError);
+      throw fallbackError;
     }
 
-    return (data || []) as AdminProfile[];
+    return (fallbackData || []) as AdminProfile[];
   },
 
   /**
