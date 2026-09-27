@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart, ArrowRight, ChevronLeft, Loader2,
   Eye, EyeOff, Lock, CheckCircle2, Mail, Phone,
-  User, Briefcase, Camera, X, Upload,
+  User, Briefcase, Camera, X, Upload, Calendar, UserPlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
@@ -78,6 +78,8 @@ const AuthPage = () => {
   // Onboarding fields
   const [fullName, setFullName] = useState("");
   const [dob, setDob] = useState("");
+  const [ageInput, setAgeInput] = useState("");
+  const [useExactDob, setUseExactDob] = useState(false);
   const [gender, setGender] = useState("");
   const [occTitle, setOccTitle] = useState("");
   const [occCompany, setOccCompany] = useState("");
@@ -90,8 +92,9 @@ const AuthPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const pwStrength = passwordStrength(password);
-  const age = calculateAge(dob);
-  const ageValid = age >= 18;
+  const parsedAge = parseInt(ageInput, 10);
+  const age = useExactDob ? calculateAge(dob) : (!isNaN(parsedAge) ? parsedAge : 0);
+  const ageValid = age >= 18 && age <= 100;
   const photoCount = photos.filter(p => p.preview !== null).length;
 
   /* ─── Redirect already-logged-in users ───────────────────────── */
@@ -177,17 +180,28 @@ const AuthPage = () => {
 
   /* ─── Email Sign-In ──────────────────────────────────────────── */
   const handleEmailSignIn = async () => {
-    if (!email || !password) return;
+    if (!email.trim() || !password) {
+      toast({
+        title: "Missing fields",
+        description: "Please enter your email and password to sign in.",
+        variant: "destructive",
+      });
+      return;
+    }
     setLoading("signin");
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("No session");
       const status = await getProfileStatus(session.user.id);
       navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you");
-    } catch {
-      toast({ title: "Sign in failed", description: "Incorrect email or password.", variant: "destructive" });
+    } catch (err: unknown) {
+      toast({
+        title: "Sign in failed",
+        description: err instanceof Error ? err.message : "Incorrect email or password.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(null);
     }
@@ -195,14 +209,33 @@ const AuthPage = () => {
 
   /* ─── Email Sign-Up ──────────────────────────────────────────── */
   const handleEmailSignUp = async () => {
-    if (!email || !password || password !== confirm) return;
+    if (!email.trim() || !password || !confirm) {
+      toast({
+        title: "Missing fields",
+        description: "Please enter your email and confirm your password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (password !== confirm) {
+      toast({
+        title: "Passwords mismatch",
+        description: "Your passwords do not match. Please re-enter them.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (pwStrength.score < 2) {
-      toast({ title: "Weak password", description: "Use at least 8 characters with a number.", variant: "destructive" });
+      toast({
+        title: "Weak password",
+        description: "Use at least 8 characters with a mix of letters and numbers.",
+        variant: "destructive",
+      });
       return;
     }
     setLoading("signup");
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({ email: email.trim(), password });
       if (error) throw error;
       toast({ title: "Account created! 🎉", description: "Let's set up your profile." });
       setStep("onboard-you");
@@ -263,11 +296,8 @@ const AuthPage = () => {
         uploadedUrls.push(urlData.publicUrl);
       }
 
-      const birthDate = new Date(dob);
-      const today = new Date();
-      let ageCalc = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) ageCalc--;
+      const finalAge = ageValid ? age : (parseInt(ageInput, 10) || 18);
+      const finalDob = dob || `${new Date().getFullYear() - finalAge}-01-01`;
 
       const { data: existing } = await supabase
         .from("profiles").select("id").eq("user_id", userId).maybeSingle();
@@ -278,8 +308,8 @@ const AuthPage = () => {
         occupation_title: occTitle.trim(),
         occupation_company: occCompany.trim(),
         verified: true,
-        dob,
-        age: ageCalc,
+        dob: finalDob,
+        age: finalAge,
         gender,
         intent,
         photos: uploadedUrls,
@@ -415,11 +445,11 @@ const AuthPage = () => {
               <motion.div key="landing" {...fadeUp} className="space-y-3">
 
                 {/* Google */}
-                <motion.button
+                <button
+                  type="button"
                   onClick={handleGoogle}
                   disabled={!!loading}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-base hover:bg-muted transition-all disabled:opacity-50"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-base hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer shadow-xs"
                 >
                   {loading === "google"
                     ? <Loader2 className="w-5 h-5 animate-spin" />
@@ -433,46 +463,43 @@ const AuthPage = () => {
                     )
                   }
                   {loading === "google" ? "Signing in…" : "Continue with Google"}
-                </motion.button>
+                </button>
 
-                {/* Email */}
-                <motion.button
-                  onClick={() => setStep(mode === "signup" ? "email-signup" : "email-signin")}
+                {/* Email Sign In */}
+                <button
+                  type="button"
+                  onClick={() => setStep("email-signin")}
                   disabled={!!loading}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-base hover:bg-muted transition-all disabled:opacity-50"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-base hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer shadow-xs"
                 >
                   <Mail className="w-5 h-5 text-primary" />
-                  Continue with Email
-                </motion.button>
+                  Sign in with Email
+                </button>
+
+                {/* Email Sign Up */}
+                <button
+                  type="button"
+                  onClick={() => setStep("email-signup")}
+                  disabled={!!loading}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-muted/40 border border-border/80 text-foreground font-semibold text-base hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+                >
+                  <UserPlus className="w-5 h-5 text-secondary" />
+                  Create account with Email
+                </button>
 
                 {/* Phone — coming soon */}
-                <motion.button
+                <button
+                  type="button"
                   onClick={handlePhoneComingSoon}
                   disabled={!!loading}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border/50 text-foreground/50 font-semibold text-base hover:bg-muted/50 transition-all cursor-pointer"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border/50 text-foreground/50 font-semibold text-base hover:bg-muted/50 active:scale-[0.99] transition-all cursor-pointer"
                 >
                   <Phone className="w-5 h-5" />
                   <span>Continue with Phone</span>
                   <span className="ml-auto text-[10px] font-bold uppercase tracking-widest text-secondary/70 bg-secondary/10 px-2 py-0.5 rounded-full">Soon</span>
-                </motion.button>
+                </button>
 
-                <div className="pt-2 text-center">
-                  {mode === "signup" ? (
-                    <p className="text-sm text-muted-foreground">
-                      Already have an account?{" "}
-                      <button onClick={() => { setStep("email-signin"); }} className="text-primary font-semibold hover:underline">Sign in</button>
-                    </p>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      New to BlackLoveLink?{" "}
-                      <button onClick={() => setStep("email-signup")} className="text-primary font-semibold hover:underline">Create account</button>
-                    </p>
-                  )}
-                </div>
-
-                <p className="text-center text-xs text-muted-foreground leading-relaxed pt-1">
+                <p className="text-center text-xs text-muted-foreground leading-relaxed pt-3">
                   By continuing, you agree to BlackLoveLink's{" "}
                   <Link to="/terms-of-service" className="text-primary hover:underline">Terms</Link> and{" "}
                   <Link to="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.
@@ -503,16 +530,23 @@ const AuthPage = () => {
                     </div>
                   </div>
                 </div>
-                <motion.button onClick={handleEmailSignIn} disabled={!!loading || !email || !password}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-40"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                <button
+                  type="button"
+                  onClick={handleEmailSignIn}
+                  disabled={loading === "signin"}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer"
+                >
                   {loading === "signin" ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
                   {loading === "signin" ? "Signing in…" : "Sign In"}
-                </motion.button>
-                <p className="text-center text-sm text-muted-foreground">
-                  New to BlackLoveLink?{" "}
-                  <button onClick={() => setStep("email-signup")} className="text-primary font-semibold hover:underline">Create account</button>
-                </p>
+                </button>
+                <div className="flex items-center justify-between text-sm px-1 pt-1">
+                  <button type="button" onClick={() => setStep("landing")} className="text-muted-foreground hover:text-foreground">
+                    ← Other options
+                  </button>
+                  <button type="button" onClick={() => setStep("email-signup")} className="text-primary font-semibold hover:underline">
+                    Create account
+                  </button>
+                </div>
               </motion.div>
             )}
 
@@ -562,17 +596,23 @@ const AuthPage = () => {
                     )}
                   </div>
                 </div>
-                <motion.button onClick={handleEmailSignUp}
-                  disabled={!!loading || !email || !password || password !== confirm}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-40"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                <button
+                  type="button"
+                  onClick={handleEmailSignUp}
+                  disabled={loading === "signup"}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer"
+                >
                   {loading === "signup" ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
                   {loading === "signup" ? "Creating account…" : "Create Account & Continue"}
-                </motion.button>
-                <p className="text-center text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                  <button onClick={() => setStep("email-signin")} className="text-primary font-semibold hover:underline">Sign in</button>
-                </p>
+                </button>
+                <div className="flex items-center justify-between text-sm px-1 pt-1">
+                  <button type="button" onClick={() => setStep("landing")} className="text-muted-foreground hover:text-foreground">
+                    ← Other options
+                  </button>
+                  <button type="button" onClick={() => setStep("email-signin")} className="text-primary font-semibold hover:underline">
+                    Sign in instead
+                  </button>
+                </div>
               </motion.div>
             )}
 
@@ -585,14 +625,71 @@ const AuthPage = () => {
                     <input type="text" placeholder="Your full name" value={fullName}
                       onChange={e => setFullName(e.target.value)} className={inputCls} />
                   </div>
+
+                  {/* Manual Age input with optional Date Picker toggle */}
                   <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-foreground">Date of Birth</label>
-                    <input type="date" value={dob} onChange={e => setDob(e.target.value)}
-                      max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
-                      className={inputCls} />
-                    {dob && !ageValid && <p className="text-xs text-red-500">You must be at least 18 years old.</p>}
-                    {dob && ageValid && <p className="text-xs text-green-500">Age: {age} years old ✓</p>}
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-primary" /> {useExactDob ? "Date of Birth" : "Your Age"}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setUseExactDob(!useExactDob)}
+                        className="text-xs text-primary hover:underline font-medium"
+                      >
+                        {useExactDob ? "Type age manually" : "Use birthdate picker"}
+                      </button>
+                    </div>
+
+                    {!useExactDob ? (
+                      <div>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min="18"
+                          max="99"
+                          placeholder="Enter your age (e.g. 26)"
+                          value={ageInput}
+                          onChange={e => {
+                            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                            setAgeInput(val);
+                            const num = parseInt(val, 10);
+                            if (!isNaN(num) && num >= 18 && num <= 100) {
+                              const birthYear = new Date().getFullYear() - num;
+                              setDob(`${birthYear}-01-01`);
+                            } else {
+                              setDob("");
+                            }
+                          }}
+                          className={inputCls}
+                        />
+                      </div>
+                    ) : (
+                      <input
+                        type="date"
+                        value={dob}
+                        onChange={e => {
+                          setDob(e.target.value);
+                          if (e.target.value) {
+                            const calculated = calculateAge(e.target.value);
+                            setAgeInput(calculated > 0 ? String(calculated) : "");
+                          }
+                        }}
+                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
+                        className={inputCls}
+                      />
+                    )}
+
+                    {ageInput && !ageValid && (
+                      <p className="text-xs text-red-500 font-medium">You must be at least 18 years old to join.</p>
+                    )}
+                    {ageValid && (
+                      <p className="text-xs text-green-500 font-medium flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Age: {age} years old ✓
+                      </p>
+                    )}
                   </div>
+
                   <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-foreground">Gender</label>
                     <div className="flex gap-3">
@@ -605,13 +702,29 @@ const AuthPage = () => {
                     </div>
                   </div>
                 </div>
-                <motion.button
-                  onClick={() => setStep("onboard-work")}
-                  disabled={!fullName.trim() || !dob || !ageValid || !gender}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-40"
-                  whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!fullName.trim()) {
+                      toast({ title: "Name required", description: "Please enter your full name.", variant: "destructive" });
+                      return;
+                    }
+                    if (!ageValid) {
+                      toast({ title: "Age required", description: "You must be at least 18 years old to join.", variant: "destructive" });
+                      return;
+                    }
+                    if (!gender) {
+                      toast({ title: "Gender required", description: "Please select your gender.", variant: "destructive" });
+                      return;
+                    }
+                    setStep("onboard-work");
+                  }}
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 active:scale-[0.99] transition-all cursor-pointer ${
+                    !fullName.trim() || !ageValid || !gender ? "opacity-70" : ""
+                  }`}
+                >
                   <ArrowRight className="w-5 h-5" /> Continue
-                </motion.button>
+                </button>
               </motion.div>
             )}
 

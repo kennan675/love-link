@@ -58,6 +58,8 @@ const ProfileCreationPage = () => {
     const [occTitle, setOccTitle] = useState("");
     const [occCompany, setOccCompany] = useState("");
     const [dob, setDob] = useState("");
+    const [ageInput, setAgeInput] = useState("");
+    const [useExactDob, setUseExactDob] = useState(false);
     const [gender, setGender] = useState("");
     const [intent, setIntent] = useState("");
     const [interests, setInterests] = useState<string[]>([]);
@@ -73,12 +75,14 @@ const ProfileCreationPage = () => {
     const occVerified = occTitle.trim().length > 0 && occCompany.trim().length > 0;
 
     // Computed
-    const age = calculateAge(dob);
-    const ageValid = age >= 18;
+    const age = useExactDob
+        ? calculateAge(dob)
+        : (parseInt(ageInput, 10) || (dob ? calculateAge(dob) : 0));
+    const ageValid = age >= 18 && age <= 100;
     const photoCount = photos.filter((p) => p.preview !== null).length;
     const canContinue =
         fullName.trim().length > 0 &&
-        dob !== "" &&
+        (dob !== "" || ageValid) &&
         ageValid &&
         gender !== "" &&
         intent !== "" &&
@@ -143,6 +147,26 @@ const ProfileCreationPage = () => {
 
     /* ─── Continue — gate sensitive data consent ─── */
     const handleContinue = async () => {
+        if (!fullName.trim()) {
+            toast({ title: "Name required", description: "Please enter your full name.", variant: "destructive" });
+            return;
+        }
+        if (!ageValid) {
+            toast({ title: "Age required", description: "You must be at least 18 years old to join.", variant: "destructive" });
+            return;
+        }
+        if (!gender) {
+            toast({ title: "Gender required", description: "Please select your gender.", variant: "destructive" });
+            return;
+        }
+        if (!intent) {
+            toast({ title: "Intent required", description: "Please select your relationship intent.", variant: "destructive" });
+            return;
+        }
+        if (photoCount < 2) {
+            toast({ title: "Photos required", description: "Please upload at least 2 profile photos.", variant: "destructive" });
+            return;
+        }
         if (!canContinue) return;
         // If user hasn't consented to sensitive data processing, show Screen D first
         if (!useSensitiveConsent()) {
@@ -181,12 +205,9 @@ const ProfileCreationPage = () => {
 
             const avatarUrl = uploadedUrls[0] ?? null;
 
-            // Calculate age from DOB
-            const birthDate = new Date(dob);
-            const today = new Date();
-            let ageCalc = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) ageCalc--;
+            // Calculate age and DOB
+            const finalAge = ageValid ? age : calculateAge(dob);
+            const finalDob = dob || (ageValid ? `${new Date().getFullYear() - age}-01-01` : "");
 
             // Check if this user already has a profile row
             const { data: existing } = await supabase
@@ -205,8 +226,8 @@ const ProfileCreationPage = () => {
                         occupation_title: occTitle.trim(),
                         occupation_company: occCompany.trim(),
                         verified: true,
-                        dob,
-                        age: ageCalc,
+                        dob: finalDob,
+                        age: finalAge,
                         gender,
                         intent,
                         interests,
@@ -227,8 +248,8 @@ const ProfileCreationPage = () => {
                         occupation_title: occTitle.trim(),
                         occupation_company: occCompany.trim(),
                         verified: true,
-                        dob,
-                        age: ageCalc,
+                        dob: finalDob,
+                        age: finalAge,
                         gender,
                         intent,
                         interests,
@@ -366,24 +387,62 @@ const ProfileCreationPage = () => {
                                 </div>
                             </div>
 
-                            {/* Date of Birth */}
+                            {/* Date of Birth / Age */}
                             <div className="rounded-2xl bg-card border border-border p-6 space-y-3">
-                                <h2 className="flex items-center gap-2 font-semibold text-foreground text-base">
-                                    <Calendar className="w-4 h-4 text-primary" /> Date of Birth
-                                    <span className="text-destructive ml-0.5">*</span>
-                                </h2>
-                                <input
-                                    type="date"
-                                    id="dob"
-                                    value={dob}
-                                    onChange={(e) => setDob(e.target.value)}
-                                    max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
-                                    className={inputClass}
-                                />
-                                {dob && !ageValid && (
+                                <div className="flex items-center justify-between">
+                                    <h2 className="flex items-center gap-2 font-semibold text-foreground text-base">
+                                        <Calendar className="w-4 h-4 text-primary" /> {useExactDob ? "Date of Birth" : "Age"}
+                                        <span className="text-destructive ml-0.5">*</span>
+                                    </h2>
+                                    <button
+                                        type="button"
+                                        onClick={() => setUseExactDob(!useExactDob)}
+                                        className="text-xs text-primary hover:underline font-medium"
+                                    >
+                                        {useExactDob ? "Type age manually" : "Use birthdate picker"}
+                                    </button>
+                                </div>
+                                {!useExactDob ? (
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min="18"
+                                        max="99"
+                                        placeholder="Enter your age (e.g. 26)"
+                                        value={ageInput}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                                            setAgeInput(val);
+                                            const num = parseInt(val, 10);
+                                            if (!isNaN(num) && num >= 18 && num <= 100) {
+                                                const birthYear = new Date().getFullYear() - num;
+                                                setDob(`${birthYear}-01-01`);
+                                            } else {
+                                                setDob("");
+                                            }
+                                        }}
+                                        className={inputClass}
+                                    />
+                                ) : (
+                                    <input
+                                        type="date"
+                                        id="dob"
+                                        value={dob}
+                                        onChange={(e) => {
+                                            setDob(e.target.value);
+                                            if (e.target.value) {
+                                                const calculated = calculateAge(e.target.value);
+                                                setAgeInput(calculated > 0 ? String(calculated) : "");
+                                            }
+                                        }}
+                                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
+                                        className={inputClass}
+                                    />
+                                )}
+                                {ageInput && !ageValid && (
                                     <p className="text-xs text-destructive">You must be at least 18 years old to join.</p>
                                 )}
-                                {dob && ageValid && (
+                                {ageValid && (
                                     <p className="text-xs text-green-500 flex items-center gap-1">
                                         <CheckCircle2 className="w-3 h-3" /> Age verified – {age} years old
                                     </p>
@@ -561,12 +620,13 @@ const ProfileCreationPage = () => {
                                     </span>
                                 )}
                             </div>
-                            <motion.button
+                            <button
+                                type="button"
                                 onClick={handleContinue}
-                                disabled={!canContinue || saving}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl gradient-brand text-primary-foreground font-bold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                                whileHover={canContinue ? { scale: 1.02 } : {}}
-                                whileTap={canContinue ? { scale: 0.98 } : {}}
+                                disabled={saving}
+                                className={`w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl gradient-brand text-primary-foreground font-bold text-base shadow-button hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer ${
+                                    !canContinue ? "opacity-60" : ""
+                                }`}
                             >
                                 {saving ? (
                                     <>
@@ -576,7 +636,7 @@ const ProfileCreationPage = () => {
                                 ) : (
                                     "Continue →"
                                 )}
-                            </motion.button>
+                            </button>
                         </div>
                     </div>
                 </div>
