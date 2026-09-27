@@ -11,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
 import { useToast } from "@/hooks/use-toast";
 import BrandName from "@/components/BrandName";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 
 /* ─── Step types ─────────────────────────────────────────────── */
 type Step =
@@ -49,14 +51,7 @@ function calculateAge(dob: string): number {
   return age;
 }
 
-async function getProfileStatus(userId: string): Promise<"complete" | "incomplete"> {
-  const { data } = await supabase
-    .from("profiles")
-    .select("profile_completed")
-    .eq("user_id", userId)
-    .maybeSingle();
-  return data?.profile_completed ? "complete" : "incomplete";
-}
+import { getProfileStatus, markProfileComplete } from "@/services/profileStatus";
 
 interface PhotoSlot { file: File | null; preview: string | null; }
 
@@ -103,8 +98,18 @@ const AuthPage = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
+        // Pre-fill name from Google OAuth metadata if available
+        const metaName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || "";
+        if (metaName) {
+          setFullName((prev) => prev || metaName);
+        }
+
         getProfileStatus(session.user.id).then(status => {
-          navigate(status === "complete" ? "/swipe" : "/auth?step=onboard-you", { replace: true });
+          if (status === "complete") {
+            navigate("/swipe", { replace: true });
+          } else {
+            setStep("onboard-you");
+          }
         });
       }
     });
@@ -121,13 +126,29 @@ const AuthPage = () => {
   const handleGoogle = async () => {
     setLoading("google");
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
-      });
-      if (error) throw error;
-    } catch {
+      if (Capacitor.isNativePlatform()) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: "com.blacklovelink.app://auth/callback",
+            skipBrowserRedirect: true,
+          },
+        });
+        if (error) throw error;
+        if (data?.url) {
+          await Browser.open({ url: data.url, windowName: "_self" });
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: `${window.location.origin}/auth/callback` },
+        });
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error("Google sign-in error:", err);
       toast({ title: "Sign in failed", description: "Something went wrong. Please try again.", variant: "destructive" });
+    } finally {
       setLoading(null);
     }
   };
@@ -262,6 +283,7 @@ const AuthPage = () => {
       }
       if (dbError) throw dbError;
 
+      markProfileComplete(userId);
       toast({ title: "Welcome to BlackLoveLink! 🎉", description: "Your profile is ready." });
       navigate("/swipe", { replace: true });
     } catch (err: unknown) {
@@ -305,9 +327,15 @@ const AuthPage = () => {
       {/* Header */}
       <header className="border-b border-border px-6 py-4 shrink-0">
         <nav className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <img src={blackLovelinkLogo} alt="BlackLoveLink" className="h-10 w-auto" />
-          </Link>
+          {Capacitor.isNativePlatform() ? (
+            <div className="flex items-center">
+              <img src={blackLovelinkLogo} alt="BlackLoveLink" className="h-10 w-auto" />
+            </div>
+          ) : (
+            <Link to="/" className="flex items-center">
+              <img src={blackLovelinkLogo} alt="BlackLoveLink" className="h-10 w-auto" />
+            </Link>
+          )}
 
           {/* Onboarding progress */}
           {isOnboarding && (
@@ -330,11 +358,11 @@ const AuthPage = () => {
             >
               <ChevronLeft className="w-4 h-4" /> Back
             </button>
-          ) : (
+          ) : !Capacitor.isNativePlatform() ? (
             <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
               <ChevronLeft className="w-4 h-4" /> Home
             </Link>
-          )}
+          ) : null}
         </nav>
       </header>
 
@@ -362,7 +390,6 @@ const AuthPage = () => {
                   {step === "email-signup" && "Create your account — it only takes a minute"}
                   {step === "onboard-you" && "Tell us a little about yourself"}
                   {step === "onboard-work" && "Share what you're looking for, plus optional career details"}
-                  {step === "onboard-photos" && ""}
                 </motion.p>
               </AnimatePresence>
             </div>

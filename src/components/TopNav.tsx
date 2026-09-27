@@ -119,50 +119,37 @@ const TopNav = () => {
     }
   };
 
+  const mainTabs = ["/swipe", "/likes", "/community", "/messages", "/profile", "/"];
+  const isMainTab = mainTabs.includes(location.pathname);
+
   return (
     <>
-      {/* ── FACEBOOK-STYLE TOP HEADER ───────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full bg-card border-b border-border shadow-sm">
-        <div className="flex items-center justify-between gap-2 h-14 px-2 sm:px-4">
-          {/* Left: logo + search */}
-          <div className="flex items-center gap-2 flex-1 min-w-0 max-w-[360px]">
-            <Link to="/" aria-label="Home" className="shrink-0">
-              <img src={logo} alt="BlackLoveLink" className="h-9 w-9 rounded-full object-cover" />
+      {/* ── TOP HEADER (safe-area aware, clean & uncluttered) ────────────────── */}
+      <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur-md border-b border-border shadow-sm pt-[env(safe-area-inset-top,0px)]">
+        <div className="flex items-center justify-between gap-3 h-14 px-3 sm:px-5">
+          {/* Left: Brand Identity */}
+          <div className="flex items-center gap-2 shrink-0">
+            {!isMainTab && (
+              <button
+                onClick={() => navigate(-1)}
+                className="p-1.5 -ml-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <Link to="/swipe" aria-label="BlackLoveLink" className="flex items-center gap-2 group">
+              <img src={logo} alt="BlackLoveLink" className="h-8 w-8 object-contain rounded-lg" />
+              <span className="font-serif italic font-bold text-lg tracking-tight whitespace-nowrap">
+                <span className="text-foreground">black</span>
+                <span className="text-primary">love</span>
+                <span className="text-secondary">link</span>
+              </span>
             </Link>
-            <form onSubmit={handleSearch} className="relative flex-1 min-w-0 hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-              <input
-                ref={searchRef}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                onKeyDown={handleSearchKeyDown}
-                placeholder={t.app.search}
-                className="w-full h-10 pl-9 pr-8 rounded-full bg-muted text-sm text-foreground placeholder:text-muted-foreground border border-transparent focus:outline-none focus:border-primary/40 focus:bg-background transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted-foreground/20 text-muted-foreground"
-                  tabIndex={-1}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </form>
-            <button
-              onClick={() => navigate(-1)}
-              className="sm:hidden p-2 rounded-full hover:bg-muted text-muted-foreground"
-              aria-label="Back"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
           </div>
 
-          {/* Center: tab nav */}
-          <nav className="hidden md:flex items-center justify-center flex-1 max-w-2xl">
+          {/* Center on desktop: Tab nav */}
+          <nav className="hidden md:flex items-center justify-center flex-1 max-w-xl mx-auto">
             {tabs.map(({ to, icon: Icon, label, isLinkedRings }) => {
               const active = location.pathname === to;
               return (
@@ -170,7 +157,7 @@ const TopNav = () => {
                   key={to}
                   to={to}
                   aria-label={label}
-                  className="relative flex items-center justify-center h-14 w-[88px] lg:w-[112px] group"
+                  className="relative flex items-center justify-center h-14 w-[84px] lg:w-[104px] group"
                 >
                   {isLinkedRings ? (
                     <LinkedRingsIcon
@@ -200,18 +187,43 @@ const TopNav = () => {
             })}
           </nav>
 
-          {/* Right: actions */}
-          <div className="flex items-center justify-end gap-1.5 flex-1 max-w-[360px]">
+          {/* Right: Actions */}
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
+            {/* Search — desktop only */}
+            <form onSubmit={handleSearch} className="relative hidden xl:block w-48">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+              <input
+                ref={searchRef}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder={t.app.search}
+                className="w-full h-9 pl-8 pr-7 rounded-full bg-muted/80 text-xs text-foreground placeholder:text-muted-foreground border border-transparent focus:outline-none focus:border-primary/40 focus:bg-background transition"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground"
+                  tabIndex={-1}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </form>
+
             {/* Language switcher */}
             <div ref={langRef} className="relative">
               <button
                 onClick={() => setLangOpen(v => !v)}
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-foreground transition-colors ${
-                  langOpen ? "bg-primary/10 text-primary" : "bg-muted hover:bg-muted/70"
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-foreground transition-colors ${
+                  langOpen ? "bg-primary/10 text-primary" : "bg-muted/80 hover:bg-muted"
                 }`}
                 aria-label="Change language"
               >
-                <Globe className="w-5 h-5" />
+                <Globe className="w-4 h-4" />
               </button>
               {langOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl bg-card border border-border shadow-2xl z-50 overflow-hidden">
@@ -234,41 +246,32 @@ const TopNav = () => {
               )}
             </div>
 
-            <button className="hidden sm:flex w-10 h-10 rounded-full bg-muted hover:bg-muted/70 items-center justify-center text-foreground">
-              <Menu className="w-5 h-5" />
-            </button>
-            <Link
-              to="/messages"
-              className="hidden sm:flex w-10 h-10 rounded-full bg-muted hover:bg-muted/70 items-center justify-center text-foreground relative"
-            >
-              <MessageCircle className="w-5 h-5" />
-            </Link>
-
-            {/* Bell — now functional */}
+            {/* Notification Bell */}
             <button
               onClick={() => setNotifOpen(v => !v)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-foreground relative transition-colors ${
-                notifOpen ? "bg-primary/10 text-primary" : "bg-muted hover:bg-muted/70"
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-foreground relative transition-colors ${
+                notifOpen ? "bg-primary/10 text-primary" : "bg-muted/80 hover:bg-muted"
               }`}
               aria-label="Notifications"
               aria-expanded={notifOpen}
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 min-w-[0.65rem] h-[0.65rem] rounded-full bg-primary ring-2 ring-card flex items-center justify-center">
+                <span className="absolute top-1 right-1 min-w-[0.55rem] h-[0.55rem] rounded-full bg-primary ring-2 ring-card flex items-center justify-center">
                   {unreadCount > 9 && (
-                    <span className="text-[8px] font-bold text-white leading-none px-0.5">{unreadCount > 99 ? "99+" : unreadCount}</span>
+                    <span className="text-[7px] font-bold text-white leading-none px-0.5">{unreadCount > 99 ? "99+" : unreadCount}</span>
                   )}
                 </span>
               )}
             </button>
 
+            {/* Profile Avatar (desktop only, mobile has it in bottom tab bar) */}
             <Link
               to="/profile"
               aria-label="Your profile"
-              className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold"
+              className="hidden md:flex w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary items-center justify-center text-white font-bold"
             >
-              <UserIcon className="w-5 h-5" />
+              <UserIcon className="w-4 h-4" />
             </Link>
           </div>
         </div>

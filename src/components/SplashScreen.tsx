@@ -53,23 +53,20 @@ const SplashScreen = ({ onFinished }: SplashScreenProps) => {
         <motion.img
           src={logo}
           alt="BlackLoveLink"
-          className="relative z-10 h-28 w-28 object-contain"
-          initial={{ opacity: 0, y: 28, scale: 0.8 }}
+          className="relative z-10 w-64 max-w-[70vw] object-contain drop-shadow-md"
+          initial={{ opacity: 0, y: 28, scale: 0.85 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         />
 
-        {/* Brand name — fades in after logo lands */}
+        {/* Tagline */}
         <motion.div
-          className="relative z-10 mt-5 text-center"
+          className="relative z-10 mt-3 text-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
+          transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
         >
-          <h1 className="text-3xl tracking-tight">
-            <BrandName />
-          </h1>
-          <p className="mt-1.5 text-xs font-medium tracking-widest uppercase text-muted-foreground">
+          <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground/80">
             Where intentional love begins
           </p>
         </motion.div>

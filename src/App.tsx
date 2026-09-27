@@ -10,6 +10,9 @@ import SplashScreen from "@/components/SplashScreen";
 import { GlobalSwipeNavigation } from "@/components/GlobalSwipeNavigation";
 import IOSInstallBanner from "@/components/IOSInstallBanner";
 import CookieConsent from "@/components/CookieConsent";
+import { Capacitor } from "@capacitor/core";
+import AppEntryRoute from "@/components/AppEntryRoute";
+import WebOnlyRoute from "@/components/WebOnlyRoute";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
@@ -47,8 +50,13 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import DashboardPage from "./pages/admin/DashboardPage";
 import AdminMessagesPage from "./pages/admin/MessagesPage";
 import AdminUsersPage from "./pages/admin/UsersPage";
-
 import ScrollToTop from "@/components/ScrollToTop";
+import { useDeepLinkAuth } from "@/hooks/useDeepLinkAuth";
+
+const DeepLinkHandler = () => {
+  useDeepLinkAuth();
+  return null;
+};
 
 const queryClient = new QueryClient();
 
@@ -69,20 +77,21 @@ const App = () => {
           <Sonner />
           {showSplash && <SplashScreen onFinished={handleSplashFinished} />}
           <BrowserRouter>
+            <DeepLinkHandler />
             <ScrollToTop />
             <GlobalSwipeNavigation>
               <Routes>
               {/* Public routes */}
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<AppEntryRoute />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/auth/callback" element={<AuthCallbackPage />} />
-              <Route path="/education" element={<EducationPage />} />
-              <Route path="/how-it-works" element={<HowItWorksPage />} />
-              <Route path="/success-stories" element={<SuccessStoriesPage />} />
-              <Route path="/trust-safety" element={<TrustSafetyPage />} />
-              <Route path="/support" element={<SupportPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/articles/:slug" element={<ArticleReaderPage />} />
+              <Route path="/education" element={<WebOnlyRoute><EducationPage /></WebOnlyRoute>} />
+              <Route path="/how-it-works" element={<WebOnlyRoute><HowItWorksPage /></WebOnlyRoute>} />
+              <Route path="/success-stories" element={<WebOnlyRoute><SuccessStoriesPage /></WebOnlyRoute>} />
+              <Route path="/trust-safety" element={<WebOnlyRoute><TrustSafetyPage /></WebOnlyRoute>} />
+              <Route path="/support" element={<WebOnlyRoute><SupportPage /></WebOnlyRoute>} />
+              <Route path="/contact" element={<WebOnlyRoute><ContactPage /></WebOnlyRoute>} />
+              <Route path="/articles/:slug" element={<WebOnlyRoute><ArticleReaderPage /></WebOnlyRoute>} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
               <Route path="/cookie-policy" element={<CookiePolicyPage />} />
@@ -120,8 +129,12 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
               </Routes>
             </GlobalSwipeNavigation>
-          <IOSInstallBanner />
-          <CookieConsent />
+            {!Capacitor.isNativePlatform() && (
+              <>
+                <IOSInstallBanner />
+                <CookieConsent />
+              </>
+            )}
           </BrowserRouter>
         </TooltipProvider>
       </LanguageProvider>

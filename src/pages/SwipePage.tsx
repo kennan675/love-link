@@ -95,35 +95,18 @@ const SwipePage = () => {
     <div className="flex min-h-[100dvh] flex-col bg-gradient-to-b from-background via-background to-primary/5">
       <TopNav />
 
-      {/* Vibrant gradient hero header with navigation */}
-      <header className="relative overflow-hidden gradient-brand">
-        <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-white/30 blur-3xl" />
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-white/20 blur-3xl" />
+      {/* Sleek compact discover sub-bar */}
+      <div className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <span>{t.app.discover}</span>
         </div>
-        <div className="relative max-w-md mx-auto px-4 py-4">
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-end justify-between"
-          >
-            <div>
-              <div className="flex items-center gap-2 text-primary-foreground/80 text-xs font-medium uppercase tracking-widest">
-                <Sparkles className="w-3.5 h-3.5" /> {t.swipe.lookingFor}
-              </div>
-              <h1 className="text-3xl font-black text-primary-foreground leading-tight mt-1">
-                {t.app.discover}
-              </h1>
-            </div>
-            {!loading && visibleProfiles.length > 0 && (
-              <span className="text-xs text-primary-foreground bg-white/25 backdrop-blur-sm px-3 py-1.5 rounded-full font-bold">
-                {visibleProfiles.length} Profiles
-              </span>
-            )}
-          </motion.div>
-        </div>
-      </header>
+        {!loading && visibleProfiles.length > 0 && (
+          <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+            {visibleProfiles.length} {visibleProfiles.length === 1 ? "Profile" : "Profiles"}
+          </span>
+        )}
+      </div>
 
       <main className="flex-1 overflow-y-auto pb-10">
         {loading ? (

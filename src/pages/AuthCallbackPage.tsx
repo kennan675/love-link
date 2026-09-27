@@ -3,14 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart } from "lucide-react";
 
-async function getProfileStatus(userId: string): Promise<"complete" | "incomplete"> {
-    const { data } = await supabase
-        .from("profiles")
-        .select("profile_completed")
-        .eq("user_id", userId)
-        .maybeSingle();
-    return data?.profile_completed ? "complete" : "incomplete";
-}
+import { getProfileStatus } from "@/services/profileStatus";
 
 /**
  * Handles the OAuth redirect from Google.
@@ -24,6 +17,17 @@ const AuthCallbackPage = () => {
 
     useEffect(() => {
         let done = false;
+
+        // If opened on a mobile device in an external browser, bounce into the app
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const deepLinkUrl = `com.blacklovelink.app://auth/callback${window.location.search}${window.location.hash}`;
+        if (isMobile && !window.location.origin.includes("localhost")) {
+            try {
+                window.location.href = deepLinkUrl;
+            } catch (e) {
+                console.warn("Could not bounce to native app:", e);
+            }
+        }
 
         const finish = async (userId: string) => {
             if (done) return;
@@ -93,6 +97,14 @@ const AuthCallbackPage = () => {
                     <div className="h-1 w-48 bg-muted rounded-full overflow-hidden">
                         <div className="h-full gradient-brand rounded-full animate-[progress_2s_ease-in-out_infinite]" style={{ width: "60%" }} />
                     </div>
+                    {/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.location.origin.includes("localhost") && (
+                        <a
+                            href={`com.blacklovelink.app://auth/callback${window.location.search}${window.location.hash}`}
+                            className="mt-3 px-5 py-2.5 rounded-xl border border-primary/40 bg-primary/10 text-primary font-medium text-xs hover:bg-primary/20 transition"
+                        >
+                            Open in BlackLoveLink App
+                        </a>
+                    )}
                 </>
             )}
         </div>

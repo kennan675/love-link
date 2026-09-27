@@ -22,6 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep Link for OAuth callback: com.blacklovelink.app://auth/callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.blacklovelink.app" android:host="auth" android:pathPrefix="/callback" />
+            </intent-filter>
+
+            <!-- Catch-all scheme for com.blacklovelink.app -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.blacklovelink.app" />
+            </intent-filter>
+
         </activity>
 
         <provider

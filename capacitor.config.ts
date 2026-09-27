@@ -22,16 +22,16 @@ const config: CapacitorConfig = {
       launchShowDuration: 2000,
       launchAutoHide: true,
       launchFadeOutDuration: 500,
-      backgroundColor: '#141720',
+      backgroundColor: '#ffffff',
       androidSplashResourceName: 'splash',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,
     },
-    // Status bar — transparent overlay on Android
+    // Status bar — themed to obsidian dark
     StatusBar: {
       style: 'dark',
-      backgroundColor: '#00000000',
+      backgroundColor: '#141720',
     },
   },
 };
