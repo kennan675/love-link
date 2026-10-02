@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
         async function checkStatus() {
             try {
-                const { data } = await supabase
+                const { data }: { data: any } = await (supabase as any)
                     .from("profiles")
                     .select("deactivated_at, deletion_requested, leave_reason")
                     .eq("user_id", user.id)

@@ -50,8 +50,7 @@ export async function getProfileStatus(userId: string): Promise<"complete" | "in
             .from("profiles")
             .update({ profile_completed: true })
             .or(`user_id.eq.${userId},id.eq.${profileId}`)
-            .then(() => {})
-            .catch(() => {});
+            .then(() => {}, () => {});
         }
         return "complete";
       }
