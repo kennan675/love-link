@@ -44,6 +44,7 @@ const LinkedRingsIcon = ({ className, filled }: { className?: string; filled?: b
 );
 import logo from "@/assets/blacklovelink-logo-icon.png";
 import LeftRail from "@/components/shell/LeftRail";
+import AppSidebar from "@/components/AppSidebar";
 import RightRail from "@/components/shell/RightRail";
 import NotificationPanel from "@/components/NotificationPanel";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -129,6 +130,7 @@ const TopNav = () => {
         <div className="flex items-center justify-between gap-3 h-14 px-3 sm:px-5">
           {/* Left: Brand Identity */}
           <div className="flex items-center gap-2 shrink-0">
+            <AppSidebar />
             {!isMainTab && (
               <button
                 onClick={() => navigate(-1)}
