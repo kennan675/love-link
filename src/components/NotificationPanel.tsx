@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, MessageCircle, Sparkles, Bell, CheckCheck } from "lucide-react";
+import { X, Heart, MessageCircle, Sparkles, Bell, CheckCheck, ShieldAlert } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import type { Notification } from "@/hooks/useNotifications";
 
@@ -12,12 +12,14 @@ interface Props {
 const typeIcon = (type: Notification["type"]) => {
   if (type === "match") return <Sparkles className="w-4 h-4 text-yellow-400" />;
   if (type === "message_request") return <MessageCircle className="w-4 h-4 text-primary" />;
+  if (type === "admin") return <ShieldAlert className="w-4 h-4 text-amber-400" />;
   return <Heart className="w-4 h-4 text-rose-500" fill="currentColor" />;
 };
 
 const typeBg = (type: Notification["type"]) => {
   if (type === "match") return "bg-yellow-500/10 border-yellow-400/20";
   if (type === "message_request") return "bg-primary/10 border-primary/20";
+  if (type === "admin") return "bg-amber-500/10 border-amber-400/20";
   return "bg-rose-500/10 border-rose-400/20";
 };
 
@@ -38,6 +40,8 @@ export default function NotificationPanel({ open, onClose }: Props) {
   const handleNotifClick = (notif: Notification) => {
     if (notif.type === "match" || notif.type === "message_request") {
       navigate("/messages");
+    } else if (notif.type === "admin") {
+      navigate("/profile");
     } else {
       navigate("/likes");
     }

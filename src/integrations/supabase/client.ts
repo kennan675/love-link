@@ -4,9 +4,14 @@ import type { Database } from './types';
 import { brokeredPreviewStorage } from './previewAuthStorage';
 
 const SUPABASE_URL =
-  import.meta.env.VITE_SUPABASE_URL || "https://hxiycmrlyswwjqlwihdd.supabase.co";
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.SUPABASE_URL ||
+  "https://hxiycmrlyswwjqlwihdd.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  import.meta.env.SUPABASE_ANON_KEY ||
   "sb_publishable_JFUMyQCrC-vLFej5fatodw_P2OyltEZ";
 
 // Import the supabase client like this:

@@ -17,10 +17,8 @@ function getValidServiceKey(): string {
 
 const SERVICE_KEY = getValidServiceKey();
 
-// Privileged client used exclusively in the password-protected admin portal.
-export const adminSupabase = createClient(SUPABASE_URL, SERVICE_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+// Client used in the password-protected admin portal (uses publishable key in browser)
+export const adminSupabase = defaultClient;
 
 export interface AdminProfile {
   id: string;
@@ -96,85 +94,129 @@ export const adminService = {
     return (fallbackData || []) as AdminProfile[];
   },
 
+  async performAdminUpdate(userId: string, updates: Record<string, any>): Promise<void> {
+    // 1. Try Vercel Serverless Function /api/admin-action
+    try {
+      const res = await fetch("/api/admin-action", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": "BlackLoveAdmin2026!",
+        },
+        body: JSON.stringify({
+          action: "update_profile",
+          userId,
+          updates,
+          adminKey: "BlackLoveAdmin2026!",
+        }),
+      });
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success) return;
+      }
+    } catch (e) {
+      console.warn("Serverless update failed, trying RPC fallback:", e);
+    }
+
+    // 2. Try Supabase RPC fallback
+    try {
+      const { data: rpcRes, error: rpcErr } = await (defaultClient as any).rpc("admin_update_profile", {
+        target_user_id: userId,
+        updates,
+        admin_token: "BlackLoveAdmin2026!",
+      });
+      if (!rpcErr && rpcRes) return;
+    } catch (e) {
+      console.warn("RPC update failed, trying direct fallback:", e);
+    }
+
+    // 3. Fallback to direct supabase update
+    const { data, error } = await (defaultClient as any)
+      .from("profiles")
+      .update(updates)
+      .or(`id.eq.${userId},user_id.eq.${userId}`)
+      .select();
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      throw new Error(`Profile ${userId} could not be updated.`);
+    }
+  },
+
   /**
    * Suspend a user account (deactivates and hides from all matching)
    */
   async suspendUser(userId: string, reason = "Suspended by administrator"): Promise<void> {
-    const { data, error } = await (adminSupabase as any)
-      .from("profiles")
-      .update({
-        is_public: false,
-        deactivated_at: new Date().toISOString(),
-        leave_reason: reason,
-        deletion_requested: false,
-      })
-      .or(`id.eq.${userId},user_id.eq.${userId}`)
-      .select();
-
-    if (error) {
-      console.error("Failed to suspend user:", error);
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-      throw new Error(`Profile ${userId} could not be updated.`);
-    }
+    await this.performAdminUpdate(userId, {
+      is_public: false,
+      deactivated_at: new Date().toISOString(),
+      leave_reason: reason,
+      deletion_requested: false,
+    });
   },
 
   /**
    * Reactivate a suspended or deletion-pending user account
    */
   async reactivateUser(userId: string): Promise<void> {
-    const { data, error } = await (adminSupabase as any)
-      .from("profiles")
-      .update({
-        is_public: true,
-        deactivated_at: null,
-        scheduled_deletion_at: null,
-        leave_reason: null,
-        leave_feedback: null,
-        deletion_requested: false,
-      })
-      .or(`id.eq.${userId},user_id.eq.${userId}`)
-      .select();
-
-    if (error) {
-      console.error("Failed to reactivate user:", error);
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-      throw new Error(`Profile ${userId} could not be updated.`);
-    }
+    await this.performAdminUpdate(userId, {
+      is_public: true,
+      deactivated_at: null,
+      scheduled_deletion_at: null,
+      leave_reason: null,
+      leave_feedback: null,
+      deletion_requested: false,
+    });
   },
 
   /**
    * Toggle verification badge for a user
    */
   async toggleVerification(userId: string, verified: boolean): Promise<void> {
-    const { data, error } = await (adminSupabase as any)
-      .from("profiles")
-      .update({ verified })
-      .or(`id.eq.${userId},user_id.eq.${userId}`)
-      .select();
-
-    if (error) {
-      console.error("Failed to toggle verification:", error);
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-      throw new Error(`Profile ${userId} could not be updated.`);
-    }
+    await this.performAdminUpdate(userId, { verified });
   },
 
   /**
    * Completely and permanently delete a user and all related records
    */
   async deleteUser(userId: string): Promise<void> {
-    const client = adminSupabase as any;
+    // 1. Try Vercel Serverless Function /api/admin-action
+    try {
+      const res = await fetch("/api/admin-action", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": "BlackLoveAdmin2026!",
+        },
+        body: JSON.stringify({
+          action: "delete_user",
+          userId,
+          adminKey: "BlackLoveAdmin2026!",
+        }),
+      });
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success) return;
+      }
+    } catch (e) {
+      console.warn("Serverless delete endpoint failed, trying RPC fallback:", e);
+    }
 
-    // 1. Resolve target profile to obtain both profile.id and profile.user_id
+    // 2. Try Supabase RPC fallback
+    try {
+      const { data: rpcRes, error: rpcErr } = await (defaultClient as any).rpc("admin_delete_user", {
+        target_user_id: userId,
+        admin_token: "BlackLoveAdmin2026!",
+      });
+      if (!rpcErr && rpcRes === true) {
+        return;
+      }
+    } catch (e) {
+      console.warn("RPC delete fallback failed:", e);
+    }
+
+    // 3. Fallback to direct client
+    const client = defaultClient as any;
     const { data: profile } = await client
       .from("profiles")
       .select("id, user_id, full_name")
@@ -184,7 +226,7 @@ export const adminService = {
     const targetUserId = profile?.user_id || userId;
     const targetProfileId = profile?.id || userId;
 
-    // 2. Fetch matches involving this user (schema: user_a, user_b)
+    // Matches & messages
     try {
       const { data: matches } = await client
         .from("matches")
@@ -192,14 +234,10 @@ export const adminService = {
         .or(`user_a.eq.${targetUserId},user_b.eq.${targetUserId}`);
 
       const matchIds = (matches || []).map((m: any) => m.id);
-
-      // 3. Delete messages related to these matches or sent by targetUserId
       if (matchIds.length > 0) {
         await client.from("messages").delete().in("match_id", matchIds);
       }
       await client.from("messages").delete().eq("sender_id", targetUserId);
-
-      // 4. Delete matches
       await client
         .from("matches")
         .delete()
@@ -208,7 +246,7 @@ export const adminService = {
       console.warn("Could not clean up matches/messages:", e);
     }
 
-    // 5. Delete swipes (schema: swiper_id, swiped_id)
+    // Swipes
     try {
       await client
         .from("swipes")
@@ -218,7 +256,7 @@ export const adminService = {
       console.warn("Could not delete swipes:", e);
     }
 
-    // 6. Delete profile row from database
+    // Delete profile row
     const { data: deletedProfiles, error: profileError } = await client
       .from("profiles")
       .delete()
@@ -231,10 +269,12 @@ export const adminService = {
     }
 
     if (!deletedProfiles || deletedProfiles.length === 0) {
-      throw new Error(`Profile ${targetProfileId} could not be deleted from database.`);
+      throw new Error(
+        "User deletion failed. Please ensure the serverless function is deployed or run 20260928_admin_functions.sql in your Supabase SQL editor."
+      );
     }
 
-    // 7. Delete photos from storage bucket
+    // Storage cleanup
     try {
       const { data: files } = await client.storage
         .from("profile-photos")
@@ -247,22 +287,66 @@ export const adminService = {
     } catch (e) {
       console.warn("Could not remove storage files:", e);
     }
+  },
 
-    // 8. Delete user from auth.users via admin API
+  /**
+   * Remove a single inappropriate photo from a user's profile
+   * and send them an in-app admin notification.
+   */
+  async removePhoto(
+    userId: string,
+    profileId: string,
+    photoUrl: string,
+    notificationMessage: string
+  ): Promise<void> {
+    // 1. Fetch current photos
+    const { data: profile } = await (defaultClient as any)
+      .from("profiles")
+      .select("photos, avatar_url")
+      .or(`id.eq.${profileId},user_id.eq.${userId}`)
+      .maybeSingle();
+
+    if (!profile) throw new Error("Profile not found");
+
+    const currentPhotos: string[] = Array.isArray(profile.photos) ? profile.photos : [];
+    const newPhotos = currentPhotos.filter((url: string) => url !== photoUrl);
+
+    const updates: Record<string, any> = { photos: newPhotos };
+
+    // If the removed photo was also the avatar, promote next or set null
+    if (profile.avatar_url === photoUrl) {
+      updates.avatar_url = newPhotos[0] ?? null;
+    }
+
+    // 2. Update profile
+    await this.performAdminUpdate(userId, updates);
+
+    // 3. Delete the file from Supabase Storage
     try {
-      if (client.auth?.admin?.deleteUser) {
-        await client.auth.admin.deleteUser(targetUserId);
-      } else {
-        await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${targetUserId}`, {
-          method: "DELETE",
-          headers: {
-            apikey: SERVICE_KEY,
-            Authorization: `Bearer ${SERVICE_KEY}`,
-          },
-        });
+      // URL pattern: https://<project>.supabase.co/storage/v1/object/public/profile-photos/<path>
+      const marker = "/object/public/profile-photos/";
+      const urlObj = new URL(photoUrl);
+      const markerIdx = urlObj.pathname.indexOf(marker);
+      if (markerIdx !== -1) {
+        const filePath = decodeURIComponent(urlObj.pathname.slice(markerIdx + marker.length));
+        await (defaultClient as any).storage.from("profile-photos").remove([filePath]);
       }
     } catch (e) {
-      console.warn("Could not delete auth user:", e);
+      console.warn("Could not delete photo from storage:", e);
+    }
+
+    // 4. Insert admin notification for the user
+    try {
+      await (defaultClient as any)
+        .from("admin_notifications")
+        .insert({
+          user_id: userId,
+          type: "admin",
+          message: notificationMessage,
+          read: false,
+        });
+    } catch (e) {
+      console.warn("Could not send admin notification:", e);
     }
   },
 

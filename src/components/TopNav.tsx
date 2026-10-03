@@ -47,6 +47,7 @@ import LeftRail from "@/components/shell/LeftRail";
 import AppSidebar from "@/components/AppSidebar";
 import RightRail from "@/components/shell/RightRail";
 import NotificationPanel from "@/components/NotificationPanel";
+import NotificationToast from "@/components/NotificationToast";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Language, languageNames } from "@/contexts/LanguageContext";
@@ -313,6 +314,9 @@ const TopNav = () => {
 
       {/* ── NOTIFICATION PANEL ──────────────────────────────────────── */}
       <NotificationPanel open={notifOpen} onClose={() => setNotifOpen(false)} />
+
+      {/* ── LIVE POP-UP TOASTS (Instagram-style) ────────────────────── */}
+      <NotificationToast />
     </>
   );
 };

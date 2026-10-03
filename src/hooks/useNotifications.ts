@@ -4,7 +4,7 @@ import type { UserProfile } from "@/hooks/useProfileData";
 
 export interface Notification {
   id: string;
-  type: "match" | "like" | "message_request";
+  type: "match" | "like" | "message_request" | "admin";
   profile: UserProfile | null;
   message?: string;
   created_at: string;
@@ -92,6 +92,28 @@ export const useNotifications = () => {
         });
       });
 
+      // 3. Admin notifications (photo removals, platform notices)
+      try {
+        const { data: adminNotifs } = await (supabase as any)
+          .from("admin_notifications")
+          .select("*")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(20);
+        (adminNotifs ?? []).forEach((n: any) => {
+          notes.push({
+            id: `admin-${n.id}`,
+            type: "admin" as const,
+            profile: null,
+            message: n.message,
+            created_at: n.created_at,
+            read: n.read || readIdsRef.current.has(`admin-${n.id}`),
+          });
+        });
+      } catch {
+        // admin_notifications table may not exist yet — skip silently
+      }
+
       // Sort by date desc
       notes.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
@@ -135,6 +157,12 @@ export const useNotifications = () => {
             const s = payload.new as any;
             if (s.swiped_id === userId) fetchNotifications();
           }
+        )
+        .on("postgres_changes", {
+            event: "INSERT", schema: "public", table: "admin_notifications",
+            filter: `user_id=eq.${userId}`,
+          },
+          () => fetchNotifications()
         )
         .subscribe();
 

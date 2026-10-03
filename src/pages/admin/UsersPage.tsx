@@ -3,7 +3,7 @@ import {
   Shield, ShieldAlert, ShieldCheck, UserX, Search,
   RefreshCw, Trash2, CheckCircle2, AlertTriangle, Eye,
   PauseCircle, PlayCircle, X, ExternalLink, Calendar,
-  Briefcase, Heart, Sparkles, AlertOctagon, UserCheck
+  Briefcase, Heart, Sparkles, AlertOctagon, UserCheck, ImageOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow, format } from "date-fns";
@@ -24,6 +24,14 @@ const AdminUsersPage = () => {
   const [userToSuspend, setUserToSuspend] = useState<AdminProfile | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Photo removal state
+  const [photoToRemove, setPhotoToRemove] = useState<{ url: string } | null>(null);
+  const [removalNote, setRemovalNote] = useState("");
+  const [isPhotoRemoving, setIsPhotoRemoving] = useState(false);
+
+  const DEFAULT_REMOVAL_MESSAGE = (name: string) =>
+    `Hi ${name}, we've reviewed your profile and removed one of your photos as it did not meet BlackLoveLink's community standards for professional presentation. Please upload a replacement photo. For questions, contact techhubafrica24@gmail.com.`;
 
   const loadUsers = async () => {
     setLoading(true);
@@ -160,6 +168,47 @@ const AdminUsersPage = () => {
       toast.error(e?.message || "Failed to delete user account.");
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  // Action: Remove a single photo
+  const handleConfirmPhotoRemoval = async () => {
+    if (!selectedUser || !photoToRemove) return;
+    setIsPhotoRemoving(true);
+    try {
+      await adminService.removePhoto(
+        selectedUser.user_id || selectedUser.id,
+        selectedUser.id,
+        photoToRemove.url,
+        removalNote || DEFAULT_REMOVAL_MESSAGE(selectedUser.full_name || "Member")
+      );
+      // Update local selectedUser photos so the modal refreshes immediately
+      setSelectedUser(prev => {
+        if (!prev) return prev;
+        const newPhotos = (prev.photos ?? []).filter(p => p !== photoToRemove.url);
+        return {
+          ...prev,
+          photos: newPhotos,
+          avatar_url: prev.avatar_url === photoToRemove.url ? (newPhotos[0] ?? null) : prev.avatar_url,
+        };
+      });
+      setUsers(prev => prev.map(u => {
+        if (u.user_id !== selectedUser.user_id && u.id !== selectedUser.id) return u;
+        const newPhotos = (u.photos ?? []).filter(p => p !== photoToRemove.url);
+        return {
+          ...u,
+          photos: newPhotos,
+          avatar_url: u.avatar_url === photoToRemove.url ? (newPhotos[0] ?? null) : u.avatar_url,
+        };
+      }));
+      toast.success("Photo removed and user notified.");
+      setPhotoToRemove(null);
+      setRemovalNote("");
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Failed to remove photo.");
+    } finally {
+      setIsPhotoRemoving(false);
     }
   };
 
@@ -528,19 +577,19 @@ const AdminUsersPage = () => {
                 </button>
               </div>
 
-              {/* Photos Gallery */}
+              {/* Photos Gallery with moderation controls */}
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  Uploaded Photos ({selectedUser.photos?.filter(Boolean).length || 0})
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Uploaded Photos ({selectedUser.photos?.filter(Boolean).length || 0})
+                  </p>
+                  <p className="text-[10px] text-muted-foreground italic">Hover a photo to remove it</p>
+                </div>
                 {selectedUser.photos && selectedUser.photos.filter(Boolean).length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
                     {selectedUser.photos.filter(Boolean).map((photoUrl, i) => (
-                      <a
+                      <div
                         key={i}
-                        href={photoUrl}
-                        target="_blank"
-                        rel="noreferrer"
                         className="relative aspect-square rounded-xl overflow-hidden border border-border group bg-muted"
                       >
                         <img
@@ -548,10 +597,33 @@ const AdminUsersPage = () => {
                           alt={`User photo ${i + 1}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                         />
-                        <span className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs transition-opacity">
-                          View
-                        </span>
-                      </a>
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5">
+                          <a
+                            href={photoUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={e => e.stopPropagation()}
+                            className="text-white text-[10px] font-semibold underline"
+                          >
+                            View
+                          </a>
+                          <button
+                            onClick={() => {
+                              setPhotoToRemove({ url: photoUrl });
+                              setRemovalNote(DEFAULT_REMOVAL_MESSAGE(selectedUser.full_name || "Member"));
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-destructive text-white text-[10px] font-bold hover:bg-destructive/90 transition-colors"
+                          >
+                            <ImageOff className="w-3 h-3" /> Remove
+                          </button>
+                        </div>
+                        {i === 0 && (
+                          <span className="absolute top-1 left-1 text-[9px] font-bold uppercase tracking-widest bg-black/60 text-white px-1.5 py-0.5 rounded-full">
+                            Main
+                          </span>
+                        )}
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -778,6 +850,72 @@ const AdminUsersPage = () => {
                   className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:bg-destructive/90 transition-colors flex items-center justify-center gap-1.5"
                 >
                   {isProcessing ? "Deleting..." : "Delete Permanently"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── MODAL 4: PHOTO REMOVAL CONFIRMATION ── */}
+      <AnimatePresence>
+        {photoToRemove && selectedUser && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-card border border-destructive/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4"
+            >
+              <div className="w-12 h-12 rounded-full bg-destructive/15 flex items-center justify-center text-destructive mx-auto">
+                <ImageOff className="w-6 h-6" />
+              </div>
+              <div className="text-center space-y-1">
+                <h3 className="text-xl font-bold text-foreground">Remove this photo?</h3>
+                <p className="text-xs text-muted-foreground">
+                  The photo will be permanently deleted from storage and the user will be notified.
+                </p>
+              </div>
+
+              {/* Photo preview */}
+              <div className="flex justify-center">
+                <img
+                  src={photoToRemove.url}
+                  alt="Photo to remove"
+                  className="w-32 h-32 rounded-2xl object-cover border border-destructive/30 shadow-lg"
+                />
+              </div>
+
+              {/* Editable notification message */}
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
+                  Message sent to {selectedUser.full_name}
+                </label>
+                <textarea
+                  value={removalNote}
+                  onChange={e => setRemovalNote(e.target.value)}
+                  rows={4}
+                  className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none focus:border-secondary resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="flex gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => { setPhotoToRemove(null); setRemovalNote(""); }}
+                  disabled={isPhotoRemoving}
+                  className="flex-1 py-2.5 rounded-xl bg-muted text-foreground text-xs font-bold hover:bg-muted/80 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmPhotoRemoval}
+                  disabled={isPhotoRemoving}
+                  className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:bg-destructive/90 transition-colors flex items-center justify-center gap-1.5"
+                >
+                  {isPhotoRemoving ? "Removing…" : "Remove & Notify User"}
                 </button>
               </div>
             </motion.div>
