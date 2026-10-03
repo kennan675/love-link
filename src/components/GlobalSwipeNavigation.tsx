@@ -72,22 +72,25 @@ export const GlobalSwipeNavigation: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // ── ERGONOMIC HORIZONTAL SWIPE GATE ──
-      // 1. Minimum 45px horizontal travel (comfortable natural thumb flick)
-      if (Math.abs(deltaX) < 45) return;
+      // 1. Minimum 60px horizontal travel (clear, deliberate thumb swipe)
+      if (Math.abs(deltaX) < 60) return;
 
-      // 2. Must be predominantly horizontal rather than vertical scroll
-      if (Math.abs(deltaX) < Math.abs(deltaY) * 1.15) return;
+      // 2. Must be predominantly horizontal rather than vertical scroll (2:1 ratio)
+      if (Math.abs(deltaX) < Math.abs(deltaY) * 2.0) return;
+
+      // 3. Ignore if noticeable vertical scrolling happened (user was scrolling the feed)
+      if (Math.abs(deltaY) > 50) return;
 
       const currentIndex = TAB_SEQUENCE.indexOf(location.pathname);
       if (currentIndex === -1) return;
 
-      if (deltaX < -45 && currentIndex < TAB_SEQUENCE.length - 1) {
+      if (deltaX < -60 && currentIndex < TAB_SEQUENCE.length - 1) {
         // Swiped Left → Navigate Forward to Next Tab
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           navigator.vibrate(15);
         }
         navigate(TAB_SEQUENCE[currentIndex + 1]);
-      } else if (deltaX > 45 && currentIndex > 0) {
+      } else if (deltaX > 60 && currentIndex > 0) {
         // Swiped Right → Navigate Backward to Previous Tab
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           navigator.vibrate(15);

@@ -57,7 +57,30 @@ export default function UsersPage() {
   const [isPhotoRemoving, setIsPhotoRemoving] = useState(false);
 
   const DEFAULT_REMOVAL_MESSAGE = (name: string) =>
-    `Hi ${name}, we've reviewed your profile and removed one of your photos as it did not meet BlackLoveLink's community standards for professional presentation. Please upload a replacement photo. For questions, contact techhubafrica24@gmail.com.`;
+    `Hi ${name}, we have reviewed your profile and removed one of your photos as it does not comply with BlackLoveLink's professional community guidelines and image policies. Please upload a clear, professional photo of yourself. For questions, contact techhubafrica24@gmail.com.`;
+
+  const POLICY_REASONS = [
+    {
+      label: "Not a photo of you / Object / Product",
+      message: (name: string) =>
+        `Hi ${name}, we reviewed your profile and removed one of your photos because it shows an object, product, or screenshot rather than a photo of yourself. BlackLoveLink requires all photos to feature you clearly. Please upload a photo of yourself. For questions, contact techhubafrica24@gmail.com.`,
+    },
+    {
+      label: "Does not comply with policies",
+      message: (name: string) =>
+        `Hi ${name}, we've reviewed your profile and removed one of your photos as it does not comply with BlackLoveLink's professional community policies and standards. Please upload a replacement photo. For questions, contact techhubafrica24@gmail.com.`,
+    },
+    {
+      label: "Inappropriate or indecent content",
+      message: (name: string) =>
+        `Hi ${name}, one of your uploaded photos was removed as it does not meet our professional community decency standards. Please upload a photo suitable for a professional platform. For questions, contact techhubafrica24@gmail.com.`,
+    },
+    {
+      label: "Unclear face or low quality",
+      message: (name: string) =>
+        `Hi ${name}, we removed one of your photos because your face is obscured or the image quality does not meet our profile verification standards. Please upload a clear photo of yourself. For questions, contact techhubafrica24@gmail.com.`,
+    },
+  ];
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -745,40 +768,55 @@ export default function UsersPage() {
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     Uploaded Photos ({selectedUser.photos?.filter(Boolean).length || 0})
                   </p>
-                  <p className="text-[10px] text-muted-foreground italic">Hover a photo to remove it</p>
+                  <p className="text-xs text-muted-foreground font-medium">Click any photo or trash icon to delete</p>
                 </div>
                 {selectedUser.photos && selectedUser.photos.filter(Boolean).length > 0 ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                     {selectedUser.photos.filter(Boolean).map((photoUrl, i) => (
                       <div
                         key={i}
-                        className="relative aspect-square rounded-xl overflow-hidden border border-border group bg-muted"
+                        onClick={() => {
+                          setPhotoToRemove({ url: photoUrl });
+                          setRemovalNote(POLICY_REASONS[1].message(selectedUser.full_name || 'Member'));
+                        }}
+                        className="relative aspect-square rounded-2xl overflow-hidden border-2 border-border hover:border-destructive transition-all cursor-pointer group bg-muted shadow-sm hover:shadow-md"
+                        title="Click to delete this photo & notify user"
                       >
                         <img src={photoUrl} alt={`Photo ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5">
+
+                        {/* Always-visible Red Trash Button in top right */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPhotoToRemove({ url: photoUrl });
+                            setRemovalNote(POLICY_REASONS[1].message(selectedUser.full_name || 'Member'));
+                          }}
+                          className="absolute top-2 right-2 z-10 p-2 rounded-xl bg-destructive text-white shadow-lg hover:bg-destructive/90 hover:scale-110 active:scale-95 transition-all"
+                          title="Delete photo & notify user"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* Bottom bar with Delete label & View link */}
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-2 flex items-center justify-between text-white">
+                          <span className="font-bold text-destructive-foreground bg-destructive px-2 py-0.5 rounded-md text-[10px]">
+                            Delete
+                          </span>
                           <a
                             href={photoUrl}
                             target="_blank"
                             rel="noreferrer"
-                            onClick={e => e.stopPropagation()}
-                            className="text-white text-[10px] font-semibold underline"
+                            onClick={(e) => e.stopPropagation()}
+                            className="hover:underline text-[10px] text-white/90"
                           >
-                            View
+                            View ↗
                           </a>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPhotoToRemove({ url: photoUrl });
-                              setRemovalNote(DEFAULT_REMOVAL_MESSAGE(selectedUser.full_name || 'Member'));
-                            }}
-                            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-destructive text-white text-[10px] font-bold hover:bg-destructive/90 transition-colors"
-                          >
-                            <ImageOff className="w-3 h-3" /> Remove
-                          </button>
                         </div>
+
                         {i === 0 && (
-                          <span className="absolute top-1 left-1 text-[9px] font-bold uppercase tracking-widest bg-black/60 text-white px-1.5 py-0.5 rounded-full">
-                            Main
+                          <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-widest bg-black/80 text-white px-2 py-0.5 rounded-full border border-white/20">
+                            Avatar
                           </span>
                         )}
                       </div>
@@ -912,37 +950,61 @@ export default function UsersPage() {
       {/* ── MODAL 4: PHOTO REMOVAL CONFIRMATION ── */}
       <AnimatePresence>
         {photoToRemove && selectedUser && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md bg-card border border-destructive/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4"
+              className="w-full max-w-lg bg-card border border-destructive/40 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
             >
-              <div className="w-12 h-12 rounded-full bg-destructive/15 flex items-center justify-center text-destructive mx-auto">
-                <ImageOff className="w-6 h-6" />
-              </div>
-              <div className="text-center space-y-1">
-                <h3 className="text-xl font-bold text-foreground">Remove this photo?</h3>
-                <p className="text-xs text-muted-foreground">
-                  The photo will be permanently deleted from storage and the user will be notified.
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-destructive/15 flex items-center justify-center text-destructive flex-shrink-0">
+                  <ImageOff className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">Delete Photo & Notify User</h3>
+                  <p className="text-xs text-muted-foreground">
+                    This photo will be removed from {selectedUser.full_name}'s profile and storage.
+                  </p>
+                </div>
               </div>
 
               {/* Photo preview */}
-              <div className="flex justify-center">
-                <img
-                  src={photoToRemove.url}
-                  alt="Photo to remove"
-                  className="w-32 h-32 rounded-2xl object-cover border border-destructive/30 shadow-lg"
-                />
+              <div className="flex justify-center py-1">
+                <div className="relative">
+                  <img
+                    src={photoToRemove.url}
+                    alt="Photo to delete"
+                    className="w-36 h-36 rounded-2xl object-cover border-2 border-destructive shadow-lg"
+                  />
+                  <span className="absolute top-2 right-2 bg-destructive text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                    Policy Violation
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Policy Reason Pills */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Select Reason (Auto-fills Message):</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {POLICY_REASONS.map((reason, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setRemovalNote(reason.message(selectedUser.full_name || 'Member'))}
+                      className="text-left p-2 rounded-xl border border-border hover:border-secondary hover:bg-secondary/10 text-[11px] font-medium transition-colors"
+                    >
+                      {reason.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Editable notification message */}
               <div className="space-y-1.5 text-left">
                 <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
-                  Message sent to {selectedUser.full_name}
+                  In-app note sent to {selectedUser.full_name}:
                 </label>
                 <textarea
                   value={removalNote}
@@ -952,7 +1014,7 @@ export default function UsersPage() {
                 />
               </div>
 
-              <div className="flex gap-2.5 pt-1">
+              <div className="flex gap-2.5 pt-2 border-t border-border">
                 <button
                   type="button"
                   onClick={() => { setPhotoToRemove(null); setRemovalNote(''); }}
@@ -965,9 +1027,9 @@ export default function UsersPage() {
                   type="button"
                   onClick={handleConfirmPhotoRemoval}
                   disabled={isPhotoRemoving}
-                  className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:bg-destructive/90 transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:bg-destructive/90 transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-destructive/25"
                 >
-                  {isPhotoRemoving ? 'Removing…' : 'Remove & Notify User'}
+                  {isPhotoRemoving ? 'Deleting & Notifying…' : 'Delete Photo & Notify User'}
                 </button>
               </div>
             </motion.div>

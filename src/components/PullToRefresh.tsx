@@ -1,5 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
 import { RefreshCw, ArrowDown, Check } from "lucide-react";
 
 interface PullToRefreshProps {
@@ -14,8 +13,8 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
   onRefresh,
   children,
   className = "",
-  pullThreshold = 65,
-  maxPull = 100,
+  pullThreshold = 70,
+  maxPull = 110,
 }) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -27,12 +26,24 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
   const startXRef = useRef<number | null>(null);
   const isPullingRef = useRef(false);
   const vibrationFiredRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
+
+  const getScrollTop = () => {
+    if (containerRef.current && containerRef.current.scrollTop > 0) {
+      return containerRef.current.scrollTop;
+    }
+    return typeof window !== "undefined" ? window.scrollY || document.documentElement.scrollTop || 0 : 0;
+  };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (isRefreshing) return;
-    const container = containerRef.current;
-    // Only engage if at the very top of the scroll container
-    if (!container || container.scrollTop > 2) return;
+    // Strictly only engage if at the absolute top of the scroll container
+    if (getScrollTop() > 2) {
+      startYRef.current = null;
+      startXRef.current = null;
+      isPullingRef.current = false;
+      return;
+    }
 
     startYRef.current = e.touches[0].clientY;
     startXRef.current = e.touches[0].clientX;
@@ -41,8 +52,9 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (isRefreshing || startYRef.current === null || startXRef.current === null) return;
-    const container = containerRef.current;
-    if (!container || container.scrollTop > 2) {
+
+    // If user scrolled down or is not at top, abort pull-to-refresh
+    if (getScrollTop() > 2) {
       if (isPullingRef.current) {
         isPullingRef.current = false;
         setPullDistance(0);
@@ -56,32 +68,45 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     const diffY = currentY - startYRef.current;
     const diffX = currentX - startXRef.current;
 
-    // If pulling downwards and vertical dominates horizontal movement
-    if (diffY > 10 && Math.abs(diffY) > Math.abs(diffX) * 1.3) {
+    // Only engage if pulling DOWN and vertical movement strictly dominates horizontal movement
+    if (diffY > 15 && diffY > Math.abs(diffX) * 1.6) {
       isPullingRef.current = true;
       // Damped rubber-band easing
-      const distance = Math.min(maxPull, Math.pow(diffY, 0.82) * 1.6);
-      setPullDistance(distance);
+      const distance = Math.min(maxPull, Math.pow(diffY, 0.8) * 1.5);
 
-      const ready = distance >= pullThreshold;
-      setIsReady(ready);
+      if (!rafIdRef.current) {
+        rafIdRef.current = requestAnimationFrame(() => {
+          setPullDistance(distance);
+          const ready = distance >= pullThreshold;
+          setIsReady(ready);
 
-      if (ready && !vibrationFiredRef.current) {
-        if (typeof navigator !== "undefined" && navigator.vibrate) {
-          navigator.vibrate(25);
-        }
-        vibrationFiredRef.current = true;
-      } else if (!ready) {
-        vibrationFiredRef.current = false;
+          if (ready && !vibrationFiredRef.current) {
+            if (typeof navigator !== "undefined" && navigator.vibrate) {
+              navigator.vibrate(20);
+            }
+            vibrationFiredRef.current = true;
+          } else if (!ready) {
+            vibrationFiredRef.current = false;
+          }
+          rafIdRef.current = null;
+        });
       }
     } else if (diffY <= 0) {
-      isPullingRef.current = false;
-      setPullDistance(0);
-      setIsReady(false);
+      // Normal upward scroll down into the feed: immediately release
+      if (isPullingRef.current) {
+        isPullingRef.current = false;
+        setPullDistance(0);
+        setIsReady(false);
+      }
     }
   };
 
   const handleTouchEnd = async () => {
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+
     if (!isPullingRef.current) {
       startYRef.current = null;
       startXRef.current = null;
@@ -107,7 +132,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
           setIsRefreshing(false);
           setPullDistance(0);
           setIsReady(false);
-        }, 400);
+        }, 300);
       }
     } else {
       setPullDistance(0);
@@ -115,6 +140,16 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     }
   };
 
+  // Clean up RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []);
+
+  const showIndicator = pullDistance > 10 || isRefreshing || justCompleted;
   const progress = Math.min(1, pullDistance / pullThreshold);
 
   return (
@@ -125,65 +160,56 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
       className={`relative overflow-y-auto overscroll-y-contain ${className}`}
+      style={{
+        WebkitOverflowScrolling: "touch",
+      }}
     >
-      {/* ── Pull Down Indicator Banner ── */}
-      <AnimatePresence>
-        {(pullDistance > 0 || isRefreshing) && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: pullDistance,
-              opacity: 1,
-            }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{
-              type: "spring",
-              damping: 28,
-              stiffness: 350,
-            }}
-            className="w-full flex items-center justify-center overflow-hidden pointer-events-none select-none"
-            aria-live="polite"
-          >
-            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-card/90 border border-secondary/30 backdrop-blur-md shadow-lg text-foreground text-xs font-semibold">
-              {isRefreshing ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 text-secondary animate-spin" />
-                  <span className="text-secondary font-bold">Discovering new profiles…</span>
-                </>
-              ) : justCompleted ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-500 font-bold">Profiles refreshed!</span>
-                </>
-              ) : (
-                <>
-                  <motion.div
-                    animate={{ rotate: isReady ? 180 : progress * 180 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <ArrowDown
-                      className={`w-3.5 h-3.5 transition-colors ${
-                        isReady ? "text-secondary" : "text-muted-foreground"
-                      }`}
-                    />
-                  </motion.div>
-                  <span className={isReady ? "text-secondary font-bold" : "text-muted-foreground"}>
-                    {isReady ? "Release for new profiles" : "Pull down to refresh"}
-                  </span>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── GPU-Accelerated Floating Pill Indicator (0 layout reflow) ── */}
+      {showIndicator && (
+        <div
+          className="sticky top-2 z-40 w-full flex items-center justify-center pointer-events-none select-none transition-transform duration-75"
+          style={{
+            transform: `translate3d(0, ${Math.min(pullDistance * 0.45, 32)}px, 0)`,
+            opacity: isRefreshing || justCompleted ? 1 : Math.min(1, pullDistance / 25),
+          }}
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-card/95 border border-primary/30 backdrop-blur-md shadow-2xl text-foreground text-xs font-semibold">
+            {isRefreshing ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 text-primary animate-spin" />
+                <span className="text-primary font-bold">Discovering new profiles…</span>
+              </>
+            ) : justCompleted ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-emerald-500 font-bold">Profiles refreshed!</span>
+              </>
+            ) : (
+              <>
+                <div
+                  style={{
+                    transform: `rotate(${isReady ? 180 : progress * 180}deg)`,
+                    transition: "transform 0.15s ease",
+                  }}
+                >
+                  <ArrowDown
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      isReady ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  />
+                </div>
+                <span className={isReady ? "text-primary font-bold" : "text-muted-foreground"}>
+                  {isReady ? "Release to refresh" : "Pull down to refresh"}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
-      {/* ── Content ── */}
-      <motion.div
-        animate={{ y: isRefreshing ? 0 : 0 }}
-        transition={{ type: "spring", damping: 28, stiffness: 350 }}
-      >
-        {children}
-      </motion.div>
+      {/* ── Content (Direct render, 0 animation wrapper overhead) ── */}
+      {children}
     </div>
   );
 };

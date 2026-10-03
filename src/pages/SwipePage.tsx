@@ -108,11 +108,11 @@ const SwipePage = () => {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-gradient-to-b from-background via-background to-primary/5">
+    <div className="flex h-[100dvh] flex-col bg-gradient-to-b from-background via-background to-primary/5 overflow-hidden">
       <TopNav />
 
       {/* Sleek compact discover sub-bar */}
-      <div className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between">
+      <div className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
           <Compass className="w-3.5 h-3.5 text-primary" />
           <span>{t.app.discover}</span>
@@ -136,7 +136,7 @@ const SwipePage = () => {
         </div>
       </div>
 
-      <PullToRefresh onRefresh={handlePullRefresh} className="flex-1 pb-10">
+      <PullToRefresh onRefresh={handlePullRefresh} className="flex-1 min-h-0 pb-28">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
             <div className="relative">
@@ -177,7 +177,7 @@ const SwipePage = () => {
           </motion.div>
         ) : (
           <div className="flex flex-col gap-5 px-4 pt-5 max-w-md mx-auto">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               {visibleProfiles.map(profile => (
                 <FeedProfileCard
                   key={profile.user_id}

@@ -59,7 +59,6 @@ export default function FeedProfileCard({
 
     return (
         <motion.div
-            layout
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             className="relative mx-auto w-full max-w-md overflow-hidden rounded-3xl shadow-2xl bg-card border border-border"
@@ -78,7 +77,7 @@ export default function FeedProfileCard({
                         src={photos[photoIndex]}
                         alt={profile.full_name}
                         className="absolute inset-0 h-full w-full object-cover"
-                        loading="eager"
+                        loading="lazy"
                         decoding="async"
                         onLoad={() => setImgLoaded(true)}
                         initial={{ opacity: 0 }}
