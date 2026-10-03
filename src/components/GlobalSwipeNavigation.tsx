@@ -39,58 +39,44 @@ export const GlobalSwipeNavigation: React.FC<{ children: React.ReactNode }> = ({
       // Reset
       touchStartRef.current = null;
 
-      // Must be a deliberate swipe under 600ms
-      if (timeDiff > 600) return;
+      // Comfortable swipe window up to 800ms
+      if (timeDiff > 800) return;
 
       // ── SAFEGUARDS ──
       // 1. If currently inside an open chat conversation, do not switch tabs
       if (document.querySelector('[data-in-chat="true"]')) return;
 
-      // 2. Ignore if touch originated inside inputs, textareas, sliders, or modals
-      let target = e.target as HTMLElement | null;
-      while (target && target !== document.body) {
-        if (
-          target.tagName === "INPUT" ||
-          target.tagName === "TEXTAREA" ||
-          target.tagName === "SELECT" ||
-          target.getAttribute("contenteditable") === "true" ||
-          target.classList.contains("no-swipe")
-        ) {
-          return;
-        }
+      // 2. Ignore if touch originated inside inputs, textareas, sliders, or elements marked no-swipe
+      const target = e.target as HTMLElement | null;
+      if (
+        target?.closest('input, textarea, select, [contenteditable="true"], .no-swipe, [data-no-swipe="true"]')
+      ) {
+        return;
+      }
 
-        // Horizontal scroll container (e.g. carousel, story rail, or pills row)
-        const style = window.getComputedStyle(target);
-        if (
-          (style.overflowX === "auto" || style.overflowX === "scroll") &&
-          target.scrollWidth > target.clientWidth
-        ) {
-          return;
-        }
-
-        target = target.parentElement;
+      // 3. If touch originated inside an active horizontal scroll container (e.g. story rail or filter chips)
+      const horizontalScroller = target?.closest('.overflow-x-auto, .overflow-x-scroll, [data-horizontal-scroll="true"]') as HTMLElement | null;
+      if (horizontalScroller && horizontalScroller.scrollWidth > horizontalScroller.clientWidth + 8) {
+        return;
       }
 
       // ── ERGONOMIC HORIZONTAL SWIPE GATE ──
-      // 1. Minimum 60px horizontal travel (clear, deliberate thumb swipe)
-      if (Math.abs(deltaX) < 60) return;
+      // 1. Minimum 35px horizontal travel (light, effortless natural swipe)
+      if (Math.abs(deltaX) < 35) return;
 
-      // 2. Must be predominantly horizontal rather than vertical scroll (2:1 ratio)
-      if (Math.abs(deltaX) < Math.abs(deltaY) * 2.0) return;
-
-      // 3. Ignore if noticeable vertical scrolling happened (user was scrolling the feed)
-      if (Math.abs(deltaY) > 50) return;
+      // 2. Horizontal movement must exceed vertical movement (accommodates natural thumb arc)
+      if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.1) return;
 
       const currentIndex = TAB_SEQUENCE.indexOf(location.pathname);
       if (currentIndex === -1) return;
 
-      if (deltaX < -60 && currentIndex < TAB_SEQUENCE.length - 1) {
+      if (deltaX < -35 && currentIndex < TAB_SEQUENCE.length - 1) {
         // Swiped Left → Navigate Forward to Next Tab
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           navigator.vibrate(15);
         }
         navigate(TAB_SEQUENCE[currentIndex + 1]);
-      } else if (deltaX > 60 && currentIndex > 0) {
+      } else if (deltaX > 35 && currentIndex > 0) {
         // Swiped Right → Navigate Backward to Previous Tab
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           navigator.vibrate(15);
