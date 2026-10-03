@@ -4,13 +4,14 @@ import {
   RefreshCw, Trash2, CheckCircle2, AlertTriangle, Eye,
   PauseCircle, PlayCircle, X, ExternalLink, Calendar,
   Briefcase, Heart, AlertOctagon, UserCheck, ImageOff,
+  Images, Check
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow, format } from "date-fns";
 import { adminService, type AdminProfile } from "@/services/adminService";
 import { motion, AnimatePresence } from "framer-motion";
 
-type TabFilter = "all" | "active" | "suspended" | "deletions" | "verified";
+type TabFilter = "all" | "active" | "suspended" | "deletions" | "verified" | "photos";
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState<AdminProfile[]>([]);
@@ -25,10 +26,17 @@ const AdminUsersPage = () => {
   const [suspendReason, setSuspendReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Photo removal state
-  const [photoToRemove, setPhotoToRemove] = useState<{ url: string } | null>(null);
+  // Photo selection & removal state (supports single photo or multiple selected photos)
+  const [selectedUserPhotoUrls, setSelectedUserPhotoUrls] = useState<Set<string>>(new Set());
+  const [selectedGlobalPhotoUrls, setSelectedGlobalPhotoUrls] = useState<Set<string>>(new Set());
+  const [photosToRemove, setPhotosToRemove] = useState<{ url: string; user: AdminProfile }[] | null>(null);
   const [removalNote, setRemovalNote] = useState("");
   const [isPhotoRemoving, setIsPhotoRemoving] = useState(false);
+
+  // Clear modal selection when selectedUser changes
+  useEffect(() => {
+    setSelectedUserPhotoUrls(new Set());
+  }, [selectedUser]);
 
   const DEFAULT_REMOVAL_MESSAGE = (name: string) =>
     `Hi ${name}, we have reviewed your profile and removed one of your photos as it does not comply with BlackLoveLink's professional community guidelines and image policies. Please upload a clear, professional photo of yourself. For questions, contact techhubafrica24@gmail.com.`;
@@ -73,6 +81,26 @@ const AdminUsersPage = () => {
     loadUsers();
   }, []);
 
+  const allPhotos = useMemo(() => {
+    return users.flatMap((u) =>
+      (u.photos || []).filter(Boolean).map((url) => ({
+        url,
+        user: u,
+      }))
+    );
+  }, [users]);
+
+  const allPhotosFiltered = useMemo(() => {
+    if (!searchTerm.trim()) return allPhotos;
+    const term = searchTerm.toLowerCase();
+    return allPhotos.filter(
+      (p) =>
+        p.user.full_name?.toLowerCase().includes(term) ||
+        p.user.user_id?.toLowerCase().includes(term) ||
+        p.user.occupation_title?.toLowerCase().includes(term)
+    );
+  }, [allPhotos, searchTerm]);
+
   // Compute counts
   const counts = useMemo(() => {
     const total = users.length;
@@ -84,9 +112,10 @@ const AdminUsersPage = () => {
     const active = users.filter(
       (u) => !u.deletion_requested && !u.deactivated_at && u.is_public
     ).length;
+    const photos = allPhotos.length;
 
-    return { total, active, suspended, deletions, verified };
-  }, [users]);
+    return { total, active, suspended, deletions, verified, photos };
+  }, [users, allPhotos]);
 
   // Filtered users
   const filteredUsers = useMemo(() => {
@@ -194,38 +223,59 @@ const AdminUsersPage = () => {
     }
   };
 
-  // Action: Remove a single photo
+  // Action: Remove specific or multiple selected photos & notify
   const handleConfirmPhotoRemoval = async () => {
-    if (!selectedUser || !photoToRemove) return;
+    if (!photosToRemove || photosToRemove.length === 0) return;
     setIsPhotoRemoving(true);
     try {
-      await adminService.removePhoto(
-        selectedUser.user_id || selectedUser.id,
-        selectedUser.id,
-        photoToRemove.url,
-        removalNote || DEFAULT_REMOVAL_MESSAGE(selectedUser.full_name || "Member")
-      );
-      // Update local selectedUser photos so the modal refreshes immediately
-      setSelectedUser(prev => {
+      for (const item of photosToRemove) {
+        await adminService.removePhoto(
+          item.user.user_id || item.user.id,
+          item.user.id,
+          item.url,
+          removalNote || DEFAULT_REMOVAL_MESSAGE(item.user.full_name || "Member")
+        );
+      }
+
+      // Group removed urls by user id
+      const removedByUser = new Map<string, Set<string>>();
+      for (const item of photosToRemove) {
+        const uid = item.user.id;
+        if (!removedByUser.has(uid)) removedByUser.set(uid, new Set());
+        removedByUser.get(uid)!.add(item.url);
+      }
+
+      // Update local selectedUser if matching
+      setSelectedUser((prev) => {
         if (!prev) return prev;
-        const newPhotos = (prev.photos ?? []).filter(p => p !== photoToRemove.url);
+        const removeSet = removedByUser.get(prev.id);
+        if (!removeSet) return prev;
+        const newPhotos = (prev.photos ?? []).filter((p) => !removeSet.has(p));
         return {
           ...prev,
           photos: newPhotos,
-          avatar_url: prev.avatar_url === photoToRemove.url ? (newPhotos[0] ?? null) : prev.avatar_url,
+          avatar_url: removeSet.has(prev.avatar_url ?? "") ? (newPhotos[0] ?? null) : prev.avatar_url,
         };
       });
-      setUsers(prev => prev.map(u => {
-        if (u.user_id !== selectedUser.user_id && u.id !== selectedUser.id) return u;
-        const newPhotos = (u.photos ?? []).filter(p => p !== photoToRemove.url);
-        return {
-          ...u,
-          photos: newPhotos,
-          avatar_url: u.avatar_url === photoToRemove.url ? (newPhotos[0] ?? null) : u.avatar_url,
-        };
-      }));
-      toast.success("Photo removed and user notified.");
-      setPhotoToRemove(null);
+
+      // Update users array
+      setUsers((prev) =>
+        prev.map((u) => {
+          const removeSet = removedByUser.get(u.id);
+          if (!removeSet) return u;
+          const newPhotos = (u.photos ?? []).filter((p) => !removeSet.has(p));
+          return {
+            ...u,
+            photos: newPhotos,
+            avatar_url: removeSet.has(u.avatar_url ?? "") ? (newPhotos[0] ?? null) : u.avatar_url,
+          };
+        })
+      );
+
+      toast.success(`Removed ${photosToRemove.length} photo(s) and notified user(s).`);
+      setPhotosToRemove(null);
+      setSelectedUserPhotoUrls(new Set());
+      setSelectedGlobalPhotoUrls(new Set());
       setRemovalNote("");
     } catch (e: any) {
       console.error(e);
@@ -276,6 +326,7 @@ const AdminUsersPage = () => {
               alert: counts.deletions > 0,
             },
             { id: "verified", label: "Verified", count: counts.verified },
+            { id: "photos", label: "Photo Moderation", count: counts.photos },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -326,9 +377,146 @@ const AdminUsersPage = () => {
         </div>
       </div>
 
-      {/* ── Users Table ── */}
-      <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-card">
-        <div className="overflow-x-auto">
+      {/* ── Photo Moderation View or Users Table ── */}
+      {activeTab === "photos" ? (
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-card space-y-6">
+          {/* Header & Batch Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+            <div>
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Images className="w-5 h-5 text-secondary" />
+                Uploaded Photos Gallery ({allPhotosFiltered.length})
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Click any photo to select it, or use the red trash icon to delete immediately.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5 flex-wrap">
+              {allPhotosFiltered.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (selectedGlobalPhotoUrls.size === allPhotosFiltered.length) {
+                      setSelectedGlobalPhotoUrls(new Set());
+                    } else {
+                      setSelectedGlobalPhotoUrls(new Set(allPhotosFiltered.map((p) => p.url)));
+                    }
+                  }}
+                  className="text-xs px-3.5 py-2 rounded-xl border border-border bg-muted/60 hover:bg-muted text-foreground font-semibold transition-colors"
+                >
+                  {selectedGlobalPhotoUrls.size === allPhotosFiltered.length ? "Deselect All" : "Select All"}
+                </button>
+              )}
+
+              {selectedGlobalPhotoUrls.size > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const toRemove = allPhotos.filter((p) => selectedGlobalPhotoUrls.has(p.url));
+                    setPhotosToRemove(toRemove);
+                    setRemovalNote(POLICY_REASONS[0].message(toRemove[0]?.user.full_name || "Member"));
+                  }}
+                  className="flex items-center gap-2 text-xs px-4 py-2 rounded-xl bg-destructive text-white font-bold shadow-lg hover:bg-destructive/90 transition-all animate-pulse"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete Selected ({selectedGlobalPhotoUrls.size})
+                </button>
+              )}
+            </div>
+          </div>
+
+          {allPhotosFiltered.length === 0 ? (
+            <div className="py-20 text-center">
+              <ImageOff className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
+              <p className="font-bold text-foreground text-base">No photos found</p>
+              <p className="text-xs text-muted-foreground mt-1">Try clearing your search term.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+              {allPhotosFiltered.map((item, idx) => {
+                const isSelected = selectedGlobalPhotoUrls.has(item.url);
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setSelectedGlobalPhotoUrls((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(item.url)) next.delete(item.url);
+                        else next.add(item.url);
+                        return next;
+                      });
+                    }}
+                    className={`relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all cursor-pointer group bg-muted shadow-sm hover:shadow-md ${
+                      isSelected
+                        ? "border-destructive ring-2 ring-destructive/40"
+                        : "border-border hover:border-secondary/40"
+                    }`}
+                  >
+                    <img
+                      src={item.url}
+                      alt={item.user.full_name}
+                      className={`w-full h-full object-cover transition-transform group-hover:scale-105 ${
+                        isSelected ? "brightness-90" : ""
+                      }`}
+                      loading="lazy"
+                    />
+
+                    {/* Selection Checkbox (Top-Left) */}
+                    <div
+                      className={`absolute top-2 left-2 z-10 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-destructive text-white shadow-md"
+                          : "bg-black/55 backdrop-blur-sm border border-white/40 text-white/70 hover:bg-black/80"
+                      }`}
+                    >
+                      {isSelected ? (
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      ) : (
+                        <span className="w-2.5 h-2.5 rounded-sm border border-white/60" />
+                      )}
+                    </div>
+
+                    {/* Direct Red Trash Button (Top-Right) */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPhotosToRemove([item]);
+                        setRemovalNote(POLICY_REASONS[0].message(item.user.full_name || "Member"));
+                      }}
+                      className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-destructive text-white shadow-lg hover:bg-destructive/90 hover:scale-110 active:scale-95 transition-all"
+                      title="Delete this photo directly"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* User bar at bottom */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-2.5 pt-6 text-white flex flex-col justify-end">
+                      <p className="text-xs font-bold truncate">{item.user.full_name || "Unnamed"}</p>
+                      <div className="flex items-center justify-between text-[10px] text-white/75 mt-0.5">
+                        <span>{item.user.age ? `${item.user.age} yrs` : "Member"}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedUser(item.user);
+                          }}
+                          className="hover:underline text-secondary font-semibold"
+                        >
+                          Profile ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-card">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-muted/40 text-muted-foreground font-bold uppercase tracking-wider text-[11px] border-b border-border">
               <tr>
@@ -551,6 +739,7 @@ const AdminUsersPage = () => {
           </table>
         </div>
       </div>
+      )}
 
       {/* ── MODAL 1: VIEW FULL PROFILE DETAILS ── */}
       <AnimatePresence>
@@ -602,67 +791,138 @@ const AdminUsersPage = () => {
 
               {/* Photos Gallery with moderation controls */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Uploaded Photos ({selectedUser.photos?.filter(Boolean).length || 0})
-                  </p>
-                  <p className="text-xs text-muted-foreground font-medium">Click any photo or trash icon to delete</p>
-                </div>
-                {selectedUser.photos && selectedUser.photos.filter(Boolean).length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {selectedUser.photos.filter(Boolean).map((photoUrl, i) => (
-                      <div
-                        key={i}
-                        onClick={() => {
-                          setPhotoToRemove({ url: photoUrl });
-                          setRemovalNote(POLICY_REASONS[1].message(selectedUser.full_name || "Member"));
-                        }}
-                        className="relative aspect-square rounded-2xl overflow-hidden border-2 border-border hover:border-destructive transition-all cursor-pointer group bg-muted shadow-sm hover:shadow-md"
-                        title="Click to delete this photo & notify user"
-                      >
-                        <img
-                          src={photoUrl}
-                          alt={`User photo ${i + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Uploaded Photos ({selectedUser.photos?.filter(Boolean).length || 0})
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Select specific photos to delete, or click the trash icon on any photo
+                    </p>
+                  </div>
 
-                        {/* Always-visible Red Trash Button in top right */}
+                  {selectedUser.photos && selectedUser.photos.filter(Boolean).length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const validPhotos = (selectedUser.photos || []).filter(Boolean);
+                          if (selectedUserPhotoUrls.size === validPhotos.length) {
+                            setSelectedUserPhotoUrls(new Set());
+                          } else {
+                            setSelectedUserPhotoUrls(new Set(validPhotos));
+                          }
+                        }}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-border bg-muted/60 hover:bg-muted text-foreground font-medium transition-colors"
+                      >
+                        {selectedUserPhotoUrls.size === (selectedUser.photos?.filter(Boolean).length || 0)
+                          ? "Deselect All"
+                          : "Select All"}
+                      </button>
+
+                      {selectedUserPhotoUrls.size > 0 && (
                         <button
                           type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPhotoToRemove({ url: photoUrl });
-                            setRemovalNote(POLICY_REASONS[1].message(selectedUser.full_name || "Member"));
+                          onClick={() => {
+                            const toRemove = Array.from(selectedUserPhotoUrls).map((url) => ({
+                              url,
+                              user: selectedUser,
+                            }));
+                            setPhotosToRemove(toRemove);
+                            setRemovalNote(POLICY_REASONS[0].message(selectedUser.full_name || "Member"));
                           }}
-                          className="absolute top-2 right-2 z-10 p-2 rounded-xl bg-destructive text-white shadow-lg hover:bg-destructive/90 hover:scale-110 active:scale-95 transition-all"
-                          title="Delete photo & notify user"
+                          className="flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-lg bg-destructive text-white font-bold shadow-md hover:bg-destructive/90 transition-all animate-pulse"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
+                          Delete Selected ({selectedUserPhotoUrls.size})
                         </button>
+                      )}
+                    </div>
+                  )}
+                </div>
 
-                        {/* Bottom bar with Delete label & View link */}
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-2 flex items-center justify-between text-white">
-                          <span className="font-bold text-destructive-foreground bg-destructive px-2 py-0.5 rounded-md text-[10px]">
-                            Delete
-                          </span>
-                          <a
-                            href={photoUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="hover:underline text-[10px] text-white/90"
+                {selectedUser.photos && selectedUser.photos.filter(Boolean).length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {selectedUser.photos.filter(Boolean).map((photoUrl, i) => {
+                      const isSelected = selectedUserPhotoUrls.has(photoUrl);
+                      return (
+                        <div
+                          key={i}
+                          onClick={() => {
+                            setSelectedUserPhotoUrls((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(photoUrl)) next.delete(photoUrl);
+                              else next.add(photoUrl);
+                              return next;
+                            });
+                          }}
+                          className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all cursor-pointer group bg-muted shadow-sm hover:shadow-md ${
+                            isSelected
+                              ? "border-destructive ring-2 ring-destructive/40 shadow-destructive/20"
+                              : "border-border hover:border-secondary/40"
+                          }`}
+                        >
+                          <img
+                            src={photoUrl}
+                            alt={`User photo ${i + 1}`}
+                            className={`w-full h-full object-cover transition-transform group-hover:scale-105 ${
+                              isSelected ? "brightness-90" : ""
+                            }`}
+                          />
+
+                          {/* Checkbox (Top-Left) */}
+                          <div
+                            className={`absolute top-2 left-2 z-10 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                              isSelected
+                                ? "bg-destructive text-white shadow-md"
+                                : "bg-black/55 backdrop-blur-sm border border-white/40 text-white/70 hover:bg-black/80"
+                            }`}
                           >
-                            View ↗
-                          </a>
-                        </div>
+                            {isSelected ? (
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
+                            ) : (
+                              <span className="w-2.5 h-2.5 rounded-sm border border-white/60" />
+                            )}
+                          </div>
 
-                        {i === 0 && (
-                          <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-widest bg-black/80 text-white px-2 py-0.5 rounded-full border border-white/20">
-                            Avatar
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                          {/* Always-visible Red Trash Button in top right */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPhotosToRemove([{ url: photoUrl, user: selectedUser }]);
+                              setRemovalNote(POLICY_REASONS[0].message(selectedUser.full_name || "Member"));
+                            }}
+                            className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-destructive text-white shadow-lg hover:bg-destructive/90 hover:scale-110 active:scale-95 transition-all"
+                            title="Delete this photo directly"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Bottom bar with status & View link */}
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2 flex items-center justify-between text-white text-[10px]">
+                            <span className={isSelected ? "text-destructive-foreground font-bold" : "text-white/80"}>
+                              {isSelected ? "Selected" : "Click to select"}
+                            </span>
+                            <a
+                              href={photoUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="hover:underline text-white/90"
+                            >
+                              View ↗
+                            </a>
+                          </div>
+
+                          {i === 0 && (
+                            <span className="absolute bottom-7 left-2 text-[9px] font-bold uppercase tracking-widest bg-black/80 text-white px-2 py-0.5 rounded-full border border-white/20">
+                              Avatar
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground italic">No photos uploaded.</p>
@@ -897,7 +1157,7 @@ const AdminUsersPage = () => {
 
       {/* ── MODAL 4: PHOTO REMOVAL CONFIRMATION ── */}
       <AnimatePresence>
-        {photoToRemove && selectedUser && (
+        {photosToRemove && photosToRemove.length > 0 && (
           <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -910,25 +1170,44 @@ const AdminUsersPage = () => {
                   <ImageOff className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">Delete Photo & Notify User</h3>
+                  <h3 className="text-lg font-bold text-foreground">
+                    Delete {photosToRemove.length} Photo{photosToRemove.length === 1 ? "" : "s"} & Notify User
+                  </h3>
                   <p className="text-xs text-muted-foreground">
-                    This photo will be removed from {selectedUser.full_name}'s profile and storage.
+                    {photosToRemove.length === 1
+                      ? `This photo will be removed from ${photosToRemove[0].user.full_name}'s profile and storage.`
+                      : `These ${photosToRemove.length} photos will be removed from user profile(s) and storage.`}
                   </p>
                 </div>
               </div>
 
-              {/* Photo preview */}
-              <div className="flex justify-center py-1">
-                <div className="relative">
-                  <img
-                    src={photoToRemove.url}
-                    alt="Photo to delete"
-                    className="w-36 h-36 rounded-2xl object-cover border-2 border-destructive shadow-lg"
-                  />
-                  <span className="absolute top-2 right-2 bg-destructive text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
-                    Policy Violation
-                  </span>
-                </div>
+              {/* Photo preview(s) */}
+              <div className="py-2">
+                {photosToRemove.length === 1 ? (
+                  <div className="flex justify-center">
+                    <div className="relative">
+                      <img
+                        src={photosToRemove[0].url}
+                        alt="Photo to delete"
+                        className="w-36 h-36 rounded-2xl object-cover border-2 border-destructive shadow-lg"
+                      />
+                      <span className="absolute top-2 right-2 bg-destructive text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                        Policy Violation
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-48 overflow-y-auto p-2 bg-muted/30 rounded-2xl border border-border">
+                    {photosToRemove.map((item, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border-2 border-destructive shadow-sm">
+                        <img src={item.url} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" />
+                        <span className="absolute bottom-1 inset-x-1 truncate bg-black/80 text-[9px] text-white font-medium px-1 rounded text-center">
+                          {item.user.full_name?.split(" ")[0]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Quick Policy Reason Pills */}
@@ -939,7 +1218,7 @@ const AdminUsersPage = () => {
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setRemovalNote(reason.message(selectedUser.full_name || "Member"))}
+                      onClick={() => setRemovalNote(reason.message(photosToRemove[0]?.user.full_name || "Member"))}
                       className="text-left p-2 rounded-xl border border-border hover:border-secondary hover:bg-secondary/10 text-[11px] font-medium transition-colors"
                     >
                       {reason.label}
@@ -952,7 +1231,7 @@ const AdminUsersPage = () => {
               <div className="space-y-1.5 text-left">
                 <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
-                  In-app note sent to {selectedUser.full_name}:
+                  In-app note sent to {photosToRemove[0]?.user.full_name}:
                 </label>
                 <textarea
                   value={removalNote}
@@ -965,7 +1244,7 @@ const AdminUsersPage = () => {
               <div className="flex gap-2.5 pt-2 border-t border-border">
                 <button
                   type="button"
-                  onClick={() => { setPhotoToRemove(null); setRemovalNote(""); }}
+                  onClick={() => { setPhotosToRemove(null); setRemovalNote(""); }}
                   disabled={isPhotoRemoving}
                   className="flex-1 py-2.5 rounded-xl bg-muted text-foreground text-xs font-bold hover:bg-muted/80 transition-colors"
                 >
@@ -977,7 +1256,9 @@ const AdminUsersPage = () => {
                   disabled={isPhotoRemoving}
                   className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:bg-destructive/90 transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-destructive/25"
                 >
-                  {isPhotoRemoving ? "Deleting & Notifying…" : "Delete Photo & Notify User"}
+                  {isPhotoRemoving
+                    ? "Deleting & Notifying…"
+                    : `Delete ${photosToRemove.length} Photo${photosToRemove.length === 1 ? "" : "s"} & Notify`}
                 </button>
               </div>
             </motion.div>
