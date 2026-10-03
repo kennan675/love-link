@@ -3,7 +3,7 @@ import {
   Shield, ShieldAlert, ShieldCheck, UserX, Search,
   RefreshCw, Trash2, CheckCircle2, AlertTriangle, Eye,
   PauseCircle, PlayCircle, X, ExternalLink, Calendar,
-  Briefcase, Heart, Sparkles, AlertOctagon, UserCheck, ImageOff,
+  Briefcase, Heart, AlertOctagon, UserCheck, ImageOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow, format } from "date-fns";

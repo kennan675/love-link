@@ -12,7 +12,6 @@ import {
     Briefcase,
     ChevronLeft,
     Loader2,
-    Star,
 } from "lucide-react";
 import blackLovelinkLogo from "@/assets/blacklovelink-logo-icon.png";
 import { useToast } from "@/hooks/use-toast";
@@ -496,7 +495,7 @@ const ProfileCreationPage = () => {
                             {/* Interests (optional) */}
                             <div className="rounded-2xl bg-card border border-border p-6 space-y-3">
                                 <h2 className="flex items-center gap-2 font-semibold text-foreground text-base">
-                                    <Star className="w-4 h-4 text-primary" /> Interests
+                                    <Heart className="w-4 h-4 text-primary" fill="currentColor" /> Interests
                                     <span className="text-xs font-normal text-muted-foreground ml-1">(optional)</span>
                                 </h2>
                                 <p className="text-sm text-muted-foreground">

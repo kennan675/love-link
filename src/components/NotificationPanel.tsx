@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, MessageCircle, Sparkles, Bell, CheckCheck, ShieldAlert } from "lucide-react";
+import { X, Heart, MessageCircle, CheckCircle2, Bell, CheckCheck, ShieldAlert } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import type { Notification } from "@/hooks/useNotifications";
 
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const typeIcon = (type: Notification["type"]) => {
-  if (type === "match") return <Sparkles className="w-4 h-4 text-yellow-400" />;
+  if (type === "match") return <CheckCircle2 className="w-4 h-4 text-secondary" />;
   if (type === "message_request") return <MessageCircle className="w-4 h-4 text-primary" />;
   if (type === "admin") return <ShieldAlert className="w-4 h-4 text-amber-400" />;
   return <Heart className="w-4 h-4 text-rose-500" fill="currentColor" />;

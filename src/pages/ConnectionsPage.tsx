@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Heart, Sparkles, Zap, Target, Users, TrendingUp } from "lucide-react";
+import { Heart, Flame, Zap, Target, Users, TrendingUp } from "lucide-react";
 import profile1 from "@/assets/profile-1.png";
 import profile2 from "@/assets/profile-2.png";
 import profile3 from "@/assets/profile-3.png";
@@ -23,7 +23,7 @@ const ConnectionsPage = () => {
             description: "See who likes you and match instantly when the feeling is mutual. No guessing games—just genuine connections."
         },
         {
-            icon: Sparkles,
+            icon: Flame,
             title: "Super Like",
             description: "Stand out from the crowd. Show someone you're really interested with a Super Like and jump to the top of their match queue."
         },

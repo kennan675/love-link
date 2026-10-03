@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "@/components/SEO";
-import { Flame, ChevronDown, Globe, Sparkles, GraduationCap, Handshake, Instagram, Youtube, Facebook } from "lucide-react";
+import { Flame, ChevronDown, Globe, Heart, GraduationCap, Handshake, Instagram, Youtube, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -482,7 +482,7 @@ const Index = () => {
                   title: "Cultural Alignment",
                   desc: t.mission.subDescription,
                   badge: "Tailored Experience",
-                  Icon: Sparkles,
+                  Icon: Heart,
                 },
                 {
                   title: "Vetted Professionals Only",

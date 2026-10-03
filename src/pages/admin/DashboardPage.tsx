@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Users as UsersIcon, UserCheck, ShieldCheck,
-  AlertTriangle, PauseCircle, ArrowUpRight, Sparkles,
+  AlertTriangle, PauseCircle, ArrowUpRight,
   TrendingUp, Heart, CheckCircle2, UserX
 } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";

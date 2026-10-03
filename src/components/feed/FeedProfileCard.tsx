@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Link2, X, ChevronLeft, ChevronRight,
-    Briefcase, CheckCircle2, MessageCircle, Sparkles, Heart
+    Briefcase, CheckCircle2, MessageCircle, Heart
 } from "lucide-react";
 import type { UserProfile } from "@/hooks/useProfileData";
 
@@ -301,18 +301,18 @@ export default function FeedProfileCard({
                             {/* Header */}
                             <div className="flex items-center gap-2 mb-1">
                                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <Sparkles className="w-4 h-4 text-primary" />
+                                    <MessageCircle className="w-4 h-4 text-primary" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-foreground leading-tight">
-                                        Spark a Convo
+                                        Start a Conversation
                                     </h3>
                                     <p className="text-xs text-muted-foreground">with {profile.full_name.split(' ')[0]}</p>
                                 </div>
                             </div>
 
                             <p className="text-sm text-muted-foreground mb-4 mt-2 leading-relaxed">
-                                Send one thoughtful message. They'll decide if the spark is mutual ✨
+                                Send a thoughtful intro message to connect directly with them.
                             </p>
 
                             <textarea

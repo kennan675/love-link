@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { Briefcase, CheckCircle2, Heart, X, Sparkles } from "lucide-react";
+import { Briefcase, CheckCircle2, Heart, X } from "lucide-react";
 import type { UserProfile } from "@/hooks/useProfileData";
 import { useState } from "react";
 
@@ -147,7 +147,7 @@ const SwipeCard = ({ profile, onSwipe, isTop }: SwipeCardProps) => {
           {profile.intent && (
             <div className="mb-3">
               <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border backdrop-blur-sm ${intentClass}`}>
-                <Sparkles className="w-3 h-3" />
+                <Heart className="w-3 h-3" fill="currentColor" />
                 {profile.intent}
               </span>
             </div>

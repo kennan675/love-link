@@ -7,7 +7,7 @@ import {
   Shield,
   Users,
   BookOpen,
-  Sparkles,
+  Compass,
   Globe,
   ChevronRight,
 } from "lucide-react";
@@ -64,7 +64,7 @@ const categories = [
     color: "from-secondary to-primary",
   },
   {
-    icon: Sparkles,
+    icon: Compass,
     title: "Self-Improvement & Readiness",
     description: "Become the partner you want to attract. Growth starts from within.",
     articles: [

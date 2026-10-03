@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, Sparkles } from "lucide-react";
+import { X, Heart } from "lucide-react";
 
 const SUPABASE_STORAGE = "https://hxiycmrlyswwjqlwihdd.supabase.co/storage/v1/object/public/profile-photos/demo";
 
@@ -173,7 +173,7 @@ const ConnectionCards = () => {
                       transition={{ duration: 0.4 }}
                     >
                       <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-[11px] font-bold px-3 py-1 rounded-full shadow-lg mb-2.5">
-                        <Sparkles className="w-3 h-3" />
+                        <Heart className="w-3 h-3" fill="currentColor" />
                         {card.tag}
                       </span>
 
@@ -280,7 +280,7 @@ const ConnectionCards = () => {
 
                 <div className="absolute bottom-4 left-6">
                   <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-sm font-bold px-4 py-2 rounded-full shadow-lg">
-                    <Sparkles className="w-4 h-4" />
+                    <Heart className="w-4 h-4" fill="currentColor" />
                     {connections[selectedCard].tag}
                   </span>
                 </div>

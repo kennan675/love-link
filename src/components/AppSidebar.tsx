@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, Home, Heart, Users, MessageCircle, User, Settings, HelpCircle, ShieldCheck, Sparkles, BookOpen, Phone, Globe, Star, Link2 } from "lucide-react";
+import { Menu, Home, Heart, Users, MessageCircle, User, Settings, HelpCircle, ShieldCheck, Compass, BookOpen, Phone, Globe, Award, Link2 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { useState } from "react";
 import { Capacitor } from "@capacitor/core";
@@ -14,8 +14,8 @@ const appLinks = [
 ];
 
 const exploreLinks = [
-  { to: "/how-it-works", label: "How It Works", icon: Sparkles },
-  { to: "/success-stories", label: "Success Stories", icon: Star },
+  { to: "/how-it-works", label: "How It Works", icon: Compass },
+  { to: "/success-stories", label: "Success Stories", icon: Award },
   { to: "/trust-safety", label: "Trust & Safety", icon: ShieldCheck },
   { to: "/education", label: "Relationship Hub", icon: BookOpen },
   { to: "/support", label: "Support", icon: HelpCircle },

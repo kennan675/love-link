@@ -380,7 +380,7 @@ const MessagesPage = () => {
     })();
 
     return (
-      <div className="flex h-[100dvh] flex-col bg-background">
+      <div data-in-chat="true" className="flex h-[100dvh] flex-col bg-background">
         {/* Chat header */}
         <div className="flex items-center gap-3 border-b border-border px-4 py-3">
           <button

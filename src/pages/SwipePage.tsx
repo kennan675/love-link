@@ -4,9 +4,11 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import TopNav from "@/components/TopNav";
 import MatchOverlay from "@/components/MatchOverlay";
 import FeedProfileCard from "@/components/feed/FeedProfileCard";
+import PullToRefresh from "@/components/PullToRefresh";
 import { useProfiles, type UserProfile } from "@/hooks/useProfileData";
 import { useSwipe } from "@/hooks/useSwipe";
-import { Loader2, SearchX, ArrowLeft, Home, Sparkles } from "lucide-react";
+import { Loader2, SearchX, ArrowLeft, Home, Compass, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { useTranslation } from "@/hooks/useTranslation";
 import { LocationConsentModal, useLocationConsent } from "@/components/ConsentModals";
 
@@ -21,13 +23,27 @@ const SwipePage = () => {
   const [searchParams] = useSearchParams();
   const targetProfileId = searchParams.get("profileId");
   const { t } = useTranslation();
-  const { profiles, likedIds, loading } = useProfiles();
+  const { profiles, likedIds, loading, refreshing, refetch } = useProfiles();
   const { recordSwipe } = useSwipe();
   const [matchedProfile, setMatchedProfile] = useState<UserProfile | null>(null);
   const [likedProfiles, setLikedProfiles] = useState<Set<string>>(new Set());
   const [passedProfiles, setPassedProfiles] = useState<Set<string>>(new Set());
   const [isResetting, setIsResetting] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(!useLocationConsent());
+
+  const handlePullRefresh = async () => {
+    try {
+      // If all profiles were passed in the current session, clear them so they can be re-discovered
+      if (visibleProfiles.length === 0) {
+        setPassedProfiles(new Set());
+        saveSet(LS_PASSED, new Set());
+      }
+      await refetch(true);
+      toast.success("Profiles refreshed with new recommendations ✨");
+    } catch (e) {
+      console.error("Refresh error:", e);
+    }
+  };
 
   // Initialize likedProfiles with data from server ONCE when it loads
   useMemo(() => {
@@ -98,17 +114,29 @@ const SwipePage = () => {
       {/* Sleek compact discover sub-bar */}
       <div className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <Compass className="w-3.5 h-3.5 text-primary" />
           <span>{t.app.discover}</span>
         </div>
-        {!loading && visibleProfiles.length > 0 && (
-          <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
-            {visibleProfiles.length} {visibleProfiles.length === 1 ? "Profile" : "Profiles"}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {!loading && visibleProfiles.length > 0 && (
+            <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+              {visibleProfiles.length} {visibleProfiles.length === 1 ? "Profile" : "Profiles"}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handlePullRefresh}
+            disabled={refreshing}
+            className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors disabled:opacity-50"
+            title="Refresh profiles"
+            aria-label="Refresh profiles"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin text-secondary" : ""}`} />
+          </button>
+        </div>
       </div>
 
-      <main className="flex-1 overflow-y-auto pb-10">
+      <PullToRefresh onRefresh={handlePullRefresh} className="flex-1 pb-10">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
             <div className="relative">
@@ -163,7 +191,7 @@ const SwipePage = () => {
             </AnimatePresence>
           </div>
         )}
-      </main>
+      </PullToRefresh>
 
       <MatchOverlay profile={matchedProfile} onClose={() => setMatchedProfile(null)} />
 

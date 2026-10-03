@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, MessageCircle, Sparkles, ShieldAlert } from "lucide-react";
+import { X, Heart, MessageCircle, CheckCircle2, ShieldAlert } from "lucide-react";
 import {
   useToastNotifications,
   TOAST_DURATION_MS,
@@ -12,7 +12,7 @@ import {
 const TypeIcon = ({ type }: { type: ToastNotif["type"] }) => {
   switch (type) {
     case "match":
-      return <Sparkles className="w-3.5 h-3.5 text-yellow-400" />;
+      return <CheckCircle2 className="w-3.5 h-3.5 text-secondary" />;
     case "like":
       return <Heart className="w-3.5 h-3.5 text-rose-500" fill="currentColor" />;
     case "message_request":

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, MessageCircle, Sparkles, X } from "lucide-react";
+import { Send, MessageCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -147,11 +147,11 @@ const HeroChatbot = () => {
             <div className="gradient-brand px-5 py-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/20 backdrop-blur-sm">
-                  <Sparkles className="h-5 w-5 text-primary-foreground" />
+                  <MessageCircle className="h-5 w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-primary-foreground tracking-wide">BlackLoveLink AI</h4>
-                  <p className="text-xs text-primary-foreground/70">Your personal guide</p>
+                  <h4 className="text-sm font-bold text-primary-foreground tracking-wide">BlackLoveLink Guide</h4>
+                  <p className="text-xs text-primary-foreground/70">Your personal match guide</p>
                 </div>
               </div>
             </div>

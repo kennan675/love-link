@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Sparkles, Heart, MessageCircle, Clock, CheckCheck, AlertCircle, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Clock, CheckCheck, AlertCircle, Loader2 } from "lucide-react";
 import { useSuggestedProfiles } from "@/hooks/useSuggestedProfiles";
 import { useMatches, getProfilePhoto } from "@/hooks/useMatches";
 import { useSwipe } from "@/hooks/useSwipe";
@@ -53,7 +53,7 @@ export default function RightRail() {
       <section className="rounded-2xl bg-card border border-border p-3">
         <div className="flex items-center justify-between mb-2 px-1">
           <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-primary" /> Suggested for you
+            <Heart className="w-4 h-4 text-primary" fill="currentColor" /> Suggested for you
           </h3>
           <Link to="/swipe" className="text-xs font-semibold text-primary hover:underline">
             See all

@@ -3,7 +3,7 @@ import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-    UserCheck, Heart, MessageCircle, Sparkles, Shield, CheckCircle,
+    UserCheck, Heart, MessageCircle, Shield, CheckCircle,
     Star, Users, Lock, Award, Target, Gem
 } from "lucide-react";
 import SharedNavbar from "@/components/SharedNavbar";
@@ -84,7 +84,7 @@ const HowItWorksPage = () => {
             color: "from-primary to-secondary",
         },
         {
-            icon: Sparkles,
+            icon: Award,
             title: "Build Something Real",
             description: "Take your time. From video profile intros to event-based meetups, BlackLoveLink gives you tools to nurture a connection that can last a lifetime.",
             color: "from-secondary to-primary",

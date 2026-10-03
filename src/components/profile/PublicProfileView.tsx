@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ChevronLeft, CheckCircle2, Briefcase, MapPin, Heart, Sparkles, MessageCircle } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Briefcase, MapPin, Heart, MessageCircle, User } from "lucide-react";
 import type { UserProfile } from "@/hooks/useProfileData";
 
 interface PublicProfileViewProps {
@@ -103,7 +103,7 @@ export default function PublicProfileView({ profile, onClose, actionButtons, mes
           {profile.bio && (
             <div className="space-y-3">
               <h3 className="text-xl font-bold flex items-center gap-2 text-foreground">
-                <Sparkles className="w-5 h-5 text-primary" />
+                <User className="w-5 h-5 text-primary" />
                 About Me
               </h3>
               <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">

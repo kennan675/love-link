@@ -1,88 +1,111 @@
 import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-// The sequence of the main discovery ring. It avoids /messages purposefully.
-const TAB_SEQUENCE = ['/profile', '/swipe', '/likes', '/community'];
+// Exact 5-tab sequence matching the bottom navigation bar from left to right:
+// [Discover / Swipe] ↔ [Likes] ↔ [Community] ↔ [Messages] ↔ [Profile]
+const TAB_SEQUENCE = ["/swipe", "/likes", "/community", "/messages", "/profile"];
 
 export const GlobalSwipeNavigation: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  const touchStartRef = useRef<{ x: number, y: number, time: number } | null>(null);
+
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
 
   useEffect(() => {
-    // Only apply logic if we are inside the ring sequence
+    // Only apply logic if we are on one of the 5 primary tabs
     if (!TAB_SEQUENCE.includes(location.pathname)) return;
 
     const handleTouchStart = (e: TouchEvent) => {
+      // Don't intercept multi-touch (e.g. pinch to zoom)
+      if (e.touches.length !== 1) return;
+
       touchStartRef.current = {
         x: e.touches[0].clientX,
         y: e.touches[0].clientY,
-        time: Date.now()
+        time: Date.now(),
       };
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       if (!touchStartRef.current) return;
-      
+
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
       const timeDiff = Date.now() - touchStartRef.current.time;
-      
+
       const deltaX = touchEndX - touchStartRef.current.x;
       const deltaY = touchEndY - touchStartRef.current.y;
-      
-      // Reset ref
+
+      // Reset
       touchStartRef.current = null;
 
-      // Must be a fast deliberate swipe (under 600ms for a real tab-switch gesture)
+      // Must be a deliberate swipe under 600ms
       if (timeDiff > 600) return;
 
-      // ── VERTICAL BAIL-OUT ──────────────────────────────────────────────────
-      // If the finger moved more than 60px vertically in either direction it's a
-      // scroll gesture. Bail immediately so scrolling never triggers navigation.
-      if (Math.abs(deltaY) > 60) return;
+      // ── SAFEGUARDS ──
+      // 1. If currently inside an open chat conversation, do not switch tabs
+      if (document.querySelector('[data-in-chat="true"]')) return;
 
-      // ── HORIZONTAL SWIPE GATE ──────────────────────────────────────────────
-      // Require:
-      //   • at least 80 px horizontal travel
-      //   • horizontal movement must be at least 2.5× the vertical drift
-      //     (much stricter than before — eliminates diagonal-scroll false fires)
-      if (Math.abs(deltaX) < 80) return;
-      if (Math.abs(deltaX) < Math.abs(deltaY) * 2.5) return;
+      // 2. Ignore if touch originated inside inputs, textareas, sliders, or modals
+      let target = e.target as HTMLElement | null;
+      while (target && target !== document.body) {
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.getAttribute("contenteditable") === "true" ||
+          target.classList.contains("no-swipe")
+        ) {
+          return;
+        }
+
+        // Horizontal scroll container (e.g. carousel, story rail, or pills row)
+        const style = window.getComputedStyle(target);
+        if (
+          (style.overflowX === "auto" || style.overflowX === "scroll") &&
+          target.scrollWidth > target.clientWidth
+        ) {
+          return;
+        }
+
+        target = target.parentElement;
+      }
+
+      // ── ERGONOMIC HORIZONTAL SWIPE GATE ──
+      // 1. Minimum 45px horizontal travel (comfortable natural thumb flick)
+      if (Math.abs(deltaX) < 45) return;
+
+      // 2. Must be predominantly horizontal rather than vertical scroll
+      if (Math.abs(deltaX) < Math.abs(deltaY) * 1.15) return;
 
       const currentIndex = TAB_SEQUENCE.indexOf(location.pathname);
+      if (currentIndex === -1) return;
 
-      // Check if inside a horizontal scroll container (e.g. image carousels)
-      let isHorizontalScrollContainer = false;
-      let current = e.target as HTMLElement | null;
-      while (current && current !== document.body) {
-        const style = window.getComputedStyle(current);
-        if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
-          isHorizontalScrollContainer = true;
-          break;
+      if (deltaX < -45 && currentIndex < TAB_SEQUENCE.length - 1) {
+        // Swiped Left → Navigate Forward to Next Tab
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          navigator.vibrate(15);
         }
-        current = current.parentElement;
-      }
-      if (isHorizontalScrollContainer) return;
-
-      if (deltaX < 0 && currentIndex < TAB_SEQUENCE.length - 1) {
-        // Swiped left → next tab
         navigate(TAB_SEQUENCE[currentIndex + 1]);
-      } else if (deltaX > 0 && currentIndex > 0) {
-        // Swiped right → previous tab
+      } else if (deltaX > 45 && currentIndex > 0) {
+        // Swiped Right → Navigate Backward to Previous Tab
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          navigator.vibrate(15);
+        }
         navigate(TAB_SEQUENCE[currentIndex - 1]);
       }
     };
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [location.pathname, navigate]);
 
   return <>{children}</>;
 };
+
+export default GlobalSwipeNavigation;
