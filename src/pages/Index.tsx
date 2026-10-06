@@ -419,6 +419,65 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ── GOOGLE PLAY APP PROMOTION ── */}
+      <section className="relative overflow-hidden bg-foreground px-6 py-20 sm:py-24 lg:py-28">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-secondary/70 to-transparent" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+          <motion.div
+            initial={{ opacity: 0, x: -28 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.65 }}
+            className="max-w-xl"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 border-b border-secondary/60 pb-2 text-xs font-bold uppercase text-secondary">
+              <Smartphone className="h-4 w-4" />
+              BlackLoveLink on Android
+            </div>
+            <h2 className="text-4xl font-black leading-[1.08] text-background sm:text-5xl lg:text-6xl">
+              Your next meaningful connection, now closer.
+            </h2>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-background/70 sm:text-lg">
+              Discover intentional Black love, continue conversations and stay connected wherever life takes you.
+            </p>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-9 inline-flex items-center gap-3 rounded-full bg-secondary px-7 py-3.5 text-sm font-extrabold text-secondary-foreground shadow-button transition-transform hover:scale-[1.03]"
+              aria-label="Get BlackLoveLink on Google Play"
+            >
+              Get it on Google Play
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+            <p className="mt-4 text-xs font-medium uppercase text-background/45">
+              Also available at blacklovelink.com
+            </p>
+          </motion.div>
+
+          <motion.a
+            href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View BlackLoveLink on Google Play"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="group relative block overflow-hidden border border-background/15 shadow-2xl"
+          >
+            <img
+              src={appPromoArtwork.url}
+              alt="BlackLoveLink Android app available on Google Play"
+              className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
+            />
+            <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
+              <ArrowUpRight className="h-5 w-5" />
+            </span>
+          </motion.a>
+        </div>
+      </section>
+
       {/* ── AI CHATBOT (Floating Bubble) ── */}
       <HeroChatbot />
 
@@ -639,64 +698,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── GOOGLE PLAY APP PROMOTION ── */}
-      <section className="relative overflow-hidden bg-foreground px-6 py-20 sm:py-24 lg:py-28">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-secondary/70 to-transparent" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
-          <motion.div
-            initial={{ opacity: 0, x: -28 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.65 }}
-            className="max-w-xl"
-          >
-            <div className="mb-6 inline-flex items-center gap-2 border-b border-secondary/60 pb-2 text-xs font-bold uppercase text-secondary">
-              <Smartphone className="h-4 w-4" />
-              BlackLoveLink on Android
-            </div>
-            <h2 className="text-4xl font-black leading-[1.08] text-background sm:text-5xl lg:text-6xl">
-              Your next meaningful connection, now closer.
-            </h2>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-background/70 sm:text-lg">
-              Discover intentional Black love, continue conversations and stay connected wherever life takes you.
-            </p>
-            <a
-              href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-9 inline-flex items-center gap-3 rounded-full bg-secondary px-7 py-3.5 text-sm font-extrabold text-secondary-foreground shadow-button transition-transform hover:scale-[1.03]"
-              aria-label="Get BlackLoveLink on Google Play"
-            >
-              Get it on Google Play
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-            <p className="mt-4 text-xs font-medium uppercase text-background/45">
-              Also available at blacklovelink.com
-            </p>
-          </motion.div>
-
-          <motion.a
-            href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View BlackLoveLink on Google Play"
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="group relative block overflow-hidden border border-background/15 shadow-2xl"
-          >
-            <img
-              src={appPromoArtwork.url}
-              alt="BlackLoveLink Android app available on Google Play"
-              className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
-            />
-            <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
-              <ArrowUpRight className="h-5 w-5" />
-            </span>
-          </motion.a>
-        </div>
-      </section>
 
       {/* ── LOVE STORIES SECTION ── */}
       <section className="relative bg-muted/30 px-6 py-28 lg:py-36 overflow-hidden">
