@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "@/components/SEO";
-import { Flame, ChevronDown, Globe, Heart, GraduationCap, Handshake, Instagram, Youtube, Facebook, ArrowUpRight, Smartphone } from "lucide-react";
+import { Flame, ChevronDown, Globe, Heart, GraduationCap, Handshake, Instagram, Youtube, Facebook, ArrowUpRight, Smartphone, Download, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { usePlatformStats } from "@/hooks/usePlatformStats";
 import { Language, languageNames } from "@/contexts/LanguageContext";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { useToast } from "@/hooks/use-toast";
 import InstallPrompt from "@/components/InstallPrompt";
 
 function TikTokIcon({ className }: { className?: string }) {
@@ -53,14 +54,29 @@ const Index = () => {
   const [langOpen, setLangOpen] = React.useState(false);
   const langRef = React.useRef<HTMLDivElement>(null);
   
+  const { toast } = useToast();
   const { isInstallable, isIOS, isStandalone, promptInstall } = usePWAInstall();
   const [showIOSPrompt, setShowIOSPrompt] = React.useState(false);
   
-  const handleInstallClick = () => {
+  const handleInstallClick = async () => {
+    if (isStandalone) {
+      toast({
+        title: "App Already Installed",
+        description: "You're already running BlackLoveLink as an installed app on this device.",
+      });
+      return;
+    }
     if (isIOS) {
       setShowIOSPrompt(true);
+      return;
+    }
+    if (isInstallable) {
+      await promptInstall();
     } else {
-      promptInstall();
+      toast({
+        title: "Direct App Download",
+        description: "Tap your browser menu (⋮ or Share) and select 'Install app' or 'Add to Home screen' for the instant app experience.",
+      });
     }
   };
 
@@ -412,7 +428,8 @@ const Index = () => {
                 onClick={handleInstallClick}
                 className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/30 px-8 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-white/20 hover:scale-105"
               >
-                📲 Download App
+                <Download className="h-5 w-5" />
+                Download App
               </button>
             )}
           </motion.div>
@@ -432,9 +449,9 @@ const Index = () => {
             transition={{ duration: 0.65 }}
             className="max-w-xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 border-b border-secondary/60 pb-2 text-xs font-bold uppercase text-secondary">
+            <div className="mb-6 inline-flex items-center gap-2 border-b border-secondary/60 pb-2 text-xs font-bold uppercase tracking-wider text-secondary">
               <Smartphone className="h-4 w-4" />
-              BlackLoveLink on Android
+              BlackLoveLink Mobile App
             </div>
             <h2 className="text-4xl font-black leading-[1.08] text-foreground sm:text-5xl lg:text-6xl">
               Your next meaningful connection, now closer.
@@ -442,26 +459,47 @@ const Index = () => {
             <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
               Discover intentional Black love, continue conversations and stay connected wherever life takes you.
             </p>
-            <a
-              href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-9 inline-flex items-center gap-3 rounded-full bg-secondary px-7 py-3.5 text-sm font-extrabold text-secondary-foreground shadow-button transition-transform hover:scale-[1.03]"
-              aria-label="Get BlackLoveLink on Google Play"
-            >
-              Get it on Google Play
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-            <p className="mt-4 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
-              Also available at blacklovelink.com
-            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-3.5 sm:gap-4">
+              <button
+                type="button"
+                onClick={handleInstallClick}
+                className="inline-flex items-center gap-2.5 rounded-full gradient-brand px-7 py-3.5 text-sm font-extrabold text-primary-foreground shadow-button transition-transform hover:scale-[1.03] active:scale-[0.98]"
+                aria-label="Download BlackLoveLink App directly"
+              >
+                <Download className="h-4 w-4" />
+                Download App
+              </button>
+
+              <a
+                href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 rounded-full border border-secondary/40 bg-secondary/10 px-6 py-3.5 text-sm font-bold text-secondary transition-all hover:bg-secondary/20 hover:border-secondary/60"
+                aria-label="Coming soon on Play Store"
+              >
+                <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+                Coming Soon on Play Store
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 font-semibold text-foreground/90">
+                <CheckCircle2 className="h-3.5 w-3.5 text-secondary" />
+                Direct web install
+              </span>
+              <span className="text-muted-foreground/30">•</span>
+              <span>Instant access, zero wait</span>
+              <span className="text-muted-foreground/30">•</span>
+              <span>Works seamlessly on Android & iOS</span>
+            </div>
           </motion.div>
 
           <motion.a
             href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="View BlackLoveLink on Google Play"
+            aria-label="View BlackLoveLink on Google Play (Coming Soon)"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
@@ -470,9 +508,13 @@ const Index = () => {
           >
             <img
               src={appPromoArtwork.url}
-              alt="BlackLoveLink Android app available on Google Play"
+              alt="BlackLoveLink mobile app preview"
               className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
             />
+            <div className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-background/90 px-3.5 py-1.5 text-xs font-bold text-foreground backdrop-blur-md border border-border/60 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+              Coming Soon on Play Store
+            </div>
             <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
               <ArrowUpRight className="h-5 w-5" />
             </span>

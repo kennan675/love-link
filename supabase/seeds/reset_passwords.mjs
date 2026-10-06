@@ -13,13 +13,9 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 });
 
 const DEMO_USERS = [
-  { id: 'd0b6e6b4-20d0-4cca-9860-25232a5df977', email: 'amara@blacklovelink.test', name: 'Amara Osei' },
-  { id: 'd1b6e6b4-20d0-4cca-9860-25232a5df977', email: 'zara@blacklovelink.test', name: 'Zara Mensah' },
-  { id: 'd2b6e6b4-20d0-4cca-9860-25232a5df977', email: 'leila@blacklovelink.test', name: 'Leila Kamara' },
-  { id: 'd3b6e6b4-20d0-4cca-9860-25232a5df977', email: 'nia@blacklovelink.test', name: 'Nia Adeyemi' },
-  { id: 'd4b6e6b4-20d0-4cca-9860-25232a5df977', email: 'simone@blacklovelink.test', name: 'Simone Nkosi' },
-  { id: 'd5b6e6b4-20d0-4cca-9860-25232a5df977', email: 'kofi@blacklovelink.test', name: 'Kofi Asante' },
-  { id: 'd6b6e6b4-20d0-4cca-9860-25232a5df977', email: 'darius@blacklovelink.test', name: 'Darius Wright' }
+  { id: '1e620326-b04d-4e6e-bb2f-76abeca00fb0', email: 'amara@blacklovelink.com', name: 'Amara Osei' },
+  { id: '0a28aa99-4894-4ed8-8355-fcfb431acd85', email: 'zara@blacklovelink.com', name: 'Zara Mensah' },
+  { id: '6a766554-6989-473f-8b56-2aa6a90a7e18', email: 'simone@blacklovelink.com', name: 'Simone Nkosi' }
 ];
 
 async function run() {
