@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
 import coupleHero from "@/assets/couple-hero.png";
-import appPromoArtwork from "@/assets/blacklovelink-app-promo.png.asset.json";
+import appPromoArtwork from "@/assets/blacklovelink-app-promo.png";
 import profile1 from "@/assets/profile-1.png";
 import profile2 from "@/assets/profile-2.png";
 import profile3 from "@/assets/profile-3.png";
@@ -507,7 +507,7 @@ const Index = () => {
             className="group relative block overflow-hidden rounded-2xl border border-border shadow-glow"
           >
             <img
-              src={appPromoArtwork.url}
+              src={appPromoArtwork}
               alt="BlackLoveLink mobile app preview"
               className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
             />
