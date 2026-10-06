@@ -69,11 +69,11 @@ const ChildSafetyPage = () => {
                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground">1. Strictly Adults Only (18+)</h2>
+                <h2 className="text-xl font-bold text-foreground">1. Strictly Adults Only (25+)</h2>
               </div>
               <p>
-                BlackLoveLink is an exclusive platform designed strictly for adults aged 18 and older. Minors (individuals under
-                18 years of age) are explicitly barred from registering, accessing, or interacting on our platform.
+                BlackLoveLink is an exclusive platform designed strictly for adults aged 25 and older. Minors (individuals under
+                18 years of age) and any individuals under 25 years of age are explicitly barred from registering, accessing, or interacting on our platform.
               </p>
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                 <li>Age verification checks are enforced during profile onboarding.</li>

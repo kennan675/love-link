@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
     UserCheck, Heart, MessageCircle, Shield, CheckCircle,
-    Star, Users, Lock, Award, Target, Gem
+    Star, Users, Lock, Award, Target, Gem, ArrowUpRight,
+    Briefcase, Camera, ShieldCheck
 } from "lucide-react";
 import SharedNavbar from "@/components/SharedNavbar";
 import SiteFooter from "@/components/SiteFooter";
@@ -34,7 +35,7 @@ const HowItWorksPage = () => {
         {
             icon: Star,
             title: "Serious Intent",
-            description: "Our platform is for people who are ready for meaningful, lasting relationships — not casual scrolling. Every feature is designed with long-term love in mind.",
+            description: "Our platform is for people who are ready for meaningful, lasting relationships, not casual scrolling. Every feature is designed with long-term love in mind.",
             color: "from-secondary to-primary",
         },
         {
@@ -124,9 +125,10 @@ const HowItWorksPage = () => {
                     transition={{ duration: 0.6 }}
                     className="mx-auto max-w-4xl relative"
                 >
-                    <span className="inline-block mb-4 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
-                        About BlackLoveLink
-                    </span>
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <span>About BlackLoveLink</span>
+                    </div>
                     <h1 className="text-5xl md:text-7xl font-black mb-6">
                         Love That <span className="text-gradient-brand">Reflects You</span>
                     </h1>
@@ -203,22 +205,73 @@ const HowItWorksPage = () => {
             </section>
 
             {/* ── WHO WE'RE FOR ────────────────────────────────────────── */}
-            <section className="py-20 px-6 bg-card">
-                <div className="mx-auto max-w-4xl text-center">
-                    <motion.div {...fadeUp}>
-                        <Award className="w-12 h-12 mx-auto mb-6 text-primary" strokeWidth={1.5} />
-                        <h2 className="text-4xl md:text-5xl font-black mb-6">
-                            Built for <span className="text-gradient-brand">Black Professionals</span>
-                        </h2>
-                        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                            Whether you're a doctor, engineer, entrepreneur, lawyer, artist, or educator — BlackLoveLink is for Black professionals aged 25 and above who have worked hard to build their lives and are now ready to share it with someone equally driven and equally extraordinary. We require profile and background checks because authenticity matters here.
-                        </p>
-                        <div className="mt-8 flex flex-wrap justify-center gap-3">
-                            {["25+ age verified", "Occupation verified", "Real photos", "Serious intent", "Secure auth"].map((tag) => (
-                                <span key={tag} className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
-                                    {tag}
-                                </span>
-                            ))}
+            <section className="py-24 px-6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent pointer-events-none" />
+                <div className="mx-auto max-w-5xl relative">
+                    <motion.div
+                        {...fadeUp}
+                        className="relative rounded-3xl border border-white/[0.08] bg-card/70 backdrop-blur-xl p-8 sm:p-14 text-center shadow-2xl overflow-hidden"
+                    >
+                        {/* Subtle ambient glow */}
+                        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+
+                        <div className="relative z-10">
+                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-xs font-semibold uppercase tracking-wider text-primary mb-6">
+                                <Award className="w-4 h-4 text-primary" strokeWidth={1.8} />
+                                <span>Curated Community</span>
+                            </div>
+
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-6">
+                                Built for <span className="text-gradient-brand">Black Professionals</span>
+                            </h2>
+
+                            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-10">
+                                Whether you are a doctor, engineer, entrepreneur, lawyer, artist, or educator, BlackLoveLink is dedicated to Black professionals aged 25 and above. You have built an extraordinary foundation in your life and career; now connect with someone equally ambitious, driven, and ready for a genuine partnership. We uphold rigorous profile and identity screening because authenticity is the foundation of lasting love.
+                            </p>
+
+                            {/* Verification Standards / Direct Links */}
+                            <div className="pt-8 border-t border-white/[0.06]">
+                                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/80 mb-5">
+                                    Our Verification Standards
+                                </p>
+                                <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+                                    <Link
+                                        to="/trust-safety"
+                                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-background/80 hover:bg-white/[0.06] hover:border-primary/40 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 shadow-sm"
+                                    >
+                                        <UserCheck className="w-4 h-4 text-primary" />
+                                        <span>25+ Age Verified</span>
+                                        <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    </Link>
+
+                                    <Link
+                                        to="/trust-safety"
+                                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-background/80 hover:bg-white/[0.06] hover:border-primary/40 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 shadow-sm"
+                                    >
+                                        <Briefcase className="w-4 h-4 text-primary" />
+                                        <span>Occupation Verified</span>
+                                        <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    </Link>
+
+                                    <Link
+                                        to="/trust-safety"
+                                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-background/80 hover:bg-white/[0.06] hover:border-primary/40 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 shadow-sm"
+                                    >
+                                        <Camera className="w-4 h-4 text-primary" />
+                                        <span>Photo Verification</span>
+                                        <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    </Link>
+
+                                    <Link
+                                        to="/privacy-policy"
+                                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-background/80 hover:bg-white/[0.06] hover:border-primary/40 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 shadow-sm"
+                                    >
+                                        <ShieldCheck className="w-4 h-4 text-primary" />
+                                        <span>Secure Authentication</span>
+                                        <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </motion.div>
                 </div>
@@ -228,9 +281,10 @@ const HowItWorksPage = () => {
             <section className="py-24 px-6">
                 <div className="mx-auto max-w-6xl">
                     <motion.div {...fadeUp} className="text-center mb-20">
-                        <span className="inline-block mb-4 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
-                            Step by Step
-                        </span>
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                            <span>Step-by-Step Experience</span>
+                        </div>
                         <h2 className="text-4xl md:text-5xl font-black mb-4">
                             How It <span className="text-gradient-brand">Works</span>
                         </h2>

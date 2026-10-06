@@ -25,7 +25,7 @@ function isProfileComplete(data: {
     return (
         fullName.trim().length > 0 &&
         dob !== "" &&
-        age >= 18 &&
+        age >= 25 &&
         gender !== "" &&
         intent !== "" &&
         photoCount >= 2
@@ -33,16 +33,16 @@ function isProfileComplete(data: {
 }
 
 describe("Age Validation", () => {
-    it("passes for 18-year-old", () => {
+    it("passes for 25-year-old", () => {
         const dob = new Date();
-        dob.setFullYear(dob.getFullYear() - 18);
-        expect(calculateAge(dob.toISOString().split("T")[0])).toBeGreaterThanOrEqual(18);
+        dob.setFullYear(dob.getFullYear() - 25);
+        expect(calculateAge(dob.toISOString().split("T")[0])).toBeGreaterThanOrEqual(25);
     });
 
-    it("fails for 17-year-old", () => {
+    it("fails for 24-year-old", () => {
         const dob = new Date();
-        dob.setFullYear(dob.getFullYear() - 17);
-        expect(calculateAge(dob.toISOString().split("T")[0])).toBeLessThan(18);
+        dob.setFullYear(dob.getFullYear() - 24);
+        expect(calculateAge(dob.toISOString().split("T")[0])).toBeLessThan(25);
     });
 
     it("passes for 30-year-old", () => {
@@ -84,9 +84,9 @@ describe("Profile Completeness", () => {
         expect(isProfileComplete({ ...completeProfile, occupationVerified: false })).toBe(true);
     });
 
-    it("returns false when under 18", () => {
+    it("returns false when under 25", () => {
         const underage = new Date();
-        underage.setFullYear(underage.getFullYear() - 16);
+        underage.setFullYear(underage.getFullYear() - 24);
         expect(isProfileComplete({ ...completeProfile, dob: underage.toISOString().split("T")[0] })).toBe(false);
     });
 

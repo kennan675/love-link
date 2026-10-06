@@ -156,7 +156,7 @@ const TrustSafetyPage = () => {
                                 Zero Tolerance for Child Sexual Abuse & Exploitation (CSAE)
                             </h2>
                             <p className="text-sm text-foreground/80 leading-relaxed">
-                                BlackLoveLink is strictly 18+. We enforce comprehensive published standards, proactive detection, immediate termination, and mandatory reporting to the National Center for Missing & Exploited Children (NCMEC).
+                                BlackLoveLink is strictly 25+. We enforce comprehensive published standards, proactive detection, immediate termination, and mandatory reporting to the National Center for Missing & Exploited Children (NCMEC).
                             </p>
                         </div>
                         <Link

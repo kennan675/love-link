@@ -94,7 +94,7 @@ const AuthPage = () => {
   const pwStrength = passwordStrength(password);
   const parsedAge = parseInt(ageInput, 10);
   const age = useExactDob ? calculateAge(dob) : (!isNaN(parsedAge) ? parsedAge : 0);
-  const ageValid = age >= 18 && age <= 100;
+  const ageValid = age >= 25 && age <= 100;
   const photoCount = photos.filter(p => p.preview !== null).length;
 
   /* ─── Redirect already-logged-in users ───────────────────────── */
@@ -296,7 +296,7 @@ const AuthPage = () => {
         uploadedUrls.push(urlData.publicUrl);
       }
 
-      const finalAge = ageValid ? age : (parseInt(ageInput, 10) || 18);
+      const finalAge = ageValid ? age : (parseInt(ageInput, 10) || 25);
       const finalDob = dob || `${new Date().getFullYear() - finalAge}-01-01`;
 
       const { data: existing } = await supabase
@@ -419,7 +419,7 @@ const AuthPage = () => {
                 <Heart className="w-8 h-8 text-primary-foreground" fill="currentColor" />
               </div>
               <h1 className="text-3xl font-black text-foreground mb-1">
-                {isOnboarding ? "One last thing…" : isSignUp ? "Create your account" : "Welcome back"}
+                {isOnboarding ? "One last thing…" : isSignUp ? "Create your account" : "Welcome"}
               </h1>
               <AnimatePresence mode="wait">
                 <motion.p
@@ -646,7 +646,7 @@ const AuthPage = () => {
                         <input
                           type="number"
                           inputMode="numeric"
-                          min="18"
+                          min="25"
                           max="99"
                           placeholder="Enter your age (e.g. 26)"
                           value={ageInput}
@@ -654,7 +654,7 @@ const AuthPage = () => {
                             const val = e.target.value.replace(/\D/g, "").slice(0, 2);
                             setAgeInput(val);
                             const num = parseInt(val, 10);
-                            if (!isNaN(num) && num >= 18 && num <= 100) {
+                            if (!isNaN(num) && num >= 25 && num <= 100) {
                               const birthYear = new Date().getFullYear() - num;
                               setDob(`${birthYear}-01-01`);
                             } else {
@@ -675,13 +675,13 @@ const AuthPage = () => {
                             setAgeInput(calculated > 0 ? String(calculated) : "");
                           }
                         }}
-                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
+                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split("T")[0]}
                         className={inputCls}
                       />
                     )}
 
                     {ageInput && !ageValid && (
-                      <p className="text-xs text-red-500 font-medium">You must be at least 18 years old to join.</p>
+                      <p className="text-xs text-red-500 font-medium">You must be at least 25 years old to join.</p>
                     )}
                     {ageValid && (
                       <p className="text-xs text-green-500 font-medium flex items-center gap-1">
@@ -710,7 +710,7 @@ const AuthPage = () => {
                       return;
                     }
                     if (!ageValid) {
-                      toast({ title: "Age required", description: "You must be at least 18 years old to join.", variant: "destructive" });
+                      toast({ title: "Age required", description: "You must be at least 25 years old to join.", variant: "destructive" });
                       return;
                     }
                     if (!gender) {
