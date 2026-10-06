@@ -504,12 +504,13 @@ const Index = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="group relative block overflow-hidden rounded-2xl border border-border shadow-glow"
+            className="group relative block overflow-hidden rounded-2xl border border-border shadow-glow bg-card/60"
           >
             <img
               src={appPromoArtwork}
               alt="BlackLoveLink mobile app preview"
-              className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
+              className="w-full h-auto aspect-square object-cover transition-transform duration-700 group-hover:scale-[1.015]"
+              loading="eager"
             />
             <div className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-background/90 px-3.5 py-1.5 text-xs font-bold text-foreground backdrop-blur-md border border-border/60 shadow-sm">
               <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
