@@ -420,8 +420,10 @@ const Index = () => {
       </section>
 
       {/* ── GOOGLE PLAY APP PROMOTION ── */}
-      <section className="relative overflow-hidden bg-foreground px-6 py-20 sm:py-24 lg:py-28">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-secondary/70 to-transparent" />
+      <section className="relative overflow-hidden bg-card px-6 py-20 sm:py-24 lg:py-28">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-secondary/60 to-transparent" />
+        <div className="absolute top-0 left-0 w-[520px] h-[520px] rounded-full bg-primary/10 blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[460px] h-[460px] rounded-full bg-secondary/10 blur-[140px] pointer-events-none" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
           <motion.div
             initial={{ opacity: 0, x: -28 }}
@@ -434,10 +436,10 @@ const Index = () => {
               <Smartphone className="h-4 w-4" />
               BlackLoveLink on Android
             </div>
-            <h2 className="text-4xl font-black leading-[1.08] text-background sm:text-5xl lg:text-6xl">
+            <h2 className="text-4xl font-black leading-[1.08] text-foreground sm:text-5xl lg:text-6xl">
               Your next meaningful connection, now closer.
             </h2>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-background/70 sm:text-lg">
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
               Discover intentional Black love, continue conversations and stay connected wherever life takes you.
             </p>
             <a
