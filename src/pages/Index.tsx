@@ -80,6 +80,13 @@ const Index = () => {
     }
   };
 
+  const handleComingSoonClick = () => {
+    toast({
+      title: "Coming Soon on Play Store",
+      description: "Our official Google Play release is currently on the way! You can install the full app right now using the 'Download App' button.",
+    });
+  };
+
   React.useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -470,17 +477,15 @@ const Index = () => {
                 Download App
               </button>
 
-              <a
-                href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-full border border-secondary/40 bg-secondary/10 px-6 py-3.5 text-sm font-bold text-secondary transition-all hover:bg-secondary/20 hover:border-secondary/60"
+              <button
+                type="button"
+                onClick={handleComingSoonClick}
+                className="inline-flex items-center gap-2.5 rounded-full border border-secondary/40 bg-secondary/10 px-6 py-3.5 text-sm font-bold text-secondary transition-all hover:bg-secondary/20 hover:border-secondary/60 cursor-pointer"
                 aria-label="Coming soon on Play Store"
               >
                 <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
                 Coming Soon on Play Store
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
+              </button>
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -495,16 +500,17 @@ const Index = () => {
             </div>
           </motion.div>
 
-          <motion.a
-            href="https://play.google.com/store/apps/details?id=com.blacklovelink.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View BlackLoveLink on Google Play (Coming Soon)"
+          <motion.div
+            onClick={handleComingSoonClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleComingSoonClick(); }}
+            aria-label="BlackLoveLink on Google Play (Coming Soon)"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="group relative block overflow-hidden rounded-2xl border border-border shadow-glow bg-card/60"
+            className="group relative block cursor-pointer overflow-hidden rounded-2xl border border-border shadow-glow bg-card/60"
           >
             <img
               src={appPromoArtwork}
@@ -516,10 +522,7 @@ const Index = () => {
               <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
               Coming Soon on Play Store
             </div>
-            <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
-              <ArrowUpRight className="h-5 w-5" />
-            </span>
-          </motion.a>
+          </motion.div>
         </div>
       </section>
 
