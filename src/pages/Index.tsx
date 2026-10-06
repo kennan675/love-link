@@ -452,7 +452,7 @@ const Index = () => {
               Get it on Google Play
               <ArrowUpRight className="h-4 w-4" />
             </a>
-            <p className="mt-4 text-xs font-medium uppercase text-background/45">
+            <p className="mt-4 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
               Also available at blacklovelink.com
             </p>
           </motion.div>
@@ -466,14 +466,14 @@ const Index = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="group relative block overflow-hidden border border-background/15 shadow-2xl"
+            className="group relative block overflow-hidden rounded-2xl border border-border shadow-glow"
           >
             <img
               src={appPromoArtwork.url}
               alt="BlackLoveLink Android app available on Google Play"
               className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.015]"
             />
-            <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
+            <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
               <ArrowUpRight className="h-5 w-5" />
             </span>
           </motion.a>
