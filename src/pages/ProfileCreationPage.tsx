@@ -77,7 +77,7 @@ const ProfileCreationPage = () => {
     const age = useExactDob
         ? calculateAge(dob)
         : (parseInt(ageInput, 10) || (dob ? calculateAge(dob) : 0));
-    const ageValid = age >= 25 && age <= 100;
+    const ageValid = age >= 21 && age <= 100;
     const photoCount = photos.filter((p) => p.preview !== null).length;
     const canContinue =
         fullName.trim().length > 0 &&
@@ -151,7 +151,7 @@ const ProfileCreationPage = () => {
             return;
         }
         if (!ageValid) {
-            toast({ title: "Age required", description: "You must be at least 25 years old to join.", variant: "destructive" });
+            toast({ title: "Age required", description: "You must be at least 21 years old to join.", variant: "destructive" });
             return;
         }
         if (!gender) {
@@ -405,15 +405,15 @@ const ProfileCreationPage = () => {
                                     <input
                                         type="number"
                                         inputMode="numeric"
-                                        min="25"
+                                        min="21"
                                         max="99"
-                                        placeholder="Enter your age (e.g. 26)"
+                                        placeholder="Enter your age (e.g. 22)"
                                         value={ageInput}
                                         onChange={(e) => {
                                             const val = e.target.value.replace(/\D/g, "").slice(0, 2);
                                             setAgeInput(val);
                                             const num = parseInt(val, 10);
-                                            if (!isNaN(num) && num >= 25 && num <= 100) {
+                                            if (!isNaN(num) && num >= 21 && num <= 100) {
                                                 const birthYear = new Date().getFullYear() - num;
                                                 setDob(`${birthYear}-01-01`);
                                             } else {
@@ -434,12 +434,12 @@ const ProfileCreationPage = () => {
                                                 setAgeInput(calculated > 0 ? String(calculated) : "");
                                             }
                                         }}
-                                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split("T")[0]}
+                                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 21)).toISOString().split("T")[0]}
                                         className={inputClass}
                                     />
                                 )}
                                 {ageInput && !ageValid && (
-                                    <p className="text-xs text-destructive">You must be at least 25 years old to join.</p>
+                                    <p className="text-xs text-destructive">You must be at least 21 years old to join.</p>
                                 )}
                                 {ageValid && (
                                     <p className="text-xs text-green-500 flex items-center gap-1">

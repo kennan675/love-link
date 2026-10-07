@@ -98,7 +98,7 @@ const HowItWorksPage = () => {
         { icon: CheckCircle, text: "Safe & secure messaging" },
         { icon: CheckCircle, text: "Location-based matching" },
         { icon: CheckCircle, text: "Smart interest filters" },
-        { icon: CheckCircle, text: "25+ age verified members" },
+        { icon: CheckCircle, text: "21+ age verified members" },
         { icon: CheckCircle, text: "Privacy controls" },
         { icon: CheckCircle, text: "24/7 support team" },
         // { icon: CheckCircle, text: "Premium Gold tier available" }, // Hidden for free launch
@@ -133,7 +133,7 @@ const HowItWorksPage = () => {
                         Love That <span className="text-gradient-brand">Reflects You</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                        BlackLoveLink is a premium matchmaking platform built specifically for Black professionals aged 25+, where verified identity, serious intent, and cultural pride create the foundation for lasting love.
+                        BlackLoveLink is a premium matchmaking platform built specifically for Black professionals aged 21+, where verified identity, serious intent, and cultural pride create the foundation for lasting love.
                     </p>
                 </motion.div>
             </section>
@@ -152,7 +152,7 @@ const HowItWorksPage = () => {
 
                     <div className="grid md:grid-cols-3 gap-6 text-center">
                         {[
-                            { label: "25+", sub: "Age verified members" },
+                            { label: "21+", sub: "Age verified members" },
                             { label: "100%", sub: "Verified profiles" },
                             { label: "3-Step", sub: "Authentication process" },
                         ].map((stat) => (
@@ -226,7 +226,7 @@ const HowItWorksPage = () => {
                             </h2>
 
                             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-10">
-                                Whether you are a doctor, engineer, entrepreneur, lawyer, artist, or educator, BlackLoveLink is dedicated to Black professionals aged 25 and above. You have built an extraordinary foundation in your life and career; now connect with someone equally ambitious, driven, and ready for a genuine partnership. We uphold rigorous profile and identity screening because authenticity is the foundation of lasting love.
+                                Whether you are a doctor, engineer, entrepreneur, lawyer, artist, or educator, BlackLoveLink is dedicated to Black professionals aged 21 and above. You have built an extraordinary foundation in your life and career; now connect with someone equally ambitious, driven, and ready for a genuine partnership. We uphold rigorous profile and identity screening because authenticity is the foundation of lasting love.
                             </p>
 
                             {/* Verification Standards / Direct Links */}
@@ -240,7 +240,7 @@ const HowItWorksPage = () => {
                                         className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-background/80 hover:bg-white/[0.06] hover:border-primary/40 text-sm font-medium text-foreground hover:text-primary transition-all duration-300 shadow-sm"
                                     >
                                         <UserCheck className="w-4 h-4 text-primary" />
-                                        <span>25+ Age Verified</span>
+                                        <span>21+ Age Verified</span>
                                         <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                                     </Link>
 

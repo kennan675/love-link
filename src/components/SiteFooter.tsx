@@ -80,7 +80,7 @@ const SiteFooter: React.FC = () => {
               <img src={blackLovelinkLogo} alt="BlackLoveLink" className="h-12 w-auto" />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              A premium matchmaking platform for Black professionals aged 25+. We build spaces where love can grow without compromise.
+              A premium matchmaking platform for Black professionals aged 21+. We build spaces where love can grow without compromise.
             </p>
 
             {/* Contact */}

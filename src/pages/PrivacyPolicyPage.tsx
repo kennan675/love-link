@@ -169,7 +169,7 @@ const PrivacyPolicyPage = () => {
               </InfoBox>
             </div>
             <InfoBox icon={AlertCircle} color="border-amber-400/30 bg-amber-400/5 text-amber-700 dark:text-amber-400">
-              <strong>Age Restriction:</strong> We do NOT knowingly collect data from anyone under 25. If we discover an underage account it will be terminated immediately.
+              <strong>Age Restriction:</strong> We do NOT knowingly collect data from anyone under 21. If we discover an underage account it will be terminated immediately.
             </InfoBox>
           </Section>
 
@@ -187,7 +187,7 @@ const PrivacyPolicyPage = () => {
                 <tbody className="divide-y divide-border">
                   {[
                     ["Identifiers", "Name, email, phone, user ID", "Contract & Interest"],
-                    ["Account Info", "Date of birth, gender (25+ verified)", "Contract & Legal Obligation"],
+                    ["Account Info", "Date of birth, gender (21+ verified)", "Contract & Legal Obligation"],
                     ["Sensitive Data", "Sexual orientation, ethnicity, religion, precise geolocation, selfie verification images", "Your Consent — skip/change anytime"],
                     ["Profile Content", "Photos, bio, interests, preferences", "Contract & Consent"],
                     ["Communications", "Messages, chats, reports you file", "Contract, Interest & Safety"],

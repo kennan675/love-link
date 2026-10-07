@@ -15,7 +15,7 @@ const sections = [
   {
     id: "eligibility",
     title: "2. Eligibility",
-    content: `You must be at least 25 years of age to create an account and use BlackLoveLink. By using the Platform, you represent and warrant that you are at least 25 years old, have the legal capacity to enter into a binding agreement, are not prohibited from using the Platform under any applicable law, and have not been previously removed or banned from the Platform.`,
+    content: `You must be at least 21 years of age to create an account and use BlackLoveLink. By using the Platform, you represent and warrant that you are at least 21 years old, have the legal capacity to enter into a binding agreement, are not prohibited from using the Platform under any applicable law, and have not been previously removed or banned from the Platform.`,
   },
   {
     id: "account",
