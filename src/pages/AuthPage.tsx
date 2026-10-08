@@ -777,8 +777,8 @@ const AuthPage = () => {
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full gradient-brand mb-3 shadow-glow">
                     <Camera className="w-7 h-7 text-primary-foreground" />
                   </div>
-                  <h1 className="text-2xl font-black text-foreground">Add your photos</h1>
-                  <p className="text-sm text-muted-foreground mt-1">Upload at least 2 photos — profiles with photos get 5× more connections</p>
+                  <h1 className="text-2xl font-black text-foreground">Add your photo</h1>
+                  <p className="text-sm text-muted-foreground mt-1">Upload at least 1 photo — profiles with photos get 5× more connections</p>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
@@ -810,9 +810,16 @@ const AuthPage = () => {
                   ))}
                 </div>
 
-                <p className="text-center text-xs text-muted-foreground">{photoCount}/5 photos added · minimum 2 required</p>
+                <div className="rounded-xl bg-card border border-border/70 p-3 text-xs text-muted-foreground space-y-1">
+                  <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider">Photo Rules:</p>
+                  <p>• Must be a real photo of you (face clearly visible)</p>
+                  <p>• No celebrity photos or non-human images</p>
+                  <p>• Strictly zero tolerance for nudity or sexual content</p>
+                </div>
 
-                <motion.button onClick={handleSaveProfile} disabled={!!loading || photoCount < 2}
+                <p className="text-center text-xs text-muted-foreground">{photoCount}/5 photos added · minimum 1 required</p>
+
+                <motion.button onClick={handleSaveProfile} disabled={!!loading || photoCount < 1}
                   className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl gradient-brand text-primary-foreground font-semibold text-base shadow-button hover:opacity-90 transition-all disabled:opacity-40"
                   whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                   {loading === "save" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Heart className="w-5 h-5" fill="currentColor" />}

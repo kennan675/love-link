@@ -90,10 +90,10 @@ const ProfilePage = () => {
   // Prompt photo re-upload once if the profile has no photos
   useEffect(() => {
     if (!loading && profile && (profile.photos?.length ?? 0) === 0) {
-      toast("📸 Add your photos", {
-        description: "Your profile has no photos. Upload at least 2 to start matching!",
+      toast("📸 Add your photo", {
+        description: "Your profile has no photos. Upload at least 1 photo to start matching!",
         action: {
-          label: "Add Photos",
+          label: "Add Photo",
           onClick: () => navigate("/create-profile"),
         },
         duration: 8000,
@@ -106,7 +106,7 @@ const ProfilePage = () => {
     !!profile?.occupation_title,
     !!profile?.dob,
     !!profile?.intent,
-    (profile?.photos?.length ?? 0) >= 2,
+    (profile?.photos?.length ?? 0) >= 1,
   ];
   const completeness = profile ? Math.round((fieldsComplete.filter(Boolean).length / fieldsComplete.length) * 100) : 0;
 

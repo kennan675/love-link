@@ -28,7 +28,7 @@ function isProfileComplete(data: {
         age >= 21 &&
         gender !== "" &&
         intent !== "" &&
-        photoCount >= 2
+        photoCount >= 1
     );
 }
 
@@ -98,11 +98,15 @@ describe("Profile Completeness", () => {
         expect(isProfileComplete({ ...completeProfile, intent: "" })).toBe(false);
     });
 
-    it("returns false with only 1 photo", () => {
-        expect(isProfileComplete({ ...completeProfile, photoCount: 1 })).toBe(false);
+    it("returns false with 0 photos", () => {
+        expect(isProfileComplete({ ...completeProfile, photoCount: 0 })).toBe(false);
     });
 
-    it("returns true with exactly 2 photos (minimum)", () => {
+    it("returns true with exactly 1 photo (minimum)", () => {
+        expect(isProfileComplete({ ...completeProfile, photoCount: 1 })).toBe(true);
+    });
+
+    it("returns true with 2 photos", () => {
         expect(isProfileComplete({ ...completeProfile, photoCount: 2 })).toBe(true);
     });
 

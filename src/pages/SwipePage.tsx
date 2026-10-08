@@ -35,10 +35,10 @@ const SwipePage = () => {
   // Prompt photo re-upload if user has no photos
   useEffect(() => {
     if (!profileLoading && currentUserProfile && (currentUserProfile.photos?.length ?? 0) === 0) {
-      toast("📸 Add your photos", {
-        description: "Your profile has no photos. Upload at least 2 to start matching!",
+      toast("📸 Add your photo", {
+        description: "Your profile has no photos. Upload at least 1 photo to start matching!",
         action: {
-          label: "Add Photos",
+          label: "Add Photo",
           onClick: () => navigate("/create-profile"),
         },
         duration: 8000,
@@ -201,6 +201,7 @@ const SwipePage = () => {
                   onLike={() => handleLike(profile)}
                   onPass={() => handlePass(profile)}
                   onMessage={(introText: string) => handleMessage(profile, introText)}
+                  onRewind={handleStartOver}
                 />
               ))}
             </AnimatePresence>
