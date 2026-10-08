@@ -87,6 +87,20 @@ const ProfilePage = () => {
   const displayName = profile?.full_name?.split(" ")[0] || user?.user_metadata?.full_name?.split(" ")[0] || "You";
   const avatarUrl = profile?.avatar_url || profile?.photos?.[0] || user?.user_metadata?.avatar_url || "/placeholder.svg";
 
+  // Prompt photo re-upload once if the profile has no photos
+  useEffect(() => {
+    if (!loading && profile && (profile.photos?.length ?? 0) === 0) {
+      toast("📸 Add your photos", {
+        description: "Your profile has no photos. Upload at least 2 to start matching!",
+        action: {
+          label: "Add Photos",
+          onClick: () => navigate("/create-profile"),
+        },
+        duration: 8000,
+      });
+    }
+  }, [loading, profile]);
+
   const fieldsComplete = [
     !!profile?.full_name,
     !!profile?.occupation_title,

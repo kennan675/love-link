@@ -5,7 +5,7 @@ import TopNav from "@/components/TopNav";
 import MatchOverlay from "@/components/MatchOverlay";
 import FeedProfileCard from "@/components/feed/FeedProfileCard";
 import PullToRefresh from "@/components/PullToRefresh";
-import { useProfiles, type UserProfile } from "@/hooks/useProfileData";
+import { useProfiles, useCurrentUserProfile, type UserProfile } from "@/hooks/useProfileData";
 import { useSwipe } from "@/hooks/useSwipe";
 import { Loader2, SearchX, ArrowLeft, Home, Compass, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -25,11 +25,26 @@ const SwipePage = () => {
   const { t } = useTranslation();
   const { profiles, likedIds, loading, refreshing, refetch } = useProfiles();
   const { recordSwipe } = useSwipe();
+  const { profile: currentUserProfile, loading: profileLoading } = useCurrentUserProfile();
   const [matchedProfile, setMatchedProfile] = useState<UserProfile | null>(null);
   const [likedProfiles, setLikedProfiles] = useState<Set<string>>(new Set());
   const [passedProfiles, setPassedProfiles] = useState<Set<string>>(new Set());
   const [isResetting, setIsResetting] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(!useLocationConsent());
+
+  // Prompt photo re-upload if user has no photos
+  useEffect(() => {
+    if (!profileLoading && currentUserProfile && (currentUserProfile.photos?.length ?? 0) === 0) {
+      toast("📸 Add your photos", {
+        description: "Your profile has no photos. Upload at least 2 to start matching!",
+        action: {
+          label: "Add Photos",
+          onClick: () => navigate("/create-profile"),
+        },
+        duration: 8000,
+      });
+    }
+  }, [profileLoading, currentUserProfile]);
 
   const handlePullRefresh = async () => {
     try {
