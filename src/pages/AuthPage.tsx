@@ -109,7 +109,7 @@ const AuthPage = () => {
       if (status === "complete") {
         navigate("/swipe", { replace: true });
       } else {
-        setStep("onboard-you");
+        navigate("/create-profile", { replace: true });
       }
     };
 
@@ -238,7 +238,7 @@ const AuthPage = () => {
       const { error } = await supabase.auth.signUp({ email: email.trim(), password });
       if (error) throw error;
       toast({ title: "Account created! 🎉", description: "Let's set up your profile." });
-      setStep("onboard-you");
+      navigate("/create-profile", { replace: true });
     } catch (err: unknown) {
       toast({
         title: "Sign-up failed",
