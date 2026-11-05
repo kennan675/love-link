@@ -328,7 +328,7 @@ const AuthPage = () => {
 
       markProfileComplete(userId);
       toast({ title: "Welcome to BlackLoveLink! 🎉", description: "Your profile is ready." });
-      navigate("/swipe", { replace: true });
+      navigate("/welcome-video", { replace: true });
     } catch (err: unknown) {
       toast({
         title: "Could not save profile",

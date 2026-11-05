@@ -17,6 +17,7 @@ import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
 import ProfileCreationPage from "./pages/ProfileCreationPage";
+import WelcomeVideoPage from "./pages/WelcomeVideoPage";
 import PermissionsPage from "./pages/PermissionsPage";
 import SwipePage from "./pages/SwipePage";
 import ProfilePage from "./pages/ProfilePage";
@@ -106,6 +107,7 @@ const App = () => {
               {/* Onboarding routes (auth required) */}
               <Route path="/create-profile" element={<ProtectedRoute><ProfileCreationPage /></ProtectedRoute>} />
               <Route path="/permissions" element={<ProtectedRoute><PermissionsPage /></ProtectedRoute>} />
+              <Route path="/welcome-video" element={<ProtectedRoute><WelcomeVideoPage /></ProtectedRoute>} />
 
               {/* App routes (auth required) */}
               <Route path="/swipe" element={<ProtectedRoute><SwipePage /></ProtectedRoute>} />

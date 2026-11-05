@@ -414,7 +414,7 @@ const ProfileCreationPage = () => {
             if (dbError) throw dbError;
 
             toast({ title: "Profile completed! 🎉", description: "Welcome to BlackLoveLink." });
-            navigate("/permissions");
+            navigate("/welcome-video");
         } catch (err: unknown) {
             console.error("Profile save error:", err);
             toast({

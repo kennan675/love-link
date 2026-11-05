@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "@/components/SEO";
-import { Flame, ChevronDown, Globe, Heart, GraduationCap, Handshake, Instagram, Youtube, Facebook, ArrowUpRight, Smartphone, Download, CheckCircle2 } from "lucide-react";
+import { Flame, ChevronDown, Globe, Heart, GraduationCap, Handshake, Instagram, Youtube, Facebook, ArrowUpRight, Smartphone, Download, CheckCircle2, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -783,6 +783,24 @@ const Index = () => {
             <ConnectionCards />
           </div>
         </div>
+      </section>
+
+      {/* Optional website introduction, tucked below the main discovery content. */}
+      <section className="bg-background px-6 py-12 sm:py-16">
+        <details className="group mx-auto max-w-4xl overflow-hidden rounded-2xl border border-border/70 bg-card/70 shadow-sm">
+          <summary className="flex cursor-pointer list-none items-center gap-4 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full gradient-brand text-primary-foreground"><Play className="ml-0.5 h-4 w-4" fill="currentColor" /></span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xs font-bold uppercase tracking-[0.18em] text-secondary">A quick introduction</span>
+              <span className="mt-1 block text-lg font-bold text-foreground sm:text-xl">Get to know BlackLoveLink</span>
+            </span>
+            <span className="text-sm font-semibold text-muted-foreground group-open:hidden">Watch video</span>
+            <span className="hidden text-sm font-semibold text-muted-foreground group-open:block">Close</span>
+          </summary>
+          <div className="border-t border-border/60 bg-black p-2 sm:p-4">
+            <video className="mx-auto max-h-[65vh] w-full rounded-xl" src="/blacklovelink-welcome.mp4" controls playsInline preload="none" aria-label="A welcome to BlackLoveLink" />
+          </div>
+        </details>
       </section>
 
       {/* ── PRICING SECTION ── Hidden for free launch — restore when ready */}
